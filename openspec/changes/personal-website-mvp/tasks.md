@@ -41,12 +41,12 @@ Chain strategy: pending
 
 ## Phase 2: Layouts & Shared Components
 
-- [ ] 2.1 `layouts/BaseLayout.astro` (html lang, head slot, skip-link, Header/Footer, `<slot>`).
-- [ ] 2.2 `components/head/SeoHead.astro` + `Hreflang.astro` (title/OG/canonical/JSON-LD; es/en/de/x-default via `getAbsoluteLocaleUrl`).
-- [ ] 2.3 `components/Header.astro` + `Footer.astro` (nav, CV link, LanguageSelector, ThemeToggle, contact/social).
-- [ ] 2.4 `lib/locale-path.ts` (`switchLocalePath`) + `components/LanguageSelector.astro` (3 `<a>`, `aria-current`).
-- [ ] 2.5 `components/ThemeToggle.astro` (no-flash head script, `localStorage`, `data-theme`).
-- [ ] 2.6 `layouts/PostLayout.astro` (BaseLayout + TOC + reading time + prev/next).
+- [x] 2.1 `layouts/BaseLayout.astro` (html lang, head slot, skip-link, Header/Footer, `<slot>`).
+- [x] 2.2 `components/head/SeoHead.astro` + `Hreflang.astro` (title/OG/canonical/JSON-LD; es/en/de/x-default via `getAbsoluteLocaleUrl`).
+- [x] 2.3 `components/Header.astro` + `Footer.astro` (nav, CV link, LanguageSelector, ThemeToggle, contact/social).
+- [x] 2.4 `lib/locale-path.ts` (`switchLocalePath`) + `components/LanguageSelector.astro` (3 `<a>`, `aria-current`).
+- [x] 2.5 `components/ThemeToggle.astro` (no-flash head script, `localStorage`, `data-theme`).
+- [x] 2.6 `layouts/PostLayout.astro` (BaseLayout + TOC + reading time + prev/next).
 
 ## Phase 3: Content Model, i18n & Pages
 
