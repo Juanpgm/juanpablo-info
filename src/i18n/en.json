@@ -38,12 +38,6 @@
   "about.language.en": "English — professional",
   "about.language.de": "German — basic/intermediate",
   "about.photoAlt": "Profile photo (placeholder — real photo pending)",
-  "about.codeSnippetHeading": "Code, not just talk",
-  "about.codeSnippetLabel": "Real fragments from my own repositories — not runnable here as-is, but the code itself is genuine.",
-  "about.codeCarouselPrev": "Previous snippet",
-  "about.codeCarouselNext": "Next snippet",
-  "about.codeCarouselTablistLabel": "Select code snippet",
-  "about.codeCarouselGoTo": "Go to snippet from",
 
   "skills.heading": "Two worlds converging",
   "skills.aiColumn": "AI · Data · Software",

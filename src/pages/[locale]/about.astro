@@ -3,7 +3,6 @@
 // certifications, languages (proposal §3.2).
 import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import CodeCarousel from '../../components/CodeCarousel.astro';
 import { t, useLocale } from '../../i18n';
 import { education, certifications } from '../../data/education';
 // PLACEHOLDER photo — real portrait pending, user-supplied (see
@@ -35,13 +34,6 @@ const yearRange = (start: number, end?: number) => (end ? `${start}–${end}` : 
         <Image src={photoPlaceholder} alt={t(locale, 'about.photoAlt')} width={480} height={600} />
       </figure>
     </div>
-  </section>
-
-  <section class="section" data-reveal aria-labelledby="code-snippet-heading">
-    <div class="section-header">
-      <h2 id="code-snippet-heading">{t(locale, 'about.codeSnippetHeading')}</h2>
-    </div>
-    <CodeCarousel locale={locale} />
   </section>
 
   <section class="section" data-reveal aria-labelledby="education-heading">

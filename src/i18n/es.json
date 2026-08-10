@@ -38,12 +38,6 @@
   "about.language.en": "Inglés — profesional",
   "about.language.de": "Alemán — básico/intermedio",
   "about.photoAlt": "Foto de perfil (placeholder — foto real pendiente)",
-  "about.codeSnippetHeading": "Código, no solo discurso",
-  "about.codeSnippetLabel": "Fragmentos reales de mis propios repositorios — no ejecutables aquí tal cual, pero el código es genuino.",
-  "about.codeCarouselPrev": "Fragmento anterior",
-  "about.codeCarouselNext": "Fragmento siguiente",
-  "about.codeCarouselTablistLabel": "Seleccionar fragmento de código",
-  "about.codeCarouselGoTo": "Ir al fragmento de",
 
   "skills.heading": "Dos mundos que convergen",
   "skills.aiColumn": "IA · Datos · Software",
