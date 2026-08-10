@@ -6,6 +6,7 @@
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
+import ExperienceCounter from '../../components/ExperienceCounter.astro';
 import TwoWorlds from '../../components/TwoWorlds.astro';
 import Timeline from '../../components/Timeline.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
@@ -62,6 +63,7 @@ const latestPosts = posts
       <h2 id="featured-experience-heading">{t(locale, 'experience.featuredHeading')}</h2>
       <a href={getRelativeLocaleUrl(locale, 'experience')} class="nav-link">{t(locale, 'experience.viewAll')} →</a>
     </div>
+    <ExperienceCounter />
     <Timeline entries={featuredExperience} locale={locale} />
   </section>
 

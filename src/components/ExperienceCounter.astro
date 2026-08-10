@@ -1,0 +1,78 @@
+---
+// Live "years of experience" stat card (post-launch fast-follow). Build-time
+// fallback (progressive enhancement, no-JS/SSR-safe) computed once here;
+// re-computed client-side on every page load from the real current date
+// (lib/experience-duration.ts — pure, reused build- and client-side).
+import { t, useLocale } from '../i18n';
+import {
+  EXPERIENCE_START_DATE,
+  formatExperienceDuration,
+  getExperienceDuration,
+} from '../lib/experience-duration';
+
+const locale = useLocale(Astro.currentLocale);
+
+const words = {
+  year: t(locale, 'experience.year'),
+  years: t(locale, 'experience.years'),
+  month: t(locale, 'experience.month'),
+  months: t(locale, 'experience.months'),
+  connector: t(locale, 'experience.counterConnector'),
+};
+
+const duration = getExperienceDuration(new Date(`${EXPERIENCE_START_DATE}T00:00:00`), new Date());
+const initialText = formatExperienceDuration(duration, words);
+---
+
+<div class="experience-counter" data-reveal>
+  <canvas class="experience-counter__network" aria-hidden="true"></canvas>
+  <p
+    class="experience-counter__value"
+    data-experience-value
+    data-year-word={words.year}
+    data-years-word={words.years}
+    data-month-word={words.month}
+    data-months-word={words.months}
+    data-connector={words.connector}
+  >
+    {initialText}
+  </p>
+  <p class="experience-counter__label">{t(locale, 'experience.counterHeading')}</p>
+</div>
+
+<script>
+  // Decorative network background (lib/network-canvas.ts — same module as
+  // Hero's, reused not forked) + live recompute using the browser's actual
+  // `new Date()` at page load, so the value keeps advancing daily rather than
+  // staying frozen at last-deploy time. Re-init per View Transition
+  // navigation, torn down on the way out (same lifecycle as Hero.astro).
+  import { initNetworkCanvas } from '../lib/network-canvas';
+  import { EXPERIENCE_START_DATE, formatExperienceDuration, getExperienceDuration } from '../lib/experience-duration';
+
+  let cleanup: (() => void) | undefined;
+
+  function updateValue(): void {
+    const el = document.querySelector<HTMLElement>('[data-experience-value]');
+    if (!el) return;
+    const duration = getExperienceDuration(new Date(`${EXPERIENCE_START_DATE}T00:00:00`), new Date());
+    el.textContent = formatExperienceDuration(duration, {
+      year: el.dataset.yearWord ?? 'year',
+      years: el.dataset.yearsWord ?? 'years',
+      month: el.dataset.monthWord ?? 'month',
+      months: el.dataset.monthsWord ?? 'months',
+      connector: el.dataset.connector ?? 'and',
+    });
+  }
+
+  function setup(): void {
+    cleanup?.();
+    cleanup = undefined;
+    updateValue();
+    const canvas = document.querySelector<HTMLCanvasElement>('.experience-counter__network');
+    if (canvas) cleanup = initNetworkCanvas(canvas);
+  }
+
+  setup();
+  document.addEventListener('astro:page-load', setup);
+  document.addEventListener('astro:before-swap', () => cleanup?.());
+</script>
