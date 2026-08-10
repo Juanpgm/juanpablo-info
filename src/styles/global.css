@@ -350,12 +350,6 @@ h3 {
   color: var(--color-secondary);
 }
 
-.badge-stale {
-  background-color: var(--color-surface-subtle);
-  color: var(--color-ink-muted);
-  border: 1px solid var(--color-border);
-}
-
 .badge-current {
   background-color: color-mix(in srgb, var(--color-primary) 18%, transparent);
   /* Light-theme --primary (#0f766e) on this 18%-tint background only hits

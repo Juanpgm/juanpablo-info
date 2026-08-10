@@ -13,6 +13,10 @@ interface Props {
     stars?: number | null;
     primaryLanguage?: string | null;
     lastUpdated?: string | null;
+    // `stale` is still supplied by lib/github.ts on a failed live fetch, but
+    // it's no longer surfaced as a visible badge (user feedback: added no
+    // value, overflowed the card header) — the card just quietly omits the
+    // live-meta row instead (see hasLiveMeta below).
     stale?: boolean;
   };
   locale: Locale;
@@ -32,7 +36,6 @@ const Heading = headingLevel;
   <header class="project-card__header">
     <Heading>{project.name}</Heading>
     {project.isExample && <span class="badge badge-example">{t(locale, 'projects.exampleBadge')}</span>}
-    {!project.isExample && project.stale && <span class="badge badge-stale">{t(locale, 'projects.staleBadge')}</span>}
   </header>
 
   <p class="project-card__description">{project.description[locale]}</p>
