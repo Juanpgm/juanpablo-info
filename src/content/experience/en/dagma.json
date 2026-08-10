@@ -1,0 +1,17 @@
+{
+  "company": "DAGMA (City of Santiago de Cali)",
+  "role": "IT/AI Solutions Consultant",
+  "location": "Cali, Colombia",
+  "startDate": "2026-01-01",
+  "endDate": "2026-06-30",
+  "current": false,
+  "group": "recent",
+  "featured": true,
+  "order": 1,
+  "highlights": [
+    "Led the design of the DAGMA-360 architecture to integrate scattered environmental data (air quality, biodiversity, early-warning alerts) into a single territorial monitoring platform.",
+    "Developed the SIMAP geospatial intelligence module to track vegetation cover and urban biodiversity from satellite imagery.",
+    "Designed a local AI infrastructure (self-hosted models) to reduce dependency on external APIs and safeguard the municipality's environmental data sovereignty."
+  ],
+  "stack": ["GCP", "GIS", "Python", "RAG"]
+}

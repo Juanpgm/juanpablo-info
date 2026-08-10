@@ -1,0 +1,15 @@
+{
+  "company": "2023 National & Para-National Games (Eje Cafetero)",
+  "role": "BIM Coordinator",
+  "location": "Eje Cafetero, Colombia",
+  "startDate": "2021-06-01",
+  "endDate": "2022-01-01",
+  "current": false,
+  "group": "recent",
+  "order": 7,
+  "highlights": [
+    "Coordinated BIM modeling of the sports infrastructure built and upgraded for the National Games, supporting construction planning across multiple venues.",
+    "Scheduled construction progress within the model (4D) to anticipate bottlenecks against the event's fixed timeline."
+  ],
+  "stack": ["BIM", "Revit", "MS Project"]
+}

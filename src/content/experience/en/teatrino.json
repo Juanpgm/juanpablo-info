@@ -1,0 +1,16 @@
+{
+  "company": "Teatrino Project",
+  "role": "Structural Designer",
+  "location": "Ibagué, Colombia",
+  "startDate": "2018-07-01",
+  "endDate": "2018-12-01",
+  "current": false,
+  "group": "recent",
+  "order": 9,
+  "highlights": [
+    "Designed the reinforced-concrete structural system for an amphitheater seating approximately 450 people, including the tiered seating and roof structure.",
+    "Verified the seismic-resistant design in compliance with NSR-10, defining the seismic-force-resisting system and reinforcement detailing for critical elements.",
+    "Coordinated structural design with architecture to reconcile the tiered seating's curved geometry with the required reinforcement ratios and rebar layouts."
+  ],
+  "stack": ["AutoCAD", "SAP2000"]
+}

@@ -1,0 +1,14 @@
+{
+  "company": "Megatech Ingenieros",
+  "role": "Construction Assistant",
+  "location": "Ibagué, Colombia",
+  "startDate": "2012-06-01",
+  "endDate": "2013-01-01",
+  "current": false,
+  "group": "early",
+  "order": 4,
+  "highlights": [
+    "First professional exposure to civil engineering: field support and construction quality control."
+  ],
+  "stack": []
+}

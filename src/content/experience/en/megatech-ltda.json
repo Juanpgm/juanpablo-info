@@ -1,0 +1,14 @@
+{
+  "company": "Megatech LTDA",
+  "role": "Junior Civil Engineer",
+  "location": "Ibagué, Colombia",
+  "startDate": "2014-06-01",
+  "endDate": "2014-12-01",
+  "current": false,
+  "group": "early",
+  "order": 1,
+  "highlights": [
+    "Supported design and budgeting for road and urban infrastructure projects."
+  ],
+  "stack": ["AutoCAD"]
+}

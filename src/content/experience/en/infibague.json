@@ -1,0 +1,16 @@
+{
+  "company": "INFIBAGUE (Institute for Financing, Promotion, and Development of Ibagué)",
+  "role": "Civil Engineer — Public Lighting, Urban Planning & PEP",
+  "location": "Ibagué, Colombia",
+  "startDate": "2015-01-01",
+  "endDate": "2018-06-01",
+  "current": false,
+  "group": "recent",
+  "order": 8,
+  "highlights": [
+    "Over nearly 3.5 years, worked on public lighting and urban space projects, from design through construction supervision.",
+    "Supported project formulation within the municipality's Strategic Project Plan (PEP), aligning technical design with public investment prioritization.",
+    "Prepared budgets, technical specifications, and schedule tracking for urban infrastructure works."
+  ],
+  "stack": ["AutoCAD", "GIS"]
+}

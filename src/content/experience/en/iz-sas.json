@@ -1,0 +1,14 @@
+{
+  "company": "I.Z S.A.S.",
+  "role": "Engineering Assistant",
+  "location": "Ibagué, Colombia",
+  "startDate": "2014-01-01",
+  "endDate": "2014-06-01",
+  "current": false,
+  "group": "early",
+  "order": 2,
+  "highlights": [
+    "Tracked technical progress and quantity take-offs for construction projects underway."
+  ],
+  "stack": ["AutoCAD"]
+}

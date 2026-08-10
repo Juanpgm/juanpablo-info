@@ -1,0 +1,15 @@
+{
+  "company": "Consorcio Licorera del Valle",
+  "role": "BIM Coordinator",
+  "location": "Valle del Cauca, Colombia",
+  "startDate": "2022-01-01",
+  "endDate": "2022-12-01",
+  "current": false,
+  "group": "recent",
+  "order": 6,
+  "highlights": [
+    "Coordinated the project's BIM implementation, integrating architecture, structural, and MEP models for early clash detection.",
+    "Defined the BIM Execution Plan (BEP) and the consortium's modeling standards."
+  ],
+  "stack": ["Revit", "Navisworks", "BIM"]
+}
