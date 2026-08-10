@@ -1,0 +1,30 @@
+schema: spec-driven
+
+context: |
+  Tech stack: Astro + Tailwind CSS + TypeScript (greenfield, not yet scaffolded)
+  Architecture: Static-first, islands architecture, Content Collections for blog/experience/skills
+  Testing: none yet (recommend Vitest / astro check during scaffolding)
+  Style: minimalist-professional, serif/display headings + sans body, neutral palette + technical accent
+
+rules:
+  proposal:
+    - Confirm information architecture and i18n routing strategy before scaffolding
+  specs:
+    - Use Given/When/Then for scenarios
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+  design:
+    - Document i18n routing, content collection schemas, and component architecture decisions with rationale
+  tasks:
+    - Group by phase (scaffold, components, content/i18n, SEO/a11y/perf, deploy docs)
+    - Keep tasks completable in one session
+  apply:
+    guidelines:
+      - Follow Astro + Tailwind idioms; zero JS by default, hydrate only where justified
+    tdd: false
+    test_command: ""
+  verify:
+    test_command: ""
+    build_command: "npm run build"
+    coverage_threshold: 0
+  archive:
+    - Warn before merging destructive deltas
