@@ -1,0 +1,25 @@
+---
+// TEMPORARY PLACEHOLDER — PR2/PR3 replaces this with the real Home layout
+// (Hero, About summary, Skills, Experience, Projects, Blog, Contact per
+// design §3/proposal §4.1). This file exists only so PR1's scaffold has a
+// buildable route per locale.
+import '../../styles/global.css';
+
+export function getStaticPaths() {
+  return [{ params: { locale: 'es' } }, { params: { locale: 'en' } }, { params: { locale: 'de' } }];
+}
+
+const { locale } = Astro.params;
+const greeting: Record<string, string> = { es: 'Hola', en: 'Hello', de: 'Hallo' };
+---
+
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>personal-website (scaffold)</title>
+  </head>
+  <body>
+    <p>{greeting[locale ?? 'es']}</p>
+  </body>
+</html>
