@@ -12,7 +12,8 @@ import ProjectCard from '../../components/ProjectCard.astro';
 import BlogCard from '../../components/BlogCard.astro';
 import { t, useLocale } from '../../i18n';
 import { getLocalizedEntries } from '../../lib/content-fallback';
-import { projects } from '../../data/projects';
+import { projects as projectSeeds } from '../../data/projects';
+import { mergeProjects } from '../../lib/github';
 
 export function getStaticPaths() {
   return [{ params: { locale: 'es' } }, { params: { locale: 'en' } }, { params: { locale: 'de' } }];
@@ -26,7 +27,10 @@ const featuredExperience = experience
   .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99))
   .slice(0, 4);
 
-const featuredProjects = projects.filter((project) => project.featured);
+const featuredProjects = await mergeProjects(
+  projectSeeds.filter((project) => project.featured),
+  import.meta.env.GITHUB_TOKEN
+);
 
 const posts = await getLocalizedEntries('blog', locale);
 const latestPosts = posts

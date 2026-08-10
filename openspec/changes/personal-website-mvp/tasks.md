@@ -72,9 +72,9 @@ Chain strategy: pending
 
 ## Phase 5: GitHub Build-Time Integration
 
-- [ ] 5.1 `lib/github.ts` — `fetchRepo`/`mergeProjects`, `AbortSignal.timeout(5000)`, never throws, null on failure.
-- [ ] 5.2 Wire into `projects.astro` + Home featured-projects section (top-level `await`); stale/example badge on fallback.
-- [ ] 5.3 Document optional `GITHUB_TOKEN` in `.env.example`.
+- [x] 5.1 `lib/github.ts` — `fetchRepo`/`mergeProjects`, `AbortSignal.timeout(5000)`, never throws, null on failure.
+- [x] 5.2 Wire into `projects.astro` + Home featured-projects section (top-level `await`); stale/example badge on fallback.
+- [x] 5.3 Document optional `GITHUB_TOKEN` in `.env.example`.
 
 ## Phase 6: CV & Assets Wiring
 
