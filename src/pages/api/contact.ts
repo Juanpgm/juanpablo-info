@@ -1,7 +1,8 @@
 import type { APIRoute } from 'astro';
 import { neon } from '@neondatabase/serverless';
 import { Resend } from 'resend';
-import { validateContactSubmission } from '../../lib/contact-form';
+import { put } from '@vercel/blob';
+import { validateContactSubmission, validateAttachments } from '../../lib/contact-form';
 
 // This is the site's ONE server-rendered route (design ADR A1 keeps the rest
 // static). `prerender = false` opts only this file out, so the Vercel
@@ -23,15 +24,62 @@ function json(body: unknown, status: number): Response {
   });
 }
 
+// Filenames land straight in a Blob pathname (and, indirectly, the notified
+// email subject/body) — collapse anything outside a conservative safe set so
+// a hostile filename can't inject path segments or odd bytes into storage.
+function sanitizeFilename(name: string): string {
+  return name.replace(/[^a-zA-Z0-9.\-]/g, '_').slice(-100);
+}
+
+interface UploadedAttachment {
+  url: string;
+  filename: string;
+  buffer: Buffer;
+  contentType: string;
+}
+
+// Best-effort per file: a single failed upload (e.g. a transient Blob error)
+// shouldn't sink the whole submission — the submitter's message is still the
+// primary thing being captured. Failures are logged and the file is simply
+// omitted from both the DB record and the email.
+async function uploadAttachments(files: File[]): Promise<UploadedAttachment[]> {
+  const uploaded: UploadedAttachment[] = [];
+  for (const [index, file] of files.entries()) {
+    try {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const pathname = `contact-uploads/${Date.now()}-${index}-${sanitizeFilename(file.name)}`;
+      const blob = await put(pathname, buffer, {
+        access: 'private',
+        contentType: file.type || undefined,
+      });
+      uploaded.push({
+        url: blob.url,
+        filename: file.name,
+        buffer,
+        contentType: file.type || 'application/octet-stream',
+      });
+    } catch (error) {
+      console.error('[contact] Attachment upload failed for', file.name, error);
+    }
+  }
+  return uploaded;
+}
+
 export const POST: APIRoute = async ({ request }) => {
-  let body: unknown;
+  let formData: FormData;
   try {
-    body = await request.json();
+    formData = await request.formData();
   } catch {
-    return json({ ok: false, error: 'Invalid JSON body' }, 400);
+    return json({ ok: false, error: 'Invalid form data' }, 400);
   }
 
-  const result = validateContactSubmission(body);
+  const result = validateContactSubmission({
+    name: formData.get('name'),
+    email: formData.get('email'),
+    message: formData.get('message'),
+    website: formData.get('website'),
+    locale: formData.get('locale'),
+  });
   if (!result.valid) {
     return json({ ok: false, error: result.errors.join('; ') }, 400);
   }
@@ -43,6 +91,15 @@ export const POST: APIRoute = async ({ request }) => {
   // bot it was caught — standard honeypot practice.
   if (honeypot) {
     return json({ ok: true }, 200);
+  }
+
+  // Files can't go through JSON — the client sends real multipart/form-data,
+  // parsed above. Re-validate server-side: the client's own check (same pure
+  // function) is UX only, never trusted alone.
+  const files = formData.getAll('files').filter((entry): entry is File => entry instanceof File && entry.size > 0);
+  const attachmentsResult = validateAttachments(files.map((f) => ({ name: f.name, size: f.size, type: f.type })));
+  if (!attachmentsResult.valid) {
+    return json({ ok: false, error: attachmentsResult.errors.join('; ') }, 400);
   }
 
   if (!process.env.DATABASE_URL) {
@@ -57,11 +114,18 @@ export const POST: APIRoute = async ({ request }) => {
   // other static page at build time.
   const sql = neon(process.env.DATABASE_URL);
 
+  // Blob store (private access) is populated before the DB write so the
+  // stored `attachment_urls` reflects exactly what actually made it to
+  // storage — a file that fails to upload is silently dropped (see
+  // uploadAttachments), never referenced by a URL that doesn't exist.
+  const uploaded = await uploadAttachments(files);
+  const attachmentUrls = uploaded.map((u) => u.url);
+
   let dbOk = false;
   try {
     await sql`
-      INSERT INTO contact_submissions (name, email, message, locale)
-      VALUES (${name}, ${email}, ${message}, ${locale})
+      INSERT INTO contact_submissions (name, email, message, locale, attachment_urls)
+      VALUES (${name}, ${email}, ${message}, ${locale}, ${attachmentUrls})
     `;
     dbOk = true;
   } catch (error) {
@@ -72,12 +136,21 @@ export const POST: APIRoute = async ({ request }) => {
   if (process.env.RESEND_API_KEY) {
     try {
       const resend = new Resend(process.env.RESEND_API_KEY);
+      // The Blob store is private (deliberate — these are unsolicited
+      // uploads from strangers), so a bare URL wouldn't be openable from the
+      // email without the read token anyway. Attach the actual file content
+      // (already buffered above for the upload) instead of just linking.
       const { error } = await resend.emails.send({
         from: FROM_EMAIL,
         to: NOTIFY_EMAIL,
         replyTo: email,
         subject: `New portfolio contact from ${name}`,
         text: `Name: ${name}\nEmail: ${email}\nLocale: ${locale}\n\n${message}`,
+        attachments: uploaded.map((u) => ({
+          content: u.buffer,
+          filename: u.filename,
+          contentType: u.contentType,
+        })),
       });
       if (error) {
         console.error('[contact] Resend send failed:', error);
