@@ -98,8 +98,16 @@
   "blog.backToIndex": "Volver al blog",
 
   "contact.heading": "Contacto",
-  "contact.emailCta": "Escríbeme",
+  "contact.emailCta": "Email",
   "contact.linkedinCta": "Conectemos en LinkedIn",
   "contact.whatsappCta": "Escríbeme por WhatsApp",
-  "contact.closeCta": "Cerrar"
+  "contact.closeCta": "Cerrar",
+  "contact.formNameLabel": "Nombre",
+  "contact.formEmailLabel": "Correo electrónico",
+  "contact.formMessageLabel": "Mensaje",
+  "contact.formSubmit": "Enviar mensaje",
+  "contact.formSubmitPending": "Enviando…",
+  "contact.formSuccess": "¡Mensaje enviado! Te responderé pronto.",
+  "contact.formError": "No se pudo enviar el mensaje. Intenta de nuevo o escríbeme directamente.",
+  "contact.otherChannels": "O contáctame directamente"
 }
