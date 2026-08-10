@@ -1,0 +1,43 @@
+// Astro 5 Content Layer collections (design.md §4 — schemas are final, not
+// indicative). `blog` = Markdown per-locale; `experience` = JSON per-locale.
+// Locale is derived from the entry id prefix (`es/…`), never a frontmatter
+// field — see design.md §4 rationale.
+import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
+
+const TAG = z.enum(['ia', 'data-engineering', 'bim', 'geointeligencia', 'carrera']);
+
+const blog = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string().max(120),
+      description: z.string().max(200),
+      pubDate: z.coerce.date(),
+      updatedDate: z.coerce.date().optional(),
+      tags: z.array(TAG).min(1),
+      heroImage: image().optional(),
+      draft: z.boolean().default(false),
+      // readingTime + TOC are COMPUTED at render, never stored.
+    }),
+});
+
+const experience = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/experience' }),
+  schema: z.object({
+    company: z.string(),
+    role: z.string(),
+    location: z.string(),
+    startDate: z.coerce.date(),
+    endDate: z.coerce.date().optional(), // absent ⇒ ongoing
+    current: z.boolean().default(false),
+    group: z.enum(['recent', 'early']), // 'early' ⇒ collapsed accordion
+    highlights: z.array(z.string()),
+    stack: z.array(z.string()).default([]),
+    featured: z.boolean().default(false), // shown in Home "Experiencia destacada"
+    order: z.number().optional(), // manual tiebreak; else sort by startDate desc
+    // NO `image` field — every entry (incl. Teatrino) is text-only (proposal O7, design §10).
+  }),
+});
+
+export const collections = { blog, experience };
