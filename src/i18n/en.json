@@ -100,5 +100,6 @@
   "contact.heading": "Contact",
   "contact.emailCta": "Email me",
   "contact.linkedinCta": "Connect on LinkedIn",
-  "contact.whatsappCta": "Message me on WhatsApp"
+  "contact.whatsappCta": "Message me on WhatsApp",
+  "contact.closeCta": "Close"
 }

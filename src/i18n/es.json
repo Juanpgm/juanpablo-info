@@ -100,5 +100,6 @@
   "contact.heading": "Contacto",
   "contact.emailCta": "Escríbeme",
   "contact.linkedinCta": "Conectemos en LinkedIn",
-  "contact.whatsappCta": "Escríbeme por WhatsApp"
+  "contact.whatsappCta": "Escríbeme por WhatsApp",
+  "contact.closeCta": "Cerrar"
 }

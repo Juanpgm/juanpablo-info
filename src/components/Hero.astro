@@ -2,7 +2,12 @@
 // Home hero (proposal.md §4.1, design §3). Confident display typography
 // (Fraunces via h1), the mandatory "puentes entre..." hook, and the two
 // primary CTAs (Ver experiencia / Descargar CV) + location.
+//
+// The "Contactar" CTA opens ContactModal (post-launch fast-follow) instead
+// of scrolling to a dedicated Home section — mounted here since Hero is its
+// only current trigger (Home-only), no need for a site-wide mount point.
 import { getRelativeLocaleUrl } from 'astro:i18n';
+import ContactModal from './ContactModal.astro';
 import { t, useLocale } from '../i18n';
 
 const locale = useLocale(Astro.currentLocale);
@@ -16,9 +21,11 @@ const locale = useLocale(Astro.currentLocale);
     <a href={getRelativeLocaleUrl(locale, 'experience')} class="btn btn-lg">
       {t(locale, 'hero.ctaExperience')}
     </a>
-    <a href="#contact-heading" class="btn btn-lg btn-outline">
+    <button type="button" class="btn btn-lg btn-outline" data-open-contact-modal>
       {t(locale, 'hero.ctaContact')}
-    </a>
+    </button>
     <span class="hero-location">{t(locale, 'hero.location')}</span>
   </div>
 </section>
+
+<ContactModal locale={locale} />

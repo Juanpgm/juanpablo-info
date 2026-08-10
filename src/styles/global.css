@@ -1029,12 +1029,77 @@ h3 {
   color: var(--color-primary);
 }
 
-/* Contact section CTAs */
+/* Contact CTAs — shared by the removed Home Contact section's markup, now
+   reused as-is inside ContactModal's <dialog>. */
 .contact-actions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-sm);
   margin-top: var(--space-md);
+}
+
+/* Contact modal (post-launch fast-follow, replaces the bottom-of-page Home
+   Contact section). Native <dialog> — sizing/spacing/transition here, no
+   focus-trap CSS needed (the platform handles it). `@starting-style` gives a
+   subtle native open/close transition; falls back to instant show/hide on
+   browsers that don't support it (progressive enhancement, no fallback code
+   needed). */
+dialog#contact-modal {
+  width: min(28rem, calc(100vw - var(--space-lg)));
+  margin: auto;
+  padding: var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  /* Closed state (base selector). `[open]` below is the visible state — this
+     mirrors MDN's documented dialog entry/exit transition recipe. */
+  opacity: 0;
+  transform: translateY(0.5rem);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    overlay 0.2s ease allow-discrete,
+    display 0.2s ease allow-discrete;
+}
+
+dialog#contact-modal[open] {
+  opacity: 1;
+  transform: none;
+}
+
+@starting-style {
+  dialog#contact-modal[open] {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}
+
+dialog#contact-modal::backdrop {
+  background-color: rgb(0 0 0 / 0%);
+  transition: background-color 0.2s ease allow-discrete;
+}
+
+dialog#contact-modal[open]::backdrop {
+  background-color: rgb(0 0 0 / 0.5);
+}
+
+@starting-style {
+  dialog#contact-modal[open]::backdrop {
+    background-color: rgb(0 0 0 / 0%);
+  }
+}
+
+.contact-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.contact-modal__header h2 {
+  margin: 0;
 }
 
 .post-back-link {
@@ -1100,5 +1165,12 @@ h3 {
   ::view-transition-old(*),
   ::view-transition-new(*) {
     animation: none !important;
+  }
+
+  /* `::backdrop` isn't matched by the `*` universal selector above (it's a
+     separate pseudo-element root, not a normal element) — neutralize its
+     transition explicitly instead of relying on the guard's automatic reach. */
+  dialog#contact-modal::backdrop {
+    transition-duration: 0.01ms !important;
   }
 }
