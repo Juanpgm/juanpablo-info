@@ -12,7 +12,19 @@ interface Props {
 }
 
 const { locale } = Astro.props;
-const TAGS = ['ia', 'data-engineering', 'bim', 'geointeligencia', 'carrera'] as const;
+const TAGS = [
+  'ia',
+  'data-engineering',
+  'bim',
+  'geointeligencia',
+  'carrera',
+  'sismica',
+  'geotecnia',
+  'hidraulica',
+  'estructural',
+  'normativa',
+  'gestion-riesgo',
+] as const;
 ---
 
 <div class="tag-filter" data-tag-filter role="group" aria-label={t(locale, 'blog.heading')}>

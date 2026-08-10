@@ -9,17 +9,32 @@ interface Props {
   // Logical page path with no locale prefix, e.g. '' (home), 'about'.
   path?: string;
   // 'person' emits the Person JSON-LD (design §8) — Home + About only.
+  // 'article' emits BlogPosting — blog posts only (post-launch fast-follow).
   // Every other page emits a minimal WebPage/WebSite schema instead.
-  jsonLd?: 'person' | 'webpage';
+  jsonLd?: 'person' | 'webpage' | 'article';
   // OG image, site-relative path. Defaults to the single pre-rendered
   // branded PNG (design A8 — no per-post dynamic OG pipeline at launch).
   // ponytail: if per-post OG images become desirable, generate them at
   // build time (satori/resvg) inside each getStaticPaths and pass a
   // per-post path here instead of widening this default.
   ogImage?: string;
+  // Only used when jsonLd === 'article' — a post's publish/update dates and
+  // its own heroImage (site-relative src), for BlogPosting structured data.
+  pubDate?: Date;
+  updatedDate?: Date;
+  heroImageUrl?: string;
 }
 
-const { title, description, path = '', jsonLd = 'webpage', ogImage = '/og/default.png' } = Astro.props;
+const {
+  title,
+  description,
+  path = '',
+  jsonLd = 'webpage',
+  ogImage = '/og/default.png',
+  pubDate,
+  updatedDate,
+  heroImageUrl,
+} = Astro.props;
 const locale = Astro.currentLocale ?? 'es';
 const canonical = getAbsoluteLocaleUrl(locale, path);
 const absoluteOgImage = new URL(ogImage, Astro.site).toString();
@@ -50,6 +65,25 @@ const webPageJsonLd = {
   url: canonical,
   isPartOf: { '@type': 'WebSite', name: site.name, url: Astro.site?.toString() },
 };
+
+// BlogPosting structured data (post-launch fast-follow) — search engines use
+// this for rich-result eligibility (author, dates, headline image). Only
+// built when jsonLd === 'article'; pubDate/updatedDate/heroImageUrl come
+// straight from the post's own frontmatter, no extra data source.
+const blogPostingJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description,
+  url: canonical,
+  mainEntityOfPage: canonical,
+  ...(pubDate && { datePublished: pubDate.toISOString() }),
+  ...(updatedDate && { dateModified: updatedDate.toISOString() }),
+  ...(heroImageUrl && { image: new URL(heroImageUrl, Astro.site).toString() }),
+  author: { '@type': 'Person', name: site.name, url: Astro.site?.toString() },
+};
+
+const jsonLdPayload = jsonLd === 'person' ? personJsonLd : jsonLd === 'article' ? blogPostingJsonLd : webPageJsonLd;
 ---
 
 <title>{title}</title>
@@ -66,4 +100,4 @@ const webPageJsonLd = {
 
 <Hreflang path={path} />
 
-<script type="application/ld+json" set:html={JSON.stringify(jsonLd === 'person' ? personJsonLd : webPageJsonLd)} />
+<script type="application/ld+json" set:html={JSON.stringify(jsonLdPayload)} />

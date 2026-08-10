@@ -5,7 +5,19 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
-const TAG = z.enum(['ia', 'data-engineering', 'bim', 'geointeligencia', 'carrera']);
+const TAG = z.enum([
+  'ia',
+  'data-engineering',
+  'bim',
+  'geointeligencia',
+  'carrera',
+  'sismica',
+  'geotecnia',
+  'hidraulica',
+  'estructural',
+  'normativa',
+  'gestion-riesgo',
+]);
 
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),

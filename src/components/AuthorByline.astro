@@ -1,0 +1,60 @@
+---
+// Blog post author byline (post-launch fast-follow). Reads `site.ts`
+// directly rather than a per-post frontmatter field — there is exactly one
+// author site-wide, so a frontmatter field would just duplicate identical
+// data across every post (YAGNI; add a frontmatter override only if a guest
+// author ever appears).
+import { Image } from 'astro:assets';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import profilePhoto from '../assets/profile-photo.jpg';
+import { site } from '../data/site';
+import { t, useLocale } from '../i18n';
+
+const locale = useLocale(Astro.currentLocale);
+const homeHref = getRelativeLocaleUrl(locale, '');
+---
+
+<div class="author-byline">
+  <Image src={profilePhoto} alt="" width={48} height={48} class="author-byline__photo" />
+  <p class="author-byline__text">
+    {t(locale, 'blog.writtenBy')}{' '}
+    <a href={homeHref} class="author-byline__name">{site.name}</a>
+    <span class="author-byline__role">{site.jobTitle}</span>
+  </p>
+</div>
+
+<style>
+  .author-byline {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-top: var(--space-sm);
+  }
+
+  .author-byline__photo {
+    border-radius: 50%;
+    flex-shrink: 0;
+    filter: grayscale(1) contrast(1.05);
+  }
+
+  .author-byline__text {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+    line-height: 1.4;
+  }
+
+  .author-byline__name {
+    color: var(--color-ink);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .author-byline__name:hover,
+  .author-byline__name:focus-visible {
+    color: var(--color-primary);
+  }
+
+  .author-byline__role {
+    display: block;
+  }
+</style>
