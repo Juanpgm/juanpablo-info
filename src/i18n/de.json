@@ -39,7 +39,11 @@
   "about.language.de": "Deutsch — Grundkenntnisse/Mittelstufe",
   "about.photoAlt": "Profilfoto (Platzhalter — echtes Foto ausstehend)",
   "about.codeSnippetHeading": "Code statt nur Worte",
-  "about.codeSnippetLabel": "Illustrativer Ausschnitt — nicht direkt ausführbar",
+  "about.codeSnippetLabel": "Echte Ausschnitte aus meinen eigenen Repositories — hier nicht direkt ausführbar, aber der Code ist authentisch.",
+  "about.codeCarouselPrev": "Vorheriger Ausschnitt",
+  "about.codeCarouselNext": "Nächster Ausschnitt",
+  "about.codeCarouselTablistLabel": "Code-Ausschnitt auswählen",
+  "about.codeCarouselGoTo": "Zum Ausschnitt von",
 
   "skills.heading": "Zwei Welten, die zusammenfinden",
   "skills.aiColumn": "KI · Daten · Software",

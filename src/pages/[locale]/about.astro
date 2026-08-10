@@ -3,7 +3,7 @@
 // certifications, languages (proposal §3.2).
 import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import CodeSnippet from '../../components/CodeSnippet.astro';
+import CodeCarousel from '../../components/CodeCarousel.astro';
 import { t, useLocale } from '../../i18n';
 import { education, certifications } from '../../data/education';
 // PLACEHOLDER photo — real portrait pending, user-supplied (see
@@ -41,7 +41,7 @@ const yearRange = (start: number, end?: number) => (end ? `${start}–${end}` : 
     <div class="section-header">
       <h2 id="code-snippet-heading">{t(locale, 'about.codeSnippetHeading')}</h2>
     </div>
-    <CodeSnippet locale={locale} />
+    <CodeCarousel locale={locale} />
   </section>
 
   <section class="section" data-reveal aria-labelledby="education-heading">
