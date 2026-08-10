@@ -4,7 +4,6 @@
 // primary CTAs (Ver experiencia / Descargar CV) + location.
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import { t, useLocale } from '../i18n';
-import { cvHref } from '../lib/cv';
 
 const locale = useLocale(Astro.currentLocale);
 ---
@@ -16,14 +15,6 @@ const locale = useLocale(Astro.currentLocale);
   <div class="hero-actions">
     <a href={getRelativeLocaleUrl(locale, 'experience')} class="btn btn-lg">
       {t(locale, 'hero.ctaExperience')}
-    </a>
-    <a
-      href={cvHref(locale)}
-      download
-      class="btn btn-lg btn-outline"
-      aria-label={t(locale, 'hero.ctaCvAriaLabel')}
-    >
-      {t(locale, 'hero.ctaCv')}
     </a>
     <a href="#contact-heading" class="btn btn-lg btn-outline">
       {t(locale, 'hero.ctaContact')}
