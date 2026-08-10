@@ -1,0 +1,14 @@
+{
+  "company": "Megatech LTDA",
+  "role": "Ingeniero Civil Junior",
+  "location": "Ibagué, Colombia",
+  "startDate": "2014-06-01",
+  "endDate": "2014-12-01",
+  "current": false,
+  "group": "early",
+  "order": 1,
+  "highlights": [
+    "Apoyo en diseño y presupuesto de proyectos de infraestructura vial y urbana."
+  ],
+  "stack": ["AutoCAD"]
+}

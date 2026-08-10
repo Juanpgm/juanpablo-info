@@ -1,0 +1,16 @@
+{
+  "company": "Naska Digital",
+  "role": "Especialista BIM / Instructor",
+  "location": "Cali, Colombia",
+  "startDate": "2024-01-01",
+  "endDate": "2024-06-01",
+  "current": false,
+  "group": "recent",
+  "featured": true,
+  "order": 4,
+  "highlights": [
+    "Formé equipos de diseño en flujos de trabajo BIM 3D/4D bajo estándares europeos, desde modelado hasta coordinación de disciplinas.",
+    "Desarrollé material de entrenamiento y acompañé la adopción de Revit y Navisworks en proyectos de infraestructura en curso."
+  ],
+  "stack": ["Revit", "Navisworks", "BIM"]
+}

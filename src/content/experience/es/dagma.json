@@ -1,0 +1,17 @@
+{
+  "company": "DAGMA (Alcaldía de Santiago de Cali)",
+  "role": "Consultor de Soluciones TI/IA",
+  "location": "Cali, Colombia",
+  "startDate": "2026-01-01",
+  "endDate": "2026-06-30",
+  "current": false,
+  "group": "recent",
+  "featured": true,
+  "order": 1,
+  "highlights": [
+    "Lideré el diseño de la arquitectura DAGMA-360 para integrar datos ambientales dispersos (calidad del aire, biodiversidad, alertas tempranas) en una plataforma única de monitoreo territorial.",
+    "Desarrollé el módulo de inteligencia geoespacial SIMAP para el seguimiento de coberturas vegetales y biodiversidad urbana sobre imágenes satelitales.",
+    "Diseñé una infraestructura de IA local (modelos autoalojados) para reducir la dependencia de APIs externas y proteger la soberanía de los datos ambientales del municipio."
+  ],
+  "stack": ["GCP", "GIS", "Python", "RAG"]
+}

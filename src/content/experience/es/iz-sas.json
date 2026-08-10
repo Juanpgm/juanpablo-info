@@ -1,0 +1,14 @@
+{
+  "company": "I.Z S.A.S.",
+  "role": "Auxiliar de Ingeniería",
+  "location": "Ibagué, Colombia",
+  "startDate": "2014-01-01",
+  "endDate": "2014-06-01",
+  "current": false,
+  "group": "early",
+  "order": 2,
+  "highlights": [
+    "Seguimiento técnico y de cantidades de obra en proyectos de construcción en ejecución."
+  ],
+  "stack": ["AutoCAD"]
+}

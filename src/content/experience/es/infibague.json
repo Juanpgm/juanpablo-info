@@ -1,0 +1,16 @@
+{
+  "company": "INFIBAGUE (Instituto de Financiamiento, Promoción y Desarrollo de Ibagué)",
+  "role": "Ingeniero Civil — Alumbrado, Urbanismo y PEP",
+  "location": "Ibagué, Colombia",
+  "startDate": "2015-01-01",
+  "endDate": "2018-06-01",
+  "current": false,
+  "group": "recent",
+  "order": 8,
+  "highlights": [
+    "Durante cerca de 3.5 años, participé en proyectos de alumbrado público y espacio urbano, desde el diseño hasta la interventoría de obra.",
+    "Apoyé la formulación de proyectos dentro del Plan Estratégico de Proyectos (PEP) del municipio, articulando diseño técnico con priorización de inversión pública.",
+    "Elaboré presupuestos, especificaciones técnicas y seguimiento de cronograma para obras de infraestructura urbana."
+  ],
+  "stack": ["AutoCAD", "GIS"]
+}

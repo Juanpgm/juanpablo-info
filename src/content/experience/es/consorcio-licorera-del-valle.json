@@ -1,0 +1,15 @@
+{
+  "company": "Consorcio Licorera del Valle",
+  "role": "Coordinador BIM",
+  "location": "Valle del Cauca, Colombia",
+  "startDate": "2022-01-01",
+  "endDate": "2022-12-01",
+  "current": false,
+  "group": "recent",
+  "order": 6,
+  "highlights": [
+    "Coordiné la implementación BIM del proyecto, integrando los modelos de arquitectura, estructura e instalaciones para detección temprana de interferencias.",
+    "Definí el plan de ejecución BIM (BEP) y los estándares de modelado del consorcio."
+  ],
+  "stack": ["Revit", "Navisworks", "BIM"]
+}

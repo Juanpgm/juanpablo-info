@@ -1,0 +1,15 @@
+{
+  "company": "Juegos Nacionales y Paranacionales Eje Cafetero 2023",
+  "role": "Coordinador BIM",
+  "location": "Eje Cafetero, Colombia",
+  "startDate": "2021-06-01",
+  "endDate": "2022-01-01",
+  "current": false,
+  "group": "recent",
+  "order": 7,
+  "highlights": [
+    "Coordiné la modelación BIM de la infraestructura deportiva construida y adecuada para los Juegos Nacionales, apoyando la planeación de obra entre varias sedes.",
+    "Programé el avance de obra en el modelo (4D) para anticipar cuellos de botella frente al cronograma fijo del evento."
+  ],
+  "stack": ["BIM", "Revit", "MS Project"]
+}
