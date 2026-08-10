@@ -266,6 +266,19 @@ h3 {
   gap: 2rem;
 }
 
+/* Shiki dual-theme code blocks (astro.config.mjs shikiConfig: defaultColor:
+ * false) emit --shiki-dark/--shiki-dark-bg custom properties but need this
+ * override to actually swap on our manual [data-theme] toggle instead of the
+ * OS-level prefers-color-scheme Astro defaults to. */
+[data-theme='dark'] pre.astro-code,
+[data-theme='dark'] pre.astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
 @media (min-width: 64rem) {
   .post-body {
     grid-template-columns: minmax(0, 1fr) 16rem;

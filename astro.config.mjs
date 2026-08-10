@@ -21,7 +21,11 @@ export default defineConfig({
     sitemap({ i18n: { defaultLocale: 'es', locales: { es: 'es', en: 'en', de: 'de' } } }),
   ],
   markdown: {
-    shikiConfig: { themes: { light: 'github-light', dark: 'github-dark' }, wrap: true },
+    // defaultColor: false — the site's theme is manual (`data-theme` attribute,
+    // see global.css), not OS `prefers-color-scheme`. Without this, Astro
+    // defaults Shiki's dual-theme output to the media query and code blocks
+    // never actually switch when the user toggles the theme button.
+    shikiConfig: { themes: { light: 'github-light', dark: 'github-dark' }, defaultColor: false, wrap: true },
   },
   vite: { plugins: [tailwindcss()] },
 });
