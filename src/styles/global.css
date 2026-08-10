@@ -1105,9 +1105,14 @@ h3 {
    reused as-is inside ContactModal's <dialog>. */
 .contact-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: stretch;
   gap: var(--space-sm);
   margin-top: var(--space-md);
+}
+
+.contact-actions .btn {
+  width: 100%;
 }
 
 /* Contact modal (post-launch fast-follow, replaces the bottom-of-page Home
@@ -1121,9 +1126,10 @@ dialog#contact-modal {
   margin: auto;
   padding: var(--space-lg);
   border: 1px solid var(--color-border);
-  border-radius: 0.75rem;
+  border-radius: 1rem;
   background-color: var(--color-surface);
   color: var(--color-ink);
+  box-shadow: 0 24px 48px -12px rgb(0 0 0 / 0.35);
   /* Closed state (base selector). `[open]` below is the visible state — this
      mirrors MDN's documented dialog entry/exit transition recipe. */
   opacity: 0;
@@ -1154,6 +1160,8 @@ dialog#contact-modal::backdrop {
 
 dialog#contact-modal[open]::backdrop {
   background-color: rgb(0 0 0 / 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 @starting-style {
