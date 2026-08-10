@@ -18,7 +18,7 @@ const posts = entries
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 ---
 
-<BaseLayout title={t(locale, 'blog.heading')} description={t(locale, 'hero.tagline')} path="blog">
+<BaseLayout title={t(locale, 'blog.heading')} description={t(locale, 'blog.metaDescription')} path="blog">
   <section class="section" data-reveal aria-labelledby="blog-heading">
     <h1 id="blog-heading">{t(locale, 'blog.heading')}</h1>
     <TagFilter locale={locale} />

@@ -64,11 +64,11 @@ Chain strategy: pending
 
 ## Phase 4: SEO / Accessibility / Performance
 
-- [ ] 4.1 Wire `SeoHead`/`Hreflang` into `BaseLayout`; JSON-LD `Person` on Home/About, minimal `WebSite`/`WebPage` elsewhere.
-- [ ] 4.2 Verify `@astrojs/sitemap` i18n output; add `public/robots.txt`.
-- [ ] 4.3 Pre-render OG PNGs into `public/og/`, wire into `SeoHead`.
-- [ ] 4.4 A11y pass: landmarks, one `<h1>`/page, focus rings, `aria-current`; verify AA contrast both themes (R4).
-- [ ] 4.5 `prefers-reduced-motion` CSS guard + `<ClientRouter />` (Chromium-only, R5); convert raster images to `astro:assets`.
+- [x] 4.1 Wire `SeoHead`/`Hreflang` into `BaseLayout`; JSON-LD `Person` on Home/About, minimal `WebSite`/`WebPage` elsewhere.
+- [x] 4.2 Verify `@astrojs/sitemap` i18n output; add `public/robots.txt`.
+- [x] 4.3 Pre-render OG PNGs into `public/og/`, wire into `SeoHead`.
+- [x] 4.4 A11y pass: landmarks, one `<h1>`/page, focus rings, `aria-current`; verify AA contrast both themes (R4).
+- [x] 4.5 `prefers-reduced-motion` CSS guard + `<ClientRouter />` (Chromium-only, R5); convert raster images to `astro:assets`.
 
 ## Phase 5: GitHub Build-Time Integration
 

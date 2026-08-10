@@ -10,10 +10,11 @@ interface Props {
   description: string;
   // Logical page path with no locale prefix, e.g. '' (home), 'about'.
   path?: string;
-  isHome?: boolean;
+  // 'person' (Home/About) vs 'webpage' (every other page) JSON-LD — see SeoHead.
+  jsonLd?: 'person' | 'webpage';
 }
 
-const { title, description, path = '', isHome = false } = Astro.props;
+const { title, description, path = '', jsonLd = 'webpage' } = Astro.props;
 const locale = Astro.currentLocale ?? 'es';
 ---
 
@@ -22,7 +23,7 @@ const locale = Astro.currentLocale ?? 'es';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <SeoHead title={title} description={description} path={path} isHome={isHome} />
+    <SeoHead title={title} description={description} path={path} jsonLd={jsonLd} />
     <ClientRouter />
 
     <!--

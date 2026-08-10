@@ -1,20 +1,31 @@
 ---
+// aria-label localized via i18n (task 4.4 fix — was hardcoded English before,
+// leaving `header.languageSelectorLabel` unused). `context` disambiguates the
+// two instances (Header + Footer both render this) so a screen-reader
+// landmark list doesn't show two identically-named nav regions.
 import { switchLocalePath, LOCALES } from '../lib/locale-path';
+import { t, useLocale } from '../i18n';
 
-const currentLocale = Astro.currentLocale ?? 'es';
+interface Props {
+  context?: string;
+}
+
+const { context } = Astro.props;
+const locale = useLocale(Astro.currentLocale);
 const currentPath = Astro.url.pathname;
+const label = context ? `${t(locale, 'header.languageSelectorLabel')} (${context})` : t(locale, 'header.languageSelectorLabel');
 ---
 
-<nav aria-label="Language selector" class="lang-selector">
+<nav aria-label={label} class="lang-selector">
   {
-    LOCALES.map((locale) => (
+    LOCALES.map((loc) => (
       <a
-        href={switchLocalePath(currentPath, locale)}
+        href={switchLocalePath(currentPath, loc)}
         class="lang-link nav-link"
-        aria-current={locale === currentLocale ? 'true' : undefined}
-        lang={locale}
+        aria-current={loc === locale ? 'true' : undefined}
+        lang={loc}
       >
-        {locale.toUpperCase()}
+        {loc.toUpperCase()}
       </a>
     ))
   }

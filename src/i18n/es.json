@@ -57,6 +57,7 @@
   "skills.civil.projectManagement": "Gerencia de proyectos de infraestructura pública",
 
   "experience.heading": "Experiencia",
+  "experience.metaDescription": "Trayectoria profesional de Juan Pablo Guzmán Martínez: más de una década en ingeniería civil e infraestructura, seguida de arquitectura de datos e IA para el sector público.",
   "experience.featuredHeading": "Experiencia destacada",
   "experience.viewAll": "Ver toda",
   "experience.current": "Actual",
@@ -65,12 +66,14 @@
   "experience.stackLabel": "Stack",
 
   "projects.heading": "Proyectos",
+  "projects.metaDescription": "Proyectos de código abierto e ilustrativos en ciencia de datos, IA y geointeligencia aplicados al sector público, con repositorios en GitHub.",
   "projects.viewAll": "Ver todos",
   "projects.exampleBadge": "Ejemplo",
   "projects.staleBadge": "Datos no actualizados",
   "projects.viewRepo": "Ver repositorio",
 
   "blog.heading": "Blog",
+  "blog.metaDescription": "Artículos sobre inteligencia artificial, ingeniería de datos, BIM y la transición entre ingeniería civil y ciencia de datos.",
   "blog.latestHeading": "Del blog",
   "blog.viewAll": "Ver blog",
   "blog.readMore": "Leer más",

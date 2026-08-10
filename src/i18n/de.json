@@ -57,6 +57,7 @@
   "skills.civil.projectManagement": "Projektmanagement für öffentliche Infrastruktur",
 
   "experience.heading": "Erfahrung",
+  "experience.metaDescription": "Beruflicher Werdegang von Juan Pablo Guzmán Martínez: über ein Jahrzehnt im Bauingenieurwesen und in der Infrastruktur, gefolgt von Daten- und KI-Architektur für den öffentlichen Sektor.",
   "experience.featuredHeading": "Ausgewählte Erfahrung",
   "experience.viewAll": "Alle ansehen",
   "experience.current": "Aktuell",
@@ -65,12 +66,14 @@
   "experience.stackLabel": "Stack",
 
   "projects.heading": "Projekte",
+  "projects.metaDescription": "Open-Source- und illustrative Projekte in Data Science, KI und Geointelligenz für den öffentlichen Sektor, mit GitHub-Repositories.",
   "projects.viewAll": "Alle ansehen",
   "projects.exampleBadge": "Beispiel",
   "projects.staleBadge": "Daten nicht aktualisiert",
   "projects.viewRepo": "Repository ansehen",
 
   "blog.heading": "Blog",
+  "blog.metaDescription": "Artikel über künstliche Intelligenz, Data Engineering, BIM und den Übergang vom Bauingenieurwesen zur Data Science.",
   "blog.latestHeading": "Aus dem Blog",
   "blog.viewAll": "Zum Blog",
   "blog.readMore": "Mehr lesen",

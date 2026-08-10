@@ -8,13 +8,21 @@ interface Props {
   description: string;
   // Logical page path with no locale prefix, e.g. '' (home), 'about'.
   path?: string;
-  // Emits the Person JSON-LD (design §8) — Home only.
-  isHome?: boolean;
+  // 'person' emits the Person JSON-LD (design §8) — Home + About only.
+  // Every other page emits a minimal WebPage/WebSite schema instead.
+  jsonLd?: 'person' | 'webpage';
+  // OG image, site-relative path. Defaults to the single pre-rendered
+  // branded PNG (design A8 — no per-post dynamic OG pipeline at launch).
+  // ponytail: if per-post OG images become desirable, generate them at
+  // build time (satori/resvg) inside each getStaticPaths and pass a
+  // per-post path here instead of widening this default.
+  ogImage?: string;
 }
 
-const { title, description, path = '', isHome = false } = Astro.props;
+const { title, description, path = '', jsonLd = 'webpage', ogImage = '/og/default.png' } = Astro.props;
 const locale = Astro.currentLocale ?? 'es';
 const canonical = getAbsoluteLocaleUrl(locale, path);
+const absoluteOgImage = new URL(ogImage, Astro.site).toString();
 
 const personJsonLd = {
   '@context': 'https://schema.org',
@@ -33,6 +41,15 @@ const personJsonLd = {
   knowsLanguage: site.knowsLanguage,
   knowsAbout: site.knowsAbout,
 };
+
+const webPageJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: title,
+  description,
+  url: canonical,
+  isPartOf: { '@type': 'WebSite', name: site.name, url: Astro.site?.toString() },
+};
 ---
 
 <title>{title}</title>
@@ -43,8 +60,10 @@ const personJsonLd = {
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonical} />
+<meta property="og:image" content={absoluteOgImage} />
 <meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content={absoluteOgImage} />
 
 <Hreflang path={path} />
 
-{isHome && <script type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />}
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd === 'person' ? personJsonLd : webPageJsonLd)} />

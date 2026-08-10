@@ -3,13 +3,24 @@
 // paint on every navigation via `astro:after-swap`). This component only owns
 // the toggle button; `transition:persist` keeps the same DOM node (and its
 // listener) across View Transitions instead of a fresh one being swapped in.
+//
+// aria-label reflects the action the button performs next (accessibility
+// pass, task 4.4) — computed client-side since the visitor's current theme
+// isn't known at build/SSR time.
+import { t, useLocale } from '../i18n';
+
+const locale = useLocale(Astro.currentLocale);
+const labelToDark = t(locale, 'header.themeToggleAriaLabelToDark');
+const labelToLight = t(locale, 'header.themeToggleAriaLabelToLight');
 ---
 
 <button
   id="theme-toggle"
   type="button"
   class="theme-toggle btn-icon"
-  aria-label="Toggle color theme"
+  aria-label={labelToDark}
+  data-label-to-dark={labelToDark}
+  data-label-to-light={labelToLight}
   transition:persist
 >
   <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
@@ -24,10 +35,21 @@
 <script>
   const button = document.getElementById('theme-toggle');
 
+  function syncLabel() {
+    if (!(button instanceof HTMLElement)) return;
+    const current = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+    const nextLabel = current === 'dark' ? button.dataset.labelToLight : button.dataset.labelToDark;
+    if (nextLabel) button.setAttribute('aria-label', nextLabel);
+  }
+
   button?.addEventListener('click', () => {
     const current = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
     const next = current === 'dark' ? 'light' : 'dark';
     document.documentElement.dataset.theme = next;
     localStorage.setItem('theme', next);
+    syncLabel();
   });
+
+  syncLabel();
+  document.addEventListener('astro:after-swap', syncLabel);
 </script>

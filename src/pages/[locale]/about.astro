@@ -14,7 +14,7 @@ const locale = useLocale(Astro.params.locale);
 const yearRange = (start: number, end?: number) => (end ? `${start}–${end}` : `${start}–${t(locale, 'experience.present')}`);
 ---
 
-<BaseLayout title={t(locale, 'about.heading')} description={t(locale, 'about.summaryP1')} path="about">
+<BaseLayout title={t(locale, 'about.heading')} description={t(locale, 'about.summaryP1')} path="about" jsonLd="person">
   <section class="section" data-reveal aria-labelledby="about-heading">
     <h1 id="about-heading">{t(locale, 'about.heading')}</h1>
     <div class="prose">

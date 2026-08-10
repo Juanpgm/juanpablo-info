@@ -1,0 +1,6 @@
+# TODO: swap for the real domain once purchased/decided (design R1) — must
+# stay in sync with `site` in astro.config.mjs.
+User-agent: *
+Allow: /
+
+Sitemap: https://personal-website-placeholder.vercel.app/sitemap-index.xml

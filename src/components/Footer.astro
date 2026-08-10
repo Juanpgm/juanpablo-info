@@ -25,7 +25,7 @@ const year = new Date().getFullYear();
       <span class="footer-location">{t(locale, 'footer.location')}</span>
     </div>
 
-    <LanguageSelector />
+    <LanguageSelector context="footer" />
 
     <p class="footer-copy">© {year} {site.name} · {t(locale, 'footer.rights')}</p>
   </div>

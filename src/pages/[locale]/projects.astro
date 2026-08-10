@@ -14,7 +14,7 @@ export function getStaticPaths() {
 const locale = useLocale(Astro.params.locale);
 ---
 
-<BaseLayout title={t(locale, 'projects.heading')} description={t(locale, 'hero.tagline')} path="projects">
+<BaseLayout title={t(locale, 'projects.heading')} description={t(locale, 'projects.metaDescription')} path="projects">
   <section class="section" data-reveal aria-labelledby="projects-heading">
     <h1 id="projects-heading">{t(locale, 'projects.heading')}</h1>
     <div class="project-grid">
