@@ -93,9 +93,9 @@ Chain strategy: pending
 
 ## Phase 8: Deployment Docs
 
-- [ ] 8.1 `README.md` — setup, scripts, i18n routing note, CV note, `GITHUB_TOKEN` note; `.env.example`.
-- [ ] 8.2 Document Vercel adapter (`@astrojs/vercel/static`), confirm no custom `vercel.json` needed.
-- [ ] 8.3 Add explicit follow-up task/reminder: swap `site` in `astro.config.mjs` for the real domain once purchased (R1) — regenerates hreflang/sitemap/OG/JSON-LD from one config value.
+- [x] 8.1 `README.md` — setup, scripts, i18n routing note, CV note, `GITHUB_TOKEN` note; `.env.example`. (`.env.example` already existed from Phase 5; README now references it.)
+- [x] 8.2 Document Vercel adapter (actual `@astrojs/vercel` default export + `output: 'static'` — v11 has no `/static` subpath, corrected from the design doc's stale reference), confirm no custom `vercel.json` needed.
+- [x] 8.3 Add explicit follow-up task/reminder: swap `site` in `astro.config.mjs` for the real domain once purchased (R1) — regenerates hreflang/sitemap/OG/JSON-LD from one config value.
 
 ## Phase 9: Final Polish
 
