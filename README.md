@@ -48,28 +48,67 @@ prefix — `/es/`, `/en/`, `/de/` — including the default locale (Astro's
 
 1. Create `src/content/blog/{locale}/{slug}.md`, where `locale` is `es`,
    `en`, or `de` and `slug` becomes the URL slug (`/{locale}/blog/{slug}/`).
-2. Add frontmatter matching the schema in `src/content.config.ts`:
+   Don't create a template/example file inside `src/content/blog/` itself —
+   the content-collection loader globs every `.md` file in that directory as
+   a real post, so a template file would ship as one. This section is the
+   template.
+2. Add frontmatter matching the schema in `src/content.config.ts`. Every
+   field, explained:
 
-   ```markdown
+   ````markdown
    ---
    title: "Post title (max 120 chars)"
-   description: "Short summary for cards/SEO (max 200 chars)"
+   description: "Short summary shown on blog cards and used as the SEO meta description (max 200 chars)"
    pubDate: 2026-08-10
+   updatedDate: 2026-09-01
    tags: ["ia", "data-engineering"]
+   heroImage: "./rag-normativa-tecnica-hero.jpg"
    draft: false
    ---
 
-   Post body in Markdown starts here.
-   ```
+   ## A heading
 
+   Regular paragraph text. Blank lines separate paragraphs — Markdown, not
+   HTML, so don't add manual `<br>`s.
+
+   - A bullet point
+   - Another bullet point
+
+   > A blockquote — a callout or a quoted source, rendered with a left
+   > border and muted italic text.
+
+   Reference an API with inline code like `getStaticPaths()`, or drop a full
+   fenced code block:
+
+   ```ts
+   export function readingTimeMinutes(body: string): number {
+     return Math.max(1, Math.round(body.split(/\s+/).length / 200));
+   }
+   ```
+   ````
+
+   - `title`, `description`, `pubDate`, `tags` are **required**.
+   - `updatedDate` is **optional** — set it only when you substantively edit
+     a published post; it renders as "Actualizado el ..." next to the
+     publish date.
    - `tags` is a **closed enum** — pick one or more from:
      `ia`, `data-engineering`, `bim`, `geointeligencia`, `carrera` (defined in
      `src/content.config.ts`; a typo or new tag fails `astro check`/`build`,
      not silently). To add a new tag category, extend the `TAG` enum there
      first, and add a matching `blog.tag.<value>` key to all three
-     `src/i18n/*.json` files (used for the tag filter chip labels).
-   - `updatedDate` and `heroImage` are optional; `draft: true` keeps a post
-     out of listings while it's still being written.
+     `src/i18n/*.json` files (used for the tag filter chip labels and the
+     tag badges now shown on the post page itself).
+   - `heroImage` is **optional** — a relative path to an image file placed
+     next to the post's `.md` file (Astro's `image()` content schema helper
+     resolves and optimizes it at build time via `astro:assets`, so it
+     accepts local files only, not remote URLs). A roughly 16:9 image
+     (e.g. 1200×630) works best — it's shown as a thumbnail on blog cards
+     and as a banner at the top of the post page; a post that omits it
+     renders neither, with no broken image and no placeholder.
+   - `draft` — `true` keeps a post out of both the index listing and the
+     TOC/sitemap while it's still being written; the page still builds (so
+     you can preview it locally at its direct URL) but nothing links to it.
+     Defaults to `false`.
 3. Only the locale directories where you actually add the file will show
    that post in that locale — there's no requirement to write the same post
    in all three languages at once. Missing `en`/`de` versions fall back to
