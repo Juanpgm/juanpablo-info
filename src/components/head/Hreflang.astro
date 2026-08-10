@@ -1,0 +1,14 @@
+---
+import { getAbsoluteLocaleUrl } from 'astro:i18n';
+import { LOCALES } from '../../lib/locale-path';
+
+interface Props {
+  // Logical page path with no locale prefix, e.g. '' (home), 'about', 'blog/my-post'.
+  path?: string;
+}
+
+const { path = '' } = Astro.props;
+---
+
+{LOCALES.map((locale) => <link rel="alternate" hreflang={locale} href={getAbsoluteLocaleUrl(locale, path)} />)}
+<link rel="alternate" hreflang="x-default" href={getAbsoluteLocaleUrl('en', path)} />

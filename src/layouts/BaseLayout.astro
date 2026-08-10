@@ -1,0 +1,63 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import SeoHead from '../components/head/SeoHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  // Logical page path with no locale prefix, e.g. '' (home), 'about'.
+  path?: string;
+  isHome?: boolean;
+}
+
+const { title, description, path = '', isHome = false } = Astro.props;
+const locale = Astro.currentLocale ?? 'es';
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <SeoHead title={title} description={description} path={path} isHome={isHome} />
+    <ClientRouter />
+
+    <!--
+      No-flash theme init (design §8). Reads localStorage.theme, falling back
+      to matchMedia. Runs synchronously before first paint, and again on
+      `astro:after-swap` so View Transition navigations don't flash the
+      wrong theme before ThemeToggle's persisted button state re-applies.
+    -->
+    <script is:inline>
+      (function () {
+        function applyTheme() {
+          var stored = localStorage.getItem('theme');
+          var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.dataset.theme = theme;
+        }
+        applyTheme();
+        document.addEventListener('astro:after-swap', applyTheme);
+      })();
+    </script>
+
+    <slot name="head" />
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    <Header />
+    <main id="main-content">
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      import { initScrollReveal } from '../lib/scroll-reveal';
+      const run = () => initScrollReveal();
+      run();
+      document.addEventListener('astro:page-load', run);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,50 @@
+---
+import { getAbsoluteLocaleUrl } from 'astro:i18n';
+import Hreflang from './Hreflang.astro';
+import { site } from '../../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  // Logical page path with no locale prefix, e.g. '' (home), 'about'.
+  path?: string;
+  // Emits the Person JSON-LD (design §8) — Home only.
+  isHome?: boolean;
+}
+
+const { title, description, path = '', isHome = false } = Astro.props;
+const locale = Astro.currentLocale ?? 'es';
+const canonical = getAbsoluteLocaleUrl(locale, path);
+
+const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  jobTitle: site.jobTitle,
+  email: `mailto:${site.email}`,
+  url: Astro.site?.toString(),
+  sameAs: site.sameAs,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: site.address.locality,
+    addressRegion: site.address.region,
+    addressCountry: site.address.country,
+  },
+  knowsLanguage: site.knowsLanguage,
+  knowsAbout: site.knowsAbout,
+};
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta name="twitter:card" content="summary_large_image" />
+
+<Hreflang path={path} />
+
+{isHome && <script type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />}

@@ -1,0 +1,73 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import LanguageSelector from './LanguageSelector.astro';
+import ThemeToggle from './ThemeToggle.astro';
+
+// Minimal literal nav labels — Phase 3 (task 3.2) replaces these with the
+// typed i18n dictionary (`t()` over src/i18n/{es,en,de}.json). Kept local and
+// tiny here so PR2 doesn't reach into Phase 3's scope.
+const NAV_LABELS: Record<string, { about: string; experience: string; projects: string; blog: string }> = {
+  es: { about: 'Sobre mí', experience: 'Experiencia', projects: 'Proyectos', blog: 'Blog' },
+  en: { about: 'About', experience: 'Experience', projects: 'Projects', blog: 'Blog' },
+  de: { about: 'Über mich', experience: 'Erfahrung', projects: 'Projekte', blog: 'Blog' },
+};
+
+const locale = Astro.currentLocale ?? 'es';
+const labels = NAV_LABELS[locale] ?? NAV_LABELS.es;
+const currentPath = Astro.url.pathname;
+
+const navItems = [
+  { href: getRelativeLocaleUrl(locale, 'about'), label: labels.about },
+  { href: getRelativeLocaleUrl(locale, 'experience'), label: labels.experience },
+  { href: getRelativeLocaleUrl(locale, 'projects'), label: labels.projects },
+  { href: getRelativeLocaleUrl(locale, 'blog'), label: labels.blog },
+];
+
+// TODO(Phase 6, tasks 6.1-6.3): replace with lib/cv.ts `cvHref()` + real
+// user-supplied PDFs at public/cv/. de falls back to en (no DE CV, design §9).
+const cvLocale = locale === 'de' ? 'en' : locale;
+const cvHref = `/cv/juan-pablo-guzman-${cvLocale}.pdf`;
+---
+
+<header class="site-header" id="site-header" data-scrolled="false">
+  <div class="site-header__inner">
+    <a href={getRelativeLocaleUrl(locale, '')} class="brand">JPGM</a>
+
+    <nav aria-label="Primary" class="primary-nav">
+      <ul>
+        {
+          navItems.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="nav-link"
+                aria-current={currentPath.startsWith(item.href) ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <LanguageSelector />
+      <ThemeToggle />
+      <a href={cvHref} download class="btn btn-cv" aria-label="Download CV">CV</a>
+    </div>
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById('site-header');
+
+  function onScroll() {
+    if (!header) return;
+    header.dataset.scrolled = window.scrollY > 8 ? 'true' : 'false';
+  }
+
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+  document.addEventListener('astro:page-load', onScroll);
+</script>

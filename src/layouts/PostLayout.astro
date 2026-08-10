@@ -1,0 +1,48 @@
+---
+// Article chrome shell only (task 2.6). Full wiring — real TOC entries,
+// computed reading time (lib/reading-time.ts), real prev/next from the blog
+// collection — lands in Phase 3.
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  readingTime?: string;
+  prev?: { href: string; label: string } | null;
+  next?: { href: string; label: string } | null;
+}
+
+const { title, description, path, readingTime, prev = null, next = null } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} path={path}>
+  <article class="post" data-reveal>
+    <header class="post-header">
+      <h1>{title}</h1>
+      {readingTime && <p class="post-meta">{readingTime}</p>}
+    </header>
+
+    <div class="post-body">
+      <aside class="post-toc" aria-label="Table of contents">
+        <slot name="toc" />
+      </aside>
+      <div class="post-content">
+        <slot />
+      </div>
+    </div>
+
+    <nav class="post-pagination" aria-label="Post navigation">
+      {prev && (
+        <a href={prev.href} rel="prev" class="nav-link">
+          ← {prev.label}
+        </a>
+      )}
+      {next && (
+        <a href={next.href} rel="next" class="nav-link">
+          {next.label} →
+        </a>
+      )}
+    </nav>
+  </article>
+</BaseLayout>

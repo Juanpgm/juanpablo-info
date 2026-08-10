@@ -1,0 +1,21 @@
+---
+import { switchLocalePath, LOCALES } from '../lib/locale-path';
+
+const currentLocale = Astro.currentLocale ?? 'es';
+const currentPath = Astro.url.pathname;
+---
+
+<nav aria-label="Language selector" class="lang-selector">
+  {
+    LOCALES.map((locale) => (
+      <a
+        href={switchLocalePath(currentPath, locale)}
+        class="lang-link nav-link"
+        aria-current={locale === currentLocale ? 'true' : undefined}
+        lang={locale}
+      >
+        {locale.toUpperCase()}
+      </a>
+    ))
+  }
+</nav>

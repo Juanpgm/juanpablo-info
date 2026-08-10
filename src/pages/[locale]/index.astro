@@ -1,9 +1,9 @@
 ---
-// TEMPORARY PLACEHOLDER — PR2/PR3 replaces this with the real Home layout
-// (Hero, About summary, Skills, Experience, Projects, Blog, Contact per
-// design §3/proposal §4.1). This file exists only so PR1's scaffold has a
-// buildable route per locale.
-import '../../styles/global.css';
+// TEMPORARY PLACEHOLDER — Phase 3 (task 3.6) replaces this with the real Home
+// layout (Hero, About summary, Skills, Experience, Projects, Blog, Contact
+// per design §3/proposal §4.1). This file exists so Phase 2's BaseLayout +
+// Header/Footer chrome has a real route to render against.
+import BaseLayout from '../../layouts/BaseLayout.astro';
 
 export function getStaticPaths() {
   return [{ params: { locale: 'es' } }, { params: { locale: 'en' } }, { params: { locale: 'de' } }];
@@ -11,15 +11,17 @@ export function getStaticPaths() {
 
 const { locale } = Astro.params;
 const greeting: Record<string, string> = { es: 'Hola', en: 'Hello', de: 'Hallo' };
+const description: Record<string, string> = {
+  es: 'Ingeniero civil y especialista en IA y ciencia de datos.',
+  en: 'Civil engineer and AI & data science specialist.',
+  de: 'Bauingenieur und Spezialist für KI und Data Science.',
+};
 ---
 
-<html lang={locale}>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>personal-website (scaffold)</title>
-  </head>
-  <body>
-    <p>{greeting[locale ?? 'es']}</p>
-  </body>
-</html>
+<BaseLayout
+  title="Juan Pablo Guzmán Martínez"
+  description={description[locale ?? 'es']}
+  isHome
+>
+  <p>{greeting[locale ?? 'es']}</p>
+</BaseLayout>
