@@ -16,15 +16,21 @@ interface Props {
     stale?: boolean;
   };
   locale: Locale;
+  /** Heading level for the card title — must match the page's heading hierarchy
+   * at the call site (h2 directly under an h1 page heading like /projects/, h3
+   * when nested under an h2 section heading like the home page's "featured
+   * projects"). */
+  headingLevel?: 'h2' | 'h3';
 }
 
-const { project, locale } = Astro.props;
+const { project, locale, headingLevel = 'h3' } = Astro.props;
 const hasLiveMeta = project.stars != null || project.primaryLanguage != null || project.lastUpdated != null;
+const Heading = headingLevel;
 ---
 
 <article class="project-card" data-reveal>
   <header class="project-card__header">
-    <h3>{project.name}</h3>
+    <Heading>{project.name}</Heading>
     {project.isExample && <span class="badge badge-example">{t(locale, 'projects.exampleBadge')}</span>}
     {!project.isExample && project.stale && <span class="badge badge-stale">{t(locale, 'projects.staleBadge')}</span>}
   </header>

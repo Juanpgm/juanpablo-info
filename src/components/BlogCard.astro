@@ -8,14 +8,19 @@ import { readingTimeMinutes } from '../lib/reading-time';
 interface Props {
   entry: CollectionEntry<'blog'>;
   locale: Locale;
+  /** Heading level for the card title — must match the page's heading hierarchy
+   * at the call site (h2 directly under an h1 page heading like /blog/, h3 when
+   * nested under an h2 section heading like the home page's "latest posts"). */
+  headingLevel?: 'h2' | 'h3';
 }
 
-const { entry, locale } = Astro.props;
+const { entry, locale, headingLevel = 'h3' } = Astro.props;
 // entry.id is "{locale}/{slug}" (design.md §4) — the route only needs slug.
 const slug = entry.id.slice(entry.id.indexOf('/') + 1);
 const href = getRelativeLocaleUrl(locale, `blog/${slug}`);
 const dateFormatter = new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'long' });
 const minutes = readingTimeMinutes(entry.body ?? '');
+const Heading = headingLevel;
 ---
 
 <article class="blog-card" data-reveal data-tags={entry.data.tags.join(' ')}>
@@ -24,9 +29,9 @@ const minutes = readingTimeMinutes(entry.body ?? '');
     <span aria-hidden="true"> · </span>
     {minutes} {t(locale, 'blog.readingTimeSuffix')}
   </p>
-  <h3 class="blog-card__title">
+  <Heading class="blog-card__title">
     <a href={href}>{entry.data.title}</a>
-  </h3>
+  </Heading>
   <p class="blog-card__description">{entry.data.description}</p>
   <ul class="blog-card__tags">
     {entry.data.tags.map((tag) => <li class="badge badge-tag">{t(locale, `blog.tag.${tag}` as UIKey)}</li>)}

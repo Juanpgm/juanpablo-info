@@ -19,7 +19,7 @@ const navItems = nav.map((item) => ({
   <div class="site-header__inner">
     <a href={getRelativeLocaleUrl(locale, '')} class="brand">JPGM</a>
 
-    <nav aria-label="Primary" class="primary-nav">
+    <nav aria-label={t(locale, 'header.primaryNavLabel')} class="primary-nav">
       <ul>
         {
           navItems.map((item) => (

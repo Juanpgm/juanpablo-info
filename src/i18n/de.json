@@ -7,12 +7,12 @@
 
   "header.cv": "Lebenslauf",
   "header.cvAriaLabel": "Lebenslauf herunterladen",
+  "header.primaryNavLabel": "Hauptnavigation",
   "header.languageSelectorLabel": "Sprache ändern",
   "header.themeToggleAriaLabelToDark": "Zum Dunkelmodus wechseln",
   "header.themeToggleAriaLabelToLight": "Zum Hellmodus wechseln",
 
   "footer.rights": "Alle Rechte vorbehalten.",
-  "footer.emailLabel": "E-Mail",
   "footer.linkedinLabel": "LinkedIn",
   "footer.location": "Cali, Valle del Cauca, Kolumbien",
 

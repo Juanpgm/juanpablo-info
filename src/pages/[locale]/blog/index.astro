@@ -23,7 +23,7 @@ const posts = entries
     <h1 id="blog-heading">{t(locale, 'blog.heading')}</h1>
     <TagFilter locale={locale} />
     <div class="blog-grid">
-      {posts.map((post) => <BlogCard entry={post} locale={locale} />)}
+      {posts.map((post) => <BlogCard entry={post} locale={locale} headingLevel="h2" />)}
     </div>
   </section>
 </BaseLayout>

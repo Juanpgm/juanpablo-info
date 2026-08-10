@@ -21,7 +21,7 @@ const projects = await mergeProjects(projectSeeds, import.meta.env.GITHUB_TOKEN)
   <section class="section" data-reveal aria-labelledby="projects-heading">
     <h1 id="projects-heading">{t(locale, 'projects.heading')}</h1>
     <div class="project-grid">
-      {projects.map((project) => <ProjectCard project={project} locale={locale} />)}
+      {projects.map((project) => <ProjectCard project={project} locale={locale} headingLevel="h2" />)}
     </div>
   </section>
 </BaseLayout>

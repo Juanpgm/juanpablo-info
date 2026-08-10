@@ -7,12 +7,12 @@
 
   "header.cv": "Resume",
   "header.cvAriaLabel": "Download resume",
+  "header.primaryNavLabel": "Primary",
   "header.languageSelectorLabel": "Change language",
   "header.themeToggleAriaLabelToDark": "Switch to dark mode",
   "header.themeToggleAriaLabelToLight": "Switch to light mode",
 
   "footer.rights": "All rights reserved.",
-  "footer.emailLabel": "Email",
   "footer.linkedinLabel": "LinkedIn",
   "footer.location": "Cali, Valle del Cauca, Colombia",
 

@@ -340,6 +340,13 @@ h3 {
 
 .badge-example {
   background-color: color-mix(in srgb, var(--color-secondary) 18%, transparent);
+  /* Light-theme --secondary (#b45309) on this 18%-tint background only hits
+     3.69:1 (Lighthouse-measured, Phase 9.1 R4 audit) — darkened for AA 4.5:1.
+     Dark-theme --secondary (#f59e0b) on its tint already clears ~5.9:1. */
+  color: #92400e;
+}
+
+[data-theme='dark'] .badge-example {
   color: var(--color-secondary);
 }
 
@@ -351,6 +358,13 @@ h3 {
 
 .badge-current {
   background-color: color-mix(in srgb, var(--color-primary) 18%, transparent);
+  /* Light-theme --primary (#0f766e) on this 18%-tint background only hits
+     4.03:1 (Phase 9.1 R4 audit) — reuses the existing --primary-hover token
+     (already darker, already defined) for AA 4.5:1 instead of a new color. */
+  color: var(--color-primary-hover);
+}
+
+[data-theme='dark'] .badge-current {
   color: var(--color-primary);
 }
 

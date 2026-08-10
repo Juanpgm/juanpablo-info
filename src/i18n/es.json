@@ -7,12 +7,12 @@
 
   "header.cv": "CV",
   "header.cvAriaLabel": "Descargar CV",
+  "header.primaryNavLabel": "Principal",
   "header.languageSelectorLabel": "Cambiar idioma",
   "header.themeToggleAriaLabelToDark": "Cambiar a modo oscuro",
   "header.themeToggleAriaLabelToLight": "Cambiar a modo claro",
 
   "footer.rights": "Todos los derechos reservados.",
-  "footer.emailLabel": "Correo",
   "footer.linkedinLabel": "LinkedIn",
   "footer.location": "Cali, Valle del Cauca, Colombia",
 
