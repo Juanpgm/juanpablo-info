@@ -29,6 +29,12 @@ const blog = defineCollection({
       updatedDate: z.coerce.date().optional(),
       tags: z.array(TAG).min(1),
       heroImage: image().optional(),
+      // Per-locale, translatable — independent of the image asset itself
+      // (design.md "Theme palette as indirected CSS vars" / content-model spec
+      // "Hero Diagram Locale Variant Convention"). Both optional so posts
+      // without a hero diagram keep validating.
+      heroImageAlt: z.string().max(200).optional(),
+      heroImageCaption: z.string().max(280).optional(),
       draft: z.boolean().default(false),
       // readingTime + TOC are COMPUTED at render, never stored.
     }),

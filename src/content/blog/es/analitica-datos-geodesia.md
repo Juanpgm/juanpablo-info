@@ -4,6 +4,8 @@ description: "Cómo un pipeline de datos convierte observaciones GNSS e InSAR en
 pubDate: 2026-05-19
 tags: ["geointeligencia", "data-engineering"]
 heroImage: ../../../assets/blog/analitica-datos-geodesia.svg
+heroImageAlt: "Pipeline de datos geodésicos: de una estación GNSS/InSAR a un modelo de deformación del terreno, pasando por ingesta y análisis de series temporales"
+heroImageCaption: "El mismo patrón de pipeline de datos usado en observatorios de seguridad sirve para monitoreo geodésico del terreno."
 draft: false
 ---
 

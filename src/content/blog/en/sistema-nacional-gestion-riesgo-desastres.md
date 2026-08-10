@@ -3,7 +3,9 @@ title: "Colombia's National Disaster Risk Management System, Explained"
 description: "How Colombia's National Disaster Risk Management System works: its legal foundation, three pillars, and how the municipal level fits the national one."
 pubDate: 2026-08-04
 tags: ["gestion-riesgo", "normativa"]
-heroImage: ../../../assets/blog/sistema-nacional-gestion-riesgo-desastres.svg
+heroImage: ../../../assets/blog/sistema-nacional-gestion-riesgo-desastres.en.svg
+heroImageAlt: "SNGRD institutional diagram: UNGRD at national coordination above the three pillars of risk knowledge, reduction, and disaster management, with the municipal layer (CMGRD)"
+heroImageCaption: "Cascading system: each territorial level reports up to the national level."
 draft: false
 ---
 

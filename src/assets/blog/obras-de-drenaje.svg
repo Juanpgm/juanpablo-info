@@ -1,47 +1,45 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" font-family="Arial, Helvetica, sans-serif">
-  <rect width="1200" height="630" fill="#f7f8fa" />
-
-  <text x="600" y="60" text-anchor="middle" font-size="26" font-weight="bold" fill="#1a2027">Sección esquemática: drenaje superficial y subterráneo</text>
+  <text x="600" y="60" text-anchor="middle" font-size="26" font-weight="bold" fill="var(--diagram-ink)">Sección esquemática: drenaje superficial y subterráneo</text>
 
   <!-- ground profile -->
-  <path d="M 60 250 L 300 200 L 620 210 L 900 190 L 1140 220 L 1140 560 L 60 560 Z" fill="#eef1f4" stroke="#dde1e6" stroke-width="2" />
+  <path d="M 60 250 L 300 200 L 620 210 L 900 190 L 1140 220 L 1140 560 L 60 560 Z" fill="var(--diagram-fill)" stroke="var(--diagram-line)" stroke-width="2" />
 
   <!-- road/pavement surface -->
-  <rect x="380" y="196" width="260" height="16" fill="#1a2027" />
-  <text x="510" y="185" text-anchor="middle" font-size="15" fill="#1a2027">Rasante / vía</text>
+  <rect x="380" y="196" width="260" height="16" fill="var(--diagram-ink)" />
+  <text x="510" y="185" text-anchor="middle" font-size="15" fill="var(--diagram-ink)">Rasante / vía</text>
 
   <!-- cross slope arrows toward ditch -->
-  <path d="M 420 214 L 340 230" stroke="#0f766e" stroke-width="3" marker-end="url(#arrow2)" />
-  <path d="M 600 214 L 680 232" stroke="#0f766e" stroke-width="3" marker-end="url(#arrow2)" />
+  <path d="M 420 214 L 340 230" stroke="var(--diagram-accent)" stroke-width="3" marker-end="url(#arrow2)" />
+  <path d="M 600 214 L 680 232" stroke="var(--diagram-accent)" stroke-width="3" marker-end="url(#arrow2)" />
 
   <!-- roadside ditch (cuneta) left -->
-  <path d="M 260 236 L 300 260 L 340 236" fill="none" stroke="#0f766e" stroke-width="5" />
-  <text x="230" y="290" font-size="15" fill="#0f766e">Cuneta</text>
+  <path d="M 260 236 L 300 260 L 340 236" fill="none" stroke="var(--diagram-accent)" stroke-width="5" />
+  <text x="230" y="290" font-size="15" fill="var(--diagram-accent)">Cuneta</text>
 
   <!-- culvert (alcantarilla) -->
-  <rect x="560" y="330" width="120" height="46" rx="10" fill="#ffffff" stroke="#0f766e" stroke-width="5" />
-  <text x="620" y="410" text-anchor="middle" font-size="16" fill="#0f766e">Alcantarilla (culvert)</text>
-  <path d="M 560 353 L 480 353" stroke="#0f766e" stroke-width="4" marker-end="url(#arrow2)" />
-  <path d="M 680 353 L 780 353" stroke="#0f766e" stroke-width="4" marker-end="url(#arrow2)" />
-  <text x="430" y="345" font-size="14" fill="#1a2027">Caudal de diseño Q</text>
+  <rect x="560" y="330" width="120" height="46" rx="10" fill="var(--diagram-fill)" stroke="var(--diagram-accent)" stroke-width="5" />
+  <text x="620" y="410" text-anchor="middle" font-size="16" fill="var(--diagram-accent)">Alcantarilla (culvert)</text>
+  <path d="M 560 353 L 480 353" stroke="var(--diagram-accent)" stroke-width="4" marker-end="url(#arrow2)" />
+  <path d="M 680 353 L 780 353" stroke="var(--diagram-accent)" stroke-width="4" marker-end="url(#arrow2)" />
+  <text x="430" y="345" font-size="14" fill="var(--diagram-ink)">Caudal de diseño Q</text>
 
   <!-- subdrain -->
-  <rect x="760" y="440" width="220" height="18" rx="9" fill="#ffffff" stroke="#b45309" stroke-width="4" stroke-dasharray="2 6" />
-  <text x="870" y="490" text-anchor="middle" font-size="16" fill="#b45309">Subdrén (grava + geotextil)</text>
+  <rect x="760" y="440" width="220" height="18" rx="9" fill="var(--diagram-fill)" stroke="var(--diagram-accent-2)" stroke-width="4" stroke-dasharray="2 6" />
+  <text x="870" y="490" text-anchor="middle" font-size="16" fill="var(--diagram-accent-2)">Subdrén (grava + geotextil)</text>
 
   <!-- water table arrows into subdrain -->
-  <path d="M 800 500 L 800 462" stroke="#b45309" stroke-width="2.5" marker-end="url(#arrow3)" />
-  <path d="M 940 500 L 940 462" stroke="#b45309" stroke-width="2.5" marker-end="url(#arrow3)" />
-  <text x="870" y="540" text-anchor="middle" font-size="14" fill="#1a2027">Nivel freático / infiltración</text>
+  <path d="M 800 500 L 800 462" stroke="var(--diagram-accent-2)" stroke-width="2.5" marker-end="url(#arrow3)" />
+  <path d="M 940 500 L 940 462" stroke="var(--diagram-accent-2)" stroke-width="2.5" marker-end="url(#arrow3)" />
+  <text x="870" y="540" text-anchor="middle" font-size="14" fill="var(--diagram-ink)">Nivel freático / infiltración</text>
 
   <defs>
     <marker id="arrow2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
-      <path d="M0,0 L0,6 L9,3 z" fill="#0f766e" />
+      <path d="M0,0 L0,6 L9,3 z" fill="var(--diagram-accent)" />
     </marker>
     <marker id="arrow3" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
-      <path d="M0,0 L0,6 L9,3 z" fill="#b45309" />
+      <path d="M0,0 L0,6 L9,3 z" fill="var(--diagram-accent-2)" />
     </marker>
   </defs>
 
-  <text x="600" y="600" text-anchor="middle" font-size="15" fill="#1a2027">El agua mal conducida, superficial o subterránea, es la causa raíz de la mayoría de fallas de taludes y pavimentos</text>
+  <text x="600" y="600" text-anchor="middle" font-size="15" fill="var(--diagram-ink)">El agua mal conducida, superficial o subterránea, es la causa raíz de la mayoría de fallas de taludes y pavimentos</text>
 </svg>

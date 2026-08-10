@@ -3,7 +3,9 @@ title: "Telematics and Predictive Models: How ML and Deep Learning Read Real-Tim
 description: "Real differences between classical machine learning and deep learning for sensor time series, with a predictive pipeline example from telematics."
 pubDate: 2026-06-02
 tags: ["ia", "data-engineering"]
-heroImage: ../../../assets/blog/telematica-modelos-predictivos-ml-dl.svg
+heroImage: ../../../assets/blog/telematica-modelos-predictivos-ml-dl.en.svg
+heroImageAlt: "Pipeline from telematics sensors to an ML/DL model producing a real-time predicted risk indicator"
+heroImageCaption: "From raw sensor signal to an actionable alert: the same flow behind an early warning system."
 draft: false
 ---
 

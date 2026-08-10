@@ -12,11 +12,9 @@ interface Props {
   // 'article' emits BlogPosting — blog posts only (post-launch fast-follow).
   // Every other page emits a minimal WebPage/WebSite schema instead.
   jsonLd?: 'person' | 'webpage' | 'article';
-  // OG image, site-relative path. Defaults to the single pre-rendered
-  // branded PNG (design A8 — no per-post dynamic OG pipeline at launch).
-  // ponytail: if per-post OG images become desirable, generate them at
-  // build time (satori/resvg) inside each getStaticPaths and pass a
-  // per-post path here instead of widening this default.
+  // OG image, site-relative path. Blog posts pass their own per-post,
+  // per-locale `/og/{locale}/{slug}.png` (astro-og-canvas route, see
+  // `src/pages/og/[...slug].ts`). Every other page keeps this default.
   ogImage?: string;
   // Only used when jsonLd === 'article' — a post's publish/update dates and
   // its own heroImage (site-relative src), for BlogPosting structured data.
@@ -25,16 +23,11 @@ interface Props {
   heroImageUrl?: string;
 }
 
-const {
-  title,
-  description,
-  path = '',
-  jsonLd = 'webpage',
-  ogImage = '/og/default.png',
-  pubDate,
-  updatedDate,
-  heroImageUrl,
-} = Astro.props;
+// `heroImageUrl` is accepted (see Props) but intentionally not destructured
+// here — BlogPosting `image` now always uses `absoluteOgImage` below, so
+// this component no longer reads it directly.
+const { title, description, path = '', jsonLd = 'webpage', ogImage = '/og/default.png', pubDate, updatedDate } =
+  Astro.props;
 const locale = Astro.currentLocale ?? 'es';
 const canonical = getAbsoluteLocaleUrl(locale, path);
 const absoluteOgImage = new URL(ogImage, Astro.site).toString();
@@ -68,8 +61,11 @@ const webPageJsonLd = {
 
 // BlogPosting structured data (post-launch fast-follow) — search engines use
 // this for rich-result eligibility (author, dates, headline image). Only
-// built when jsonLd === 'article'; pubDate/updatedDate/heroImageUrl come
-// straight from the post's own frontmatter, no extra data source.
+// built when jsonLd === 'article'; pubDate/updatedDate come straight from
+// the post's own frontmatter, no extra data source. `image` uses the same
+// per-post OG image as `og:image`/`twitter:image` below (not `heroImageUrl`
+// — the OG card is the canonical headline image; `heroImageUrl` is kept as
+// a BaseLayout/PostLayout prop only for callers that still pass it).
 const blogPostingJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
@@ -79,7 +75,7 @@ const blogPostingJsonLd = {
   mainEntityOfPage: canonical,
   ...(pubDate && { datePublished: pubDate.toISOString() }),
   ...(updatedDate && { dateModified: updatedDate.toISOString() }),
-  ...(heroImageUrl && { image: new URL(heroImageUrl, Astro.site).toString() }),
+  image: absoluteOgImage,
   author: { '@type': 'Person', name: site.name, url: Astro.site?.toString() },
 };
 

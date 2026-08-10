@@ -3,7 +3,9 @@ title: "Structural Engineering: The Principles Behind Why a Structure Doesn't Fa
 description: "Dead, live and seismic loads, limit states, ductility and structural redundancy: the fundamentals behind why a structure doesn't collapse."
 pubDate: 2026-06-16
 tags: ["estructural", "bim"]
-heroImage: ../../../assets/blog/ingenieria-estructural-fundamentos.svg
+heroImage: ../../../assets/blog/ingenieria-estructural-fundamentos.en.svg
+heroImageAlt: "Schematic frame of columns, beam, and foundation showing vertical dead/live loads and a lateral seismic load traveling down to the foundation"
+heroImageCaption: "Every load needs a continuous, ductile path down to the foundation: that's the principle behind seismic-resistant design."
 draft: false
 ---
 

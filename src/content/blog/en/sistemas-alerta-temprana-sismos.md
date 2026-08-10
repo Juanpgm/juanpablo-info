@@ -3,7 +3,9 @@ title: "Seismic Early Warning Systems: Winning the Seconds That Save Lives"
 description: "How seismic early warning systems work: sensor networks, real-time data pipelines, and the mechanism that exploits the P-wave/S-wave velocity gap."
 pubDate: 2026-03-24
 tags: ["sismica", "gestion-riesgo", "data-engineering"]
-heroImage: ../../../assets/blog/sistemas-alerta-temprana-sismos.svg
+heroImage: ../../../assets/blog/sistemas-alerta-temprana-sismos.en.svg
+heroImageAlt: "Flow diagram of a seismic early warning, from the sensor network to alert broadcast, with a timeline between P-wave and S-wave arrival"
+heroImageCaption: "An early warning's edge is the seconds between detecting the P-wave and the destructive S-wave's arrival."
 draft: false
 ---
 

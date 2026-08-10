@@ -3,7 +3,9 @@ title: "Data Analytics in Geodesy: From GNSS Point to Ground Deformation Model"
 description: "How a data pipeline turns raw GNSS and InSAR observations into a ground deformation model useful for early geotechnical monitoring."
 pubDate: 2026-05-19
 tags: ["geointeligencia", "data-engineering"]
-heroImage: ../../../assets/blog/analitica-datos-geodesia.svg
+heroImage: ../../../assets/blog/analitica-datos-geodesia.en.svg
+heroImageAlt: "Geodetic data pipeline: from a GNSS/InSAR station to a ground deformation model, through ingestion and time-series analysis"
+heroImageCaption: "The same data pipeline pattern used in security observatories works for ground geodetic monitoring."
 draft: false
 ---
 

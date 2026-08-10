@@ -3,7 +3,9 @@ title: "Drainage Works: Why Properly Managing Water Defines a Structure's Lifesp
 description: "Surface vs. subsurface drainage, design discharge, return period, and why poorly managed water is the root cause behind most geotechnical failures."
 pubDate: 2026-05-05
 tags: ["hidraulica", "geotecnia"]
-heroImage: ../../../assets/blog/obras-de-drenaje.svg
+heroImage: ../../../assets/blog/obras-de-drenaje.en.svg
+heroImageAlt: "Schematic cross-section of road drainage: surface ditch, culvert, and subdrain routing water away from the slope"
+heroImageCaption: "Poorly managed water, surface or subsurface, is the root cause behind most slope and pavement failures."
 draft: false
 ---
 

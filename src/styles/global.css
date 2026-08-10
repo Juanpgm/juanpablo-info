@@ -75,6 +75,16 @@
   --primary: #0f766e;
   --primary-hover: #115e59;
   --secondary: #b45309;
+
+  /* Hero diagram palette (design.md "Theme palette as indirected CSS vars")
+     — indirected through --color-* so inline SVGs (set:html, no external doc
+     boundary) auto-flip with the theme instead of needing a dark-mode
+     override block here. */
+  --diagram-ink: var(--color-ink);
+  --diagram-line: var(--color-border);
+  --diagram-fill: var(--color-surface-subtle);
+  --diagram-accent: var(--color-primary);
+  --diagram-accent-2: var(--color-secondary);
 }
 
 [data-theme='dark'] {
@@ -923,8 +933,10 @@ h3 {
   display: block;
   width: 100%;
   aspect-ratio: 16 / 9;
-  object-fit: cover;
+  overflow: hidden;
   border-radius: 0.75rem;
+  background-color: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
 }
 
 .blog-card__title a {
@@ -1327,15 +1339,51 @@ dialog#contact-modal[open]::backdrop {
   flex-wrap: wrap;
   gap: var(--space-2xs);
   list-style: none;
-  margin-top: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+/* `<figure>` UA default margin (1em 40px) would indent/offset the hero the
+   moment it wraps the inline SVG (task 1.6) — reset left/right/top to 0 and
+   carry only the deliberate bottom rhythm (Phase 5 polish, design.md
+   "Polish" section: --space-xl moved here off .post-hero-image). */
+.post-hero {
+  margin: 0 0 var(--space-xl);
+}
+
+.post-hero figcaption {
+  color: var(--color-ink-muted);
+  font-size: var(--text-sm);
+  margin-top: var(--space-2xs);
+  text-align: center;
 }
 
 .post-hero-image {
   display: block;
   width: 100%;
   height: auto;
-  margin-bottom: var(--space-xl);
   border-radius: 0.75rem;
+  background-color: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+}
+
+/* Inline SVG (set:html, design.md "Inline SVG via ?raw glob + set:html")
+   replaces the previous <img>/<Image> — the sizing that used to live on the
+   img tag itself now has to target the svg root explicitly. */
+.post-hero-image svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* .blog-card__image's aspect-ratio box needs the svg to fill it (height:100%,
+   not height:auto) — the source viewBox (1200x630, ~1.9:1) is close to but
+   not identical to the card's 16:9 box; the svg's default
+   preserveAspectRatio="xMidYMid meet" letterboxes into the parent's own
+   background rather than stretching or clipping. */
+.blog-card__image svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 /* Article body prose (post-launch fast-follow) — .post-content previously

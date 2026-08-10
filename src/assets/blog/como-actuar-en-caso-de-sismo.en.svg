@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" font-family="Arial, Helvetica, sans-serif">
+  <text x="600" y="55" text-anchor="middle" font-size="24" font-weight="bold" fill="var(--diagram-ink)">Before · During · After an earthquake</text>
+
+  <!-- panel 1: before -->
+  <rect x="60" y="110" width="330" height="430" fill="var(--diagram-fill)" stroke="var(--diagram-line)" stroke-width="2" />
+  <text x="225" y="150" text-anchor="middle" font-size="19" font-weight="bold" fill="var(--diagram-accent)">Before</text>
+  <rect x="140" y="190" width="70" height="90" fill="none" stroke="var(--diagram-ink)" stroke-width="3" />
+  <line x1="140" y1="220" x2="210" y2="220" stroke="var(--diagram-ink)" stroke-width="2" />
+  <line x1="140" y1="250" x2="210" y2="250" stroke="var(--diagram-ink)" stroke-width="2" />
+  <text x="225" y="330" text-anchor="middle" font-size="14" fill="var(--diagram-ink)">Secure furniture</text>
+  <circle cx="225" cy="390" r="34" fill="none" stroke="var(--diagram-ink)" stroke-width="3" />
+  <path d="M 210 390 L 222 402 L 244 378" stroke="var(--diagram-accent)" stroke-width="4" fill="none" />
+  <text x="225" y="450" text-anchor="middle" font-size="14" fill="var(--diagram-ink)">Emergency kit</text>
+
+  <!-- panel 2: during -->
+  <rect x="435" y="110" width="330" height="430" fill="var(--diagram-fill)" stroke="var(--diagram-line)" stroke-width="2" />
+  <text x="600" y="150" text-anchor="middle" font-size="19" font-weight="bold" fill="var(--diagram-accent)">During</text>
+  <rect x="530" y="230" width="140" height="60" fill="none" stroke="var(--diagram-ink)" stroke-width="3" />
+  <circle cx="600" cy="230" r="16" fill="var(--diagram-accent-2)" />
+  <path d="M 585 250 L 600 246 L 615 250 L 615 270 L 585 270 Z" fill="var(--diagram-accent-2)" />
+  <text x="600" y="330" text-anchor="middle" font-size="14" fill="var(--diagram-ink)">Drop, cover,</text>
+  <text x="600" y="350" text-anchor="middle" font-size="14" fill="var(--diagram-ink)">hold on</text>
+  <path d="M 555 430 L 645 430 M 600 400 L 600 460 M 570 400 L 630 460 M 630 400 L 570 460" stroke="var(--diagram-accent-2)" stroke-width="4" />
+  <text x="600" y="490" text-anchor="middle" font-size="14" fill="var(--diagram-ink)">Don't run on stairs</text>
+
+  <!-- panel 3: after -->
+  <rect x="810" y="110" width="330" height="430" fill="var(--diagram-fill)" stroke="var(--diagram-line)" stroke-width="2" />
+  <text x="975" y="150" text-anchor="middle" font-size="19" font-weight="bold" fill="var(--diagram-accent)">After</text>
+  <rect x="915" y="200" width="120" height="80" fill="none" stroke="var(--diagram-ink)" stroke-width="3" />
+  <path d="M 915 260 L 955 220 L 995 260" stroke="var(--diagram-accent-2)" stroke-width="3" fill="none" />
+  <text x="975" y="310" text-anchor="middle" font-size="14" fill="var(--diagram-ink)">Check for cracks</text>
+  <text x="975" y="330" text-anchor="middle" font-size="14" fill="var(--diagram-ink)">and leaning</text>
+  <circle cx="975" cy="400" r="34" fill="none" stroke="var(--diagram-ink)" stroke-width="3" />
+  <text x="975" y="410" text-anchor="middle" font-size="26" fill="var(--diagram-ink)">?</text>
+  <text x="975" y="460" text-anchor="middle" font-size="14" fill="var(--diagram-ink)">If in doubt, don't re-enter</text>
+
+  <text x="600" y="600" text-anchor="middle" font-size="14" fill="var(--diagram-ink)">Clear protocol + technical judgment reduce risk in the seconds that count</text>
+</svg>

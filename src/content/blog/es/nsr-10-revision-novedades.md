@@ -4,6 +4,8 @@ description: "Qué es el NSR-10, cómo se organiza en títulos A-K, por qué se 
 pubDate: 2026-06-30
 tags: ["normativa", "estructural", "sismica"]
 heroImage: ../../../assets/blog/nsr-10-revision-novedades.svg
+heroImageAlt: "Lista de los títulos A a K del NSR-10 con el Título A resaltado, mostrando la organización modular del reglamento sismo resistente colombiano"
+heroImageCaption: "Estructura modular: cada título se revisa y actualiza de forma independiente."
 draft: false
 ---
 

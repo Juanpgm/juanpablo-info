@@ -4,6 +4,8 @@ description: "Cómo funciona el Sistema Nacional de Gestión del Riesgo de Desas
 pubDate: 2026-08-04
 tags: ["gestion-riesgo", "normativa"]
 heroImage: ../../../assets/blog/sistema-nacional-gestion-riesgo-desastres.svg
+heroImageAlt: "Esquema institucional del SNGRD: UNGRD en la coordinación nacional sobre los tres pilares de conocimiento, reducción y manejo del riesgo, con la capa municipal (CMGRD)"
+heroImageCaption: "Sistema en cascada: cada nivel territorial reporta hacia el nivel nacional."
 draft: false
 ---
 

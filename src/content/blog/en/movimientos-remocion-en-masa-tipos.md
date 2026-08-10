@@ -3,7 +3,9 @@ title: "Mass Movements: Types, Causes, and How They're Classified"
 description: "Geotechnical taxonomy of mass movements: falls, slides, flows, and creep, along with their most common triggering mechanisms."
 pubDate: 2026-04-07
 tags: ["geotecnia", "gestion-riesgo"]
-heroImage: ../../../assets/blog/movimientos-remocion-en-masa-tipos.svg
+heroImage: ../../../assets/blog/movimientos-remocion-en-masa-tipos.en.svg
+heroImageAlt: "Four schematic panels comparing fall, rotational slide, debris flow, and creep as types of mass movement"
+heroImageCaption: "The type of movement determines both how fast it occurs and what mitigation strategy applies."
 draft: false
 ---
 

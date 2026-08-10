@@ -4,6 +4,8 @@ description: "Qué es la metodología EDAN, cómo se evalúan daños y necesidad
 pubDate: 2026-07-28
 tags: ["gestion-riesgo", "normativa"]
 heroImage: ../../../assets/blog/edan-evaluacion-danos-analisis-necesidades.svg
+heroImageAlt: "Flujo de cuatro pasos del EDAN: evento, evaluación inicial rápida, evaluación complementaria por sector y reporte consolidado"
+heroImageCaption: "Datos estandarizados en cada etapa, consolidables entre municipios."
 draft: false
 ---
 

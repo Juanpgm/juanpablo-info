@@ -4,6 +4,8 @@ description: "Guía práctica y técnica sobre qué hacer antes, durante y despu
 pubDate: 2026-07-14
 tags: ["sismica", "gestion-riesgo"]
 heroImage: ../../../assets/blog/como-actuar-en-caso-de-sismo.svg
+heroImageAlt: "Tres paneles ilustrando qué hacer antes, durante y después de un sismo: anclar muebles y kit de emergencia, agacharse/cubrirse/sujetarse, revisar grietas"
+heroImageCaption: "Protocolo claro + criterio técnico reducen el riesgo en los segundos que cuentan."
 draft: false
 ---
 
