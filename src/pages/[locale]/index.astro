@@ -15,6 +15,8 @@ import { t, useLocale } from '../../i18n';
 import { getLocalizedEntries } from '../../lib/content-fallback';
 import { projects as projectSeeds } from '../../data/projects';
 import { mergeProjects } from '../../lib/github';
+import { site } from '../../data/site';
+import { getWhatsAppHref } from '../../lib/whatsapp';
 
 export function getStaticPaths() {
   return [{ params: { locale: 'es' } }, { params: { locale: 'en' } }, { params: { locale: 'de' } }];
@@ -38,6 +40,8 @@ const latestPosts = posts
   .filter((entry) => !entry.data.draft)
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
   .slice(0, 3);
+
+const whatsappHref = getWhatsAppHref(site.whatsapp.number, site.whatsapp.message);
 ---
 
 <BaseLayout title={t(locale, 'hero.title')} description={t(locale, 'hero.tagline')} jsonLd="person">
@@ -90,15 +94,35 @@ const latestPosts = posts
   <section class="section" data-reveal aria-labelledby="contact-heading">
     <h2 id="contact-heading">{t(locale, 'contact.heading')}</h2>
     <div class="contact-actions">
-      <a href="mailto:juanp.gzmz@gmail.com" class="btn btn-lg">{t(locale, 'contact.emailCta')}</a>
+      <a href={`mailto:${site.email}`} class="btn btn-lg">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="5" width="18" height="14" rx="2" />
+          <path d="M3 7l9 6 9-6" />
+        </svg>
+        {t(locale, 'contact.emailCta')}
+      </a>
       <a
-        href="https://www.linkedin.com/in/jp-guzman"
+        href={site.sameAs[0]}
         class="btn btn-lg btn-outline"
         target="_blank"
         rel="noreferrer noopener"
       >
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="6" cy="12" r="3" />
+          <circle cx="18" cy="6" r="3" />
+          <circle cx="18" cy="18" r="3" />
+          <path d="M8.5 10.5l7-3M8.5 13.5l7 3" />
+        </svg>
         {t(locale, 'contact.linkedinCta')}
       </a>
+      {whatsappHref && (
+        <a href={whatsappHref} class="btn btn-lg btn-outline" target="_blank" rel="noreferrer noopener">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 3C6.9 3 3 6.6 3 11c0 2.1 1 4 2.6 5.4L4.8 21l4.3-1.6c.9.3 1.9.4 2.9.4 5.1 0 9-3.6 9-8S17.1 3 12 3Z" />
+          </svg>
+          {t(locale, 'contact.whatsappCta')}
+        </a>
+      )}
     </div>
   </section>
 </BaseLayout>

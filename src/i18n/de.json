@@ -13,7 +13,9 @@
   "header.themeToggleAriaLabelToLight": "Zum Hellmodus wechseln",
 
   "footer.rights": "Alle Rechte vorbehalten.",
+  "footer.emailLabel": "E-Mail senden",
   "footer.linkedinLabel": "LinkedIn",
+  "footer.whatsappLabel": "Auf WhatsApp schreiben",
   "footer.location": "Cali, Valle del Cauca, Kolumbien",
 
   "hero.title": "Juan Pablo Guzmán Martínez",
@@ -98,5 +100,6 @@
 
   "contact.heading": "Kontakt",
   "contact.emailCta": "Schreib mir",
-  "contact.linkedinCta": "Auf LinkedIn vernetzen"
+  "contact.linkedinCta": "Auf LinkedIn vernetzen",
+  "contact.whatsappCta": "Schreib mir auf WhatsApp"
 }

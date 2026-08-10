@@ -211,11 +211,16 @@ h3 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
   border-radius: 0.5rem;
   transition:
     transform 0.15s ease,
     box-shadow 0.15s ease,
     background-color 0.15s ease;
+}
+
+.btn svg {
+  flex-shrink: 0;
 }
 
 .btn {

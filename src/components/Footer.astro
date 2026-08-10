@@ -1,27 +1,50 @@
 ---
 import LanguageSelector from './LanguageSelector.astro';
 import { site } from '../data/site';
+import { getWhatsAppHref } from '../lib/whatsapp';
 import { t, useLocale } from '../i18n';
 
 const locale = useLocale(Astro.currentLocale);
 const year = new Date().getFullYear();
+const whatsappHref = getWhatsAppHref(site.whatsapp.number, site.whatsapp.message);
 ---
 
 <footer class="site-footer">
   <div class="site-footer__inner">
     <div class="footer-contact">
-      <a href={`mailto:${site.email}`} class="nav-link">
-        {site.email}
+      <a href={`mailto:${site.email}`} class="btn-icon" aria-label={t(locale, 'footer.emailLabel')}>
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="5" width="18" height="14" rx="2" />
+          <path d="M3 7l9 6 9-6" />
+        </svg>
       </a>
       <a
         href={site.sameAs[0]}
-        class="nav-link"
+        class="btn-icon"
         rel="noreferrer noopener"
         target="_blank"
         aria-label={t(locale, 'footer.linkedinLabel')}
       >
-        LinkedIn
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="6" cy="12" r="3" />
+          <circle cx="18" cy="6" r="3" />
+          <circle cx="18" cy="18" r="3" />
+          <path d="M8.5 10.5l7-3M8.5 13.5l7 3" />
+        </svg>
       </a>
+      {whatsappHref && (
+        <a
+          href={whatsappHref}
+          class="btn-icon"
+          rel="noreferrer noopener"
+          target="_blank"
+          aria-label={t(locale, 'footer.whatsappLabel')}
+        >
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 3C6.9 3 3 6.6 3 11c0 2.1 1 4 2.6 5.4L4.8 21l4.3-1.6c.9.3 1.9.4 2.9.4 5.1 0 9-3.6 9-8S17.1 3 12 3Z" />
+          </svg>
+        </a>
+      )}
       <span class="footer-location">{t(locale, 'footer.location')}</span>
     </div>
 
