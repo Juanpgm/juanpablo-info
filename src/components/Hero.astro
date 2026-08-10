@@ -10,7 +10,6 @@ const locale = useLocale(Astro.currentLocale);
 ---
 
 <section class="hero" data-reveal aria-labelledby="hero-title">
-  <canvas class="hero-network" aria-hidden="true"></canvas>
   <p class="hero-eyebrow">{t(locale, 'hero.subtitle')}</p>
   <h1 id="hero-title" class="hero-title">{t(locale, 'hero.title')}</h1>
   <p class="hero-tagline">{t(locale, 'hero.tagline')}</p>
@@ -29,23 +28,3 @@ const locale = useLocale(Astro.currentLocale);
     <span class="hero-location">{t(locale, 'hero.location')}</span>
   </div>
 </section>
-
-<script>
-  // Decorative network background (lib/network-canvas.ts) — re-init per View
-  // Transition navigation, torn down on the way out so no stray rAF loop
-  // keeps animating a detached canvas from a previous visit to Home.
-  import { initNetworkCanvas } from '../lib/network-canvas';
-
-  let cleanup: (() => void) | undefined;
-
-  function setup() {
-    cleanup?.();
-    cleanup = undefined;
-    const canvas = document.querySelector<HTMLCanvasElement>('.hero-network');
-    if (canvas) cleanup = initNetworkCanvas(canvas);
-  }
-
-  setup();
-  document.addEventListener('astro:page-load', setup);
-  document.addEventListener('astro:before-swap', () => cleanup?.());
-</script>

@@ -65,6 +65,24 @@ body {
   font-family: var(--font-body);
 }
 
+/* Single global decorative network background (lib/network-canvas.ts),
+   mounted once in BaseLayout.astro instead of per-component. `position:
+   fixed` + negative z-index paints it above body's flat background-color but
+   below all real content (header/main/footer are normal-flow, stack level 0,
+   which per CSS2.1 painting order paints above negative-z-index siblings) —
+   confirmed no `.section` or page-content wrapper sets an opaque
+   background-color that would hide it; only inner cards/badges do, and those
+   intentionally paint over it. z-index kept well below .site-header's 50 and
+   .skip-link's 100. Purely decorative: aria-hidden, never focusable. */
+.site-network-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
 h1,
 h2,
 h3 {
@@ -371,26 +389,10 @@ h3 {
 
 /* Hero */
 .hero {
-  position: relative;
   max-width: 56rem;
   margin-inline: auto;
   padding: 6rem 1.5rem 5rem;
   text-align: center;
-}
-
-/* Decorative network background (lib/network-canvas.ts). Absolute + z-index:
-   -1 paints it behind .hero's normal-flow text children regardless of DOM
-   order (CSS2.1 painting order), so text contrast/legibility is untouched.
-   Sized to the section only (inset: 0 inside a `position: relative` parent)
-   — cannot cause page-level horizontal overflow. Purely decorative: excluded
-   from the accessibility tree via aria-hidden, never focusable. */
-.hero-network {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
 }
 
 .hero-eyebrow {
@@ -443,27 +445,15 @@ h3 {
 
 /* Experience counter (post-launch fast-follow): compact stat card, NOT a
    hero-style block — a supporting detail atop the featured-experience
-   section. Sized/scoped smaller than .hero-network's full-hero sizing rule
-   below (its canvas fills only this card), reuses .project-card's visual
-   weight (border/radius/surface) at a smaller footprint. */
+   section. Reuses .project-card's visual weight (border/radius/surface) at
+   a smaller footprint. */
 .experience-counter {
-  position: relative;
   max-width: 20rem;
   margin-bottom: 2rem;
   padding: 1.5rem 1.75rem;
   border: 1px solid var(--color-border);
   border-radius: 0.75rem;
   background-color: var(--color-surface);
-  overflow: hidden;
-}
-
-.experience-counter__network {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
 }
 
 .experience-counter__value {

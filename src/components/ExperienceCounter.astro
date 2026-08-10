@@ -25,7 +25,6 @@ const initialText = formatExperienceDuration(duration, words);
 ---
 
 <div class="experience-counter" data-reveal>
-  <canvas class="experience-counter__network" aria-hidden="true"></canvas>
   <p
     class="experience-counter__value"
     data-experience-value
@@ -41,15 +40,10 @@ const initialText = formatExperienceDuration(duration, words);
 </div>
 
 <script>
-  // Decorative network background (lib/network-canvas.ts — same module as
-  // Hero's, reused not forked) + live recompute using the browser's actual
-  // `new Date()` at page load, so the value keeps advancing daily rather than
-  // staying frozen at last-deploy time. Re-init per View Transition
-  // navigation, torn down on the way out (same lifecycle as Hero.astro).
-  import { initNetworkCanvas } from '../lib/network-canvas';
+  // Live recompute using the browser's actual `new Date()` at page load, so
+  // the value keeps advancing daily rather than staying frozen at
+  // last-deploy time. Re-init per View Transition navigation.
   import { EXPERIENCE_START_DATE, formatExperienceDuration, getExperienceDuration } from '../lib/experience-duration';
-
-  let cleanup: (() => void) | undefined;
 
   function updateValue(): void {
     const el = document.querySelector<HTMLElement>('[data-experience-value]');
@@ -64,15 +58,6 @@ const initialText = formatExperienceDuration(duration, words);
     });
   }
 
-  function setup(): void {
-    cleanup?.();
-    cleanup = undefined;
-    updateValue();
-    const canvas = document.querySelector<HTMLCanvasElement>('.experience-counter__network');
-    if (canvas) cleanup = initNetworkCanvas(canvas);
-  }
-
-  setup();
-  document.addEventListener('astro:page-load', setup);
-  document.addEventListener('astro:before-swap', () => cleanup?.());
+  updateValue();
+  document.addEventListener('astro:page-load', updateValue);
 </script>
