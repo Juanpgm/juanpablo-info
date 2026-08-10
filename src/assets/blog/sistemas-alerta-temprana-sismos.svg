@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" font-family="Arial, Helvetica, sans-serif">
+  <rect width="1200" height="630" fill="#f7f8fa" />
+
+  <text x="600" y="55" text-anchor="middle" font-size="26" font-weight="bold" fill="#1a2027">Flujo de una alerta sísmica temprana</text>
+
+  <!-- pipeline boxes -->
+  <rect x="60" y="110" width="220" height="90" rx="8" fill="#ffffff" stroke="#0f766e" stroke-width="3" />
+  <text x="170" y="150" text-anchor="middle" font-size="17" fill="#1a2027">Red de</text>
+  <text x="170" y="172" text-anchor="middle" font-size="17" fill="#1a2027">sensores sísmicos</text>
+
+  <rect x="340" y="110" width="220" height="90" rx="8" fill="#ffffff" stroke="#0f766e" stroke-width="3" />
+  <text x="450" y="150" text-anchor="middle" font-size="17" fill="#1a2027">Telemetría y</text>
+  <text x="450" y="172" text-anchor="middle" font-size="17" fill="#1a2027">pipeline de datos</text>
+
+  <rect x="620" y="110" width="220" height="90" rx="8" fill="#ffffff" stroke="#0f766e" stroke-width="3" />
+  <text x="730" y="150" text-anchor="middle" font-size="17" fill="#1a2027">Estimación de</text>
+  <text x="730" y="172" text-anchor="middle" font-size="17" fill="#1a2027">magnitud/epicentro</text>
+
+  <rect x="900" y="110" width="220" height="90" rx="8" fill="#ffffff" stroke="#b45309" stroke-width="3" />
+  <text x="1010" y="150" text-anchor="middle" font-size="17" fill="#1a2027">Difusión de</text>
+  <text x="1010" y="172" text-anchor="middle" font-size="17" fill="#1a2027">la alerta</text>
+
+  <path d="M 280 155 L 335 155" stroke="#1a2027" stroke-width="3" marker-end="url(#arrow2)" />
+  <path d="M 560 155 L 615 155" stroke="#1a2027" stroke-width="3" marker-end="url(#arrow2)" />
+  <path d="M 840 155 L 895 155" stroke="#1a2027" stroke-width="3" marker-end="url(#arrow2)" />
+
+  <defs>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#1a2027" />
+    </marker>
+  </defs>
+
+  <!-- timeline: P-wave vs S-wave gap -->
+  <text x="600" y="270" text-anchor="middle" font-size="20" font-weight="bold" fill="#1a2027">Línea de tiempo: brecha entre ondas P y S</text>
+
+  <line x1="120" y1="420" x2="1080" y2="420" stroke="#1a2027" stroke-width="2" />
+
+  <circle cx="200" cy="420" r="7" fill="#0f766e" />
+  <text x="200" y="450" text-anchor="middle" font-size="15" fill="#1a2027">Ruptura</text>
+  <text x="200" y="470" text-anchor="middle" font-size="15" fill="#1a2027">en la falla</text>
+
+  <circle cx="450" cy="420" r="7" fill="#0f766e" />
+  <text x="450" y="450" text-anchor="middle" font-size="15" fill="#1a2027">Onda P detectada</text>
+  <text x="450" y="470" text-anchor="middle" font-size="15" fill="#1a2027">(rápida, poco daño)</text>
+
+  <circle cx="850" cy="420" r="7" fill="#b45309" />
+  <text x="850" y="450" text-anchor="middle" font-size="15" fill="#1a2027">Onda S llega</text>
+  <text x="850" y="470" text-anchor="middle" font-size="15" fill="#1a2027">(lenta, destructiva)</text>
+
+  <path d="M 450 400 L 850 400" stroke="#b45309" stroke-width="4" />
+  <text x="650" y="390" text-anchor="middle" font-size="16" fill="#b45309">segundos de ventaja</text>
+
+  <circle cx="1000" cy="420" r="7" fill="#1a2027" />
+  <text x="1000" y="450" text-anchor="middle" font-size="15" fill="#1a2027">Alerta recibida</text>
+  <text x="1000" y="470" text-anchor="middle" font-size="15" fill="#1a2027">por el usuario</text>
+</svg>

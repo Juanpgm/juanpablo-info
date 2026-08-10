@@ -6,9 +6,9 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  // TODO: swap for the real domain once purchased/decided (design R1) —
-  // regenerates hreflang/sitemap/OG/JSON-LD absolute URLs from this one value.
-  site: 'https://personal-website-placeholder.vercel.app',
+  // Real production domain (design R1, resolved) — this single value
+  // regenerates hreflang/sitemap/OG/JSON-LD absolute URLs everywhere.
+  site: 'https://juanpablo.info',
   output: 'static',
   adapter: vercel({ webAnalytics: { enabled: false } }),
   i18n: {

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" font-family="Arial, Helvetica, sans-serif">
+  <rect width="1200" height="630" fill="#f7f8fa" />
+
+  <text x="600" y="55" text-anchor="middle" font-size="26" font-weight="bold" fill="#1a2027">Pórtico esquemático: cargas y trayectoria de fuerzas</text>
+
+  <!-- foundation -->
+  <rect x="200" y="480" width="800" height="30" fill="#dde1e6" stroke="#1a2027" stroke-width="2" />
+  <text x="600" y="530" text-anchor="middle" font-size="15" fill="#1a2027">Cimentación</text>
+
+  <!-- columns -->
+  <rect x="260" y="220" width="40" height="260" fill="#ffffff" stroke="#1a2027" stroke-width="4" />
+  <rect x="900" y="220" width="40" height="260" fill="#ffffff" stroke="#1a2027" stroke-width="4" />
+  <text x="280" y="210" text-anchor="middle" font-size="15" fill="#1a2027">Columna</text>
+  <text x="920" y="210" text-anchor="middle" font-size="15" fill="#1a2027">Columna</text>
+
+  <!-- beam -->
+  <rect x="260" y="180" width="680" height="40" fill="#ffffff" stroke="#1a2027" stroke-width="4" />
+  <text x="600" y="170" text-anchor="middle" font-size="15" fill="#1a2027">Viga</text>
+
+  <!-- dead/live load arrows on beam -->
+  <path d="M 400 130 L 400 178" stroke="#0f766e" stroke-width="4" marker-end="url(#a6)" />
+  <path d="M 500 130 L 500 178" stroke="#0f766e" stroke-width="4" marker-end="url(#a6)" />
+  <path d="M 600 130 L 600 178" stroke="#0f766e" stroke-width="4" marker-end="url(#a6)" />
+  <path d="M 700 130 L 700 178" stroke="#0f766e" stroke-width="4" marker-end="url(#a6)" />
+  <path d="M 800 130 L 800 178" stroke="#0f766e" stroke-width="4" marker-end="url(#a6)" />
+  <text x="600" y="115" text-anchor="middle" font-size="15" fill="#0f766e">Cargas muertas + vivas</text>
+
+  <!-- seismic lateral load arrow -->
+  <path d="M 200 300 L 260 300" stroke="#b45309" stroke-width="5" marker-end="url(#a7)" />
+  <text x="150" y="290" text-anchor="middle" font-size="15" fill="#b45309">Sismo</text>
+  <text x="150" y="308" text-anchor="middle" font-size="15" fill="#b45309">(carga lateral)</text>
+
+  <!-- load path down columns to foundation -->
+  <path d="M 280 470 L 280 484" stroke="#1a2027" stroke-width="3" marker-end="url(#a6)" />
+  <path d="M 920 470 L 920 484" stroke="#1a2027" stroke-width="3" marker-end="url(#a6)" />
+
+  <defs>
+    <marker id="a6" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#0f766e" />
+    </marker>
+    <marker id="a7" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#b45309" />
+    </marker>
+  </defs>
+
+  <text x="600" y="600" text-anchor="middle" font-size="15" fill="#1a2027">Toda carga necesita una trayectoria continua y dúctil hasta la cimentación: ese es el principio detrás del diseño sismo-resistente</text>
+</svg>

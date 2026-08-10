@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" font-family="Arial, Helvetica, sans-serif">
+  <rect width="1200" height="630" fill="#f7f8fa" />
+
+  <text x="600" y="55" text-anchor="middle" font-size="24" font-weight="bold" fill="#1a2027">SNGRD: Ley 1523 de 2012, tres pilares</text>
+
+  <defs>
+    <marker id="arrow3" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#1a2027" />
+    </marker>
+  </defs>
+
+  <!-- top: UNGRD -->
+  <rect x="440" y="95" width="320" height="70" fill="#1a2027" stroke="#1a2027" stroke-width="2" />
+  <text x="600" y="128" text-anchor="middle" font-size="17" font-weight="bold" fill="#f7f8fa">UNGRD</text>
+  <text x="600" y="150" text-anchor="middle" font-size="13" fill="#f7f8fa">coordinación nacional</text>
+
+  <!-- connectors -->
+  <path d="M 600 165 L 600 200 L 210 200 L 210 235" stroke="#1a2027" stroke-width="2" fill="none" marker-end="url(#arrow3)" />
+  <path d="M 600 165 L 600 235" stroke="#1a2027" stroke-width="2" fill="none" marker-end="url(#arrow3)" />
+  <path d="M 600 165 L 600 200 L 990 200 L 990 235" stroke="#1a2027" stroke-width="2" fill="none" marker-end="url(#arrow3)" />
+
+  <!-- pillar 1 -->
+  <rect x="80" y="238" width="260" height="150" fill="#ffffff" stroke="#0f766e" stroke-width="2.5" />
+  <text x="210" y="275" text-anchor="middle" font-size="16" font-weight="bold" fill="#0f766e">Conocimiento</text>
+  <text x="210" y="296" text-anchor="middle" font-size="16" font-weight="bold" fill="#0f766e">del riesgo</text>
+  <text x="210" y="330" text-anchor="middle" font-size="13" fill="#1a2027">microzonificación,</text>
+  <text x="210" y="350" text-anchor="middle" font-size="13" fill="#1a2027">monitoreo de amenazas</text>
+
+  <!-- pillar 2 -->
+  <rect x="470" y="238" width="260" height="150" fill="#ffffff" stroke="#0f766e" stroke-width="2.5" />
+  <text x="600" y="275" text-anchor="middle" font-size="16" font-weight="bold" fill="#0f766e">Reducción</text>
+  <text x="600" y="296" text-anchor="middle" font-size="16" font-weight="bold" fill="#0f766e">del riesgo</text>
+  <text x="600" y="330" text-anchor="middle" font-size="13" fill="#1a2027">ordenamiento territorial,</text>
+  <text x="600" y="350" text-anchor="middle" font-size="13" fill="#1a2027">normativa NSR-10</text>
+
+  <!-- pillar 3 -->
+  <rect x="860" y="238" width="260" height="150" fill="#ffffff" stroke="#0f766e" stroke-width="2.5" />
+  <text x="990" y="275" text-anchor="middle" font-size="16" font-weight="bold" fill="#0f766e">Manejo de</text>
+  <text x="990" y="296" text-anchor="middle" font-size="16" font-weight="bold" fill="#0f766e">desastres</text>
+  <text x="990" y="330" text-anchor="middle" font-size="13" fill="#1a2027">respuesta, EDAN,</text>
+  <text x="990" y="350" text-anchor="middle" font-size="13" fill="#1a2027">recuperación</text>
+
+  <!-- municipal row -->
+  <rect x="260" y="450" width="680" height="70" fill="#b45309" fill-opacity="0.12" stroke="#b45309" stroke-width="2" stroke-dasharray="6 4" />
+  <text x="600" y="492" text-anchor="middle" font-size="15" fill="#b45309">Consejos y planes municipales de gestión del riesgo (CMGRD)</text>
+
+  <path d="M 210 388 L 500 450" stroke="#1a2027" stroke-width="1.5" fill="none" stroke-dasharray="4 3" />
+  <path d="M 600 388 L 600 450" stroke="#1a2027" stroke-width="1.5" fill="none" stroke-dasharray="4 3" />
+  <path d="M 990 388 L 700 450" stroke="#1a2027" stroke-width="1.5" fill="none" stroke-dasharray="4 3" />
+
+  <text x="600" y="580" text-anchor="middle" font-size="14" fill="#1a2027">Sistema en cascada: cada nivel territorial reporta hacia el nivel nacional</text>
+</svg>
