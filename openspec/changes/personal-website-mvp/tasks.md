@@ -78,9 +78,9 @@ Chain strategy: pending
 
 ## Phase 6: CV & Assets Wiring
 
-- [ ] 6.1 `lib/cv.ts` — `cvHref(locale)` mapping `de→en`.
-- [ ] 6.2 Place user-supplied real PDFs at `public/cv/juan-pablo-guzman-{es,en}.pdf`. If not yet supplied: add a clearly-labeled, non-executable placeholder note in README (`<!-- PLACEHOLDER: real CV PDF pending, not for production -->`) and `// TODO: replace with real CV, user-supplied` — never fabricate a fake binary.
-- [ ] 6.3 Wire CV link (Header + Hero CTA, `download`, `aria-label`); real or clearly-labeled placeholder `CodeSnippet` content if user hasn't supplied real snippet (R2).
+- [x] 6.1 `lib/cv.ts` — `cvHref(locale)` mapping `de→en`.
+- [x] 6.2 Place user-supplied real PDFs at `public/cv/juan-pablo-guzman-{es,en}.pdf`.
+- [x] 6.3 Wire CV link (Header + Hero CTA, `download`, `aria-label`); real or clearly-labeled placeholder `CodeSnippet` content if user hasn't supplied real snippet (R2).
 
 ## Phase 7: Testing Setup
 
