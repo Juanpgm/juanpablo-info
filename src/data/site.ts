@@ -6,13 +6,19 @@ export const site = {
   email: 'juanp.gzmz@gmail.com',
   sameAs: [
     'https://www.linkedin.com/in/jp-guzman',
-    // TODO: confirm real GitHub username before Phase 4/5 JSON-LD + repo wiring.
-    'https://github.com/jpguzman',
+    'https://github.com/Juanpgm',
   ],
   address: {
     locality: 'Cali',
     region: 'Valle del Cauca',
     country: 'CO',
+  },
+  // TODO: set your WhatsApp number here (E.164 format, digits only, e.g.
+  // "573001234567") to activate the WhatsApp contact button. Leave empty to
+  // keep it hidden.
+  whatsapp: {
+    number: '',
+    message: '',
   },
   knowsLanguage: ['es', 'en', 'de'] as const,
   knowsAbout: [
