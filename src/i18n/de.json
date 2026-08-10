@@ -38,7 +38,7 @@
   "about.language.es": "Spanisch — Muttersprache",
   "about.language.en": "Englisch — professionell",
   "about.language.de": "Deutsch — Grundkenntnisse/Mittelstufe",
-  "about.photoAlt": "Profilfoto (Platzhalter — echtes Foto ausstehend)",
+  "about.photoAlt": "Profilfoto von Juan Pablo Guzmán Martínez",
 
   "skills.heading": "Zwei Welten, die zusammenfinden",
   "skills.aiColumn": "KI · Daten · Software",
@@ -108,6 +108,10 @@
   "contact.formSubmit": "Nachricht senden",
   "contact.formSubmitPending": "Wird gesendet…",
   "contact.formSuccess": "Nachricht gesendet! Ich melde mich bald bei dir.",
+  "contact.formSuccessHeading": "Geschafft!",
   "contact.formError": "Nachricht konnte nicht gesendet werden. Bitte versuche es erneut oder schreib mir direkt.",
+  "contact.formFilesLabel": "Anhänge (optional)",
+  "contact.formFilesHint": "Maximal 3 Dateien, je 3MB (Bilder, PDF oder Word).",
+  "contact.formFilesInvalid": "Prüfe die Anhänge: maximal 3 Dateien, je 3MB, nur Bilder, PDF oder Word.",
   "contact.otherChannels": "Oder erreiche mich direkt"
 }

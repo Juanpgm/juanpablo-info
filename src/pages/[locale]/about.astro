@@ -5,11 +5,11 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { t, useLocale } from '../../i18n';
 import { education, certifications } from '../../data/education';
-// PLACEHOLDER photo — real portrait pending, user-supplied (see
-// src/assets/about-photo-placeholder.svg). Swap this import for the real
-// file once provided; the two-column layout + duotone treatment below
-// don't need to change.
-import photoPlaceholder from '../../assets/about-photo-placeholder.svg';
+// Real profile photo (user-supplied, sourced from LinkedIn without the
+// OpenToWork frame). 400x400 source — keep width/height in sync with the
+// actual file if it's ever replaced, astro:assets doesn't auto-crop a
+// mismatched aspect ratio.
+import profilePhoto from '../../assets/profile-photo.jpg';
 
 export function getStaticPaths() {
   return [{ params: { locale: 'es' } }, { params: { locale: 'en' } }, { params: { locale: 'de' } }];
@@ -31,7 +31,7 @@ const yearRange = (start: number, end?: number) => (end ? `${start}–${end}` : 
         <p>{t(locale, 'about.narrativeP3')}</p>
       </div>
       <figure class="about-photo-frame">
-        <Image src={photoPlaceholder} alt={t(locale, 'about.photoAlt')} width={480} height={600} />
+        <Image src={profilePhoto} alt={t(locale, 'about.photoAlt')} width={480} height={480} />
       </figure>
     </div>
   </section>

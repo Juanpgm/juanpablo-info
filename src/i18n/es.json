@@ -38,7 +38,7 @@
   "about.language.es": "Español — nativo",
   "about.language.en": "Inglés — profesional",
   "about.language.de": "Alemán — básico/intermedio",
-  "about.photoAlt": "Foto de perfil (placeholder — foto real pendiente)",
+  "about.photoAlt": "Foto de perfil de Juan Pablo Guzmán Martínez",
 
   "skills.heading": "Dos mundos que convergen",
   "skills.aiColumn": "IA · Datos · Software",
@@ -108,6 +108,10 @@
   "contact.formSubmit": "Enviar mensaje",
   "contact.formSubmitPending": "Enviando…",
   "contact.formSuccess": "¡Mensaje enviado! Te responderé pronto.",
+  "contact.formSuccessHeading": "¡Listo!",
   "contact.formError": "No se pudo enviar el mensaje. Intenta de nuevo o escríbeme directamente.",
+  "contact.formFilesLabel": "Adjuntos (opcional)",
+  "contact.formFilesHint": "Máximo 3 archivos, 3MB cada uno (imágenes, PDF o Word).",
+  "contact.formFilesInvalid": "Revisa los archivos adjuntos: máximo 3, 3MB cada uno, solo imágenes, PDF o Word.",
   "contact.otherChannels": "O contáctame directamente"
 }
