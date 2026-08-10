@@ -40,15 +40,15 @@ const TAGS = [
   }
 </div>
 
-<script type="module" is:inline>
-  const container = document.querySelector('[data-tag-filter]');
+<script>
+  const container = document.querySelector<HTMLElement>('[data-tag-filter]');
 
   if (container) {
-    const chips = Array.from(container.querySelectorAll('.chip'));
-    const cards = Array.from(document.querySelectorAll('.blog-card'));
+    const chips = Array.from(container.querySelectorAll<HTMLElement>('.chip'));
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('.blog-card'));
 
     container.addEventListener('click', (event) => {
-      const chip = event.target.closest('.chip');
+      const chip = (event.target as HTMLElement | null)?.closest<HTMLElement>('.chip');
       if (!chip) return;
 
       const tag = chip.dataset.tag;
@@ -60,7 +60,7 @@ const TAGS = [
 
       cards.forEach((card) => {
         const tags = (card.dataset.tags || '').split(' ');
-        const visible = tag === 'all' || tags.includes(tag);
+        const visible = tag === 'all' || tags.includes(tag ?? '');
         card.classList.toggle('hidden', !visible);
       });
     });

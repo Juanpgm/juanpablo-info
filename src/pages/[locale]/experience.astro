@@ -9,7 +9,13 @@ import { t, useLocale } from '../../i18n';
 import { getLocalizedEntries } from '../../lib/content-fallback';
 
 export function getStaticPaths() {
-  return [{ params: { locale: 'es' } }, { params: { locale: 'en' } }, { params: { locale: 'de' } }];
+  return [
+    { params: { locale: 'es' } },
+    { params: { locale: 'en' } },
+    { params: { locale: 'de' } },
+    { params: { locale: 'fr' } },
+    { params: { locale: 'ru' } },
+  ];
 }
 
 const locale = useLocale(Astro.params.locale);

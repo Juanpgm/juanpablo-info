@@ -16,8 +16,9 @@ import type { Locale } from '../i18n';
  * not a code bug — tracked in apply-progress, not fixed by writing more code
  * here.
  *
- * Fallback chain: `es` -> [es]; `en` -> [en, es]; `de` -> [de, en, es]
- * (mirrors astro.config.mjs's `fallback: { de: 'en' }`). Entries are merged
+ * Fallback chain: `es` -> [es]; `en` -> [en, es]; `de` -> [de, en, es];
+ * `fr` -> [fr, en, es]; `ru` -> [ru, en, es] (mirrors astro.config.mjs's
+ * `fallback: { de: 'en', fr: 'en', ru: 'en' }`). Entries are merged
  * by slug (the filename, e.g. "dagma", "rag-normativa-tecnica" — see
  * design.md §4/§5.4): once a slug is found in a more-preferred locale, the
  * same slug from a less-preferred fallback locale is skipped, so a
@@ -27,7 +28,9 @@ import type { Locale } from '../i18n';
 function fallbackChain(locale: Locale): Locale[] {
   if (locale === 'es') return ['es'];
   if (locale === 'en') return ['en', 'es'];
-  return ['de', 'en', 'es'];
+  if (locale === 'de') return ['de', 'en', 'es'];
+  if (locale === 'fr') return ['fr', 'en', 'es'];
+  return ['ru', 'en', 'es'];
 }
 
 /** Entry `id` is `"{locale}/{slug}"` (design.md §4) — strip the locale prefix. */

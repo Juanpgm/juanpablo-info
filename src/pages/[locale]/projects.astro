@@ -9,7 +9,13 @@ import { projects as projectSeeds } from '../../data/projects';
 import { mergeProjects } from '../../lib/github';
 
 export function getStaticPaths() {
-  return [{ params: { locale: 'es' } }, { params: { locale: 'en' } }, { params: { locale: 'de' } }];
+  return [
+    { params: { locale: 'es' } },
+    { params: { locale: 'en' } },
+    { params: { locale: 'de' } },
+    { params: { locale: 'fr' } },
+    { params: { locale: 'ru' } },
+  ];
 }
 
 const locale = useLocale(Astro.params.locale);

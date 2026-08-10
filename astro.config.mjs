@@ -13,19 +13,22 @@ export default defineConfig({
   adapter: vercel({ webAnalytics: { enabled: false } }),
   i18n: {
     defaultLocale: 'es',
-    locales: ['es', 'en', 'de'],
+    locales: ['es', 'en', 'de', 'fr', 'ru'],
     routing: { prefixDefaultLocale: true, fallbackType: 'rewrite' },
-    fallback: { de: 'en' },
+    fallback: { de: 'en', fr: 'en', ru: 'en' },
   },
   // Pages live under the custom `[locale]` dynamic segment (getStaticPaths),
   // not Astro's own folder-based i18n routing — so Astro's automatic
-  // "/" → "/{defaultLocale}/" redirect never gets generated. Without this,
-  // the bare domain root 404s. Static redirect (design output: 'static'
-  // compatible) to the default locale.
-  redirects: { '/': '/es/' },
+  // "/" → "/{defaultLocale}/" redirect never gets generated. `src/pages/index.astro`
+  // is a real page that fills this gap AND auto-detects the visitor's
+  // browser-language preference (a plain static `redirects` entry here
+  // can't read navigator.language client-side).
   integrations: [
-    sitemap({ i18n: { defaultLocale: 'es', locales: { es: 'es', en: 'en', de: 'de' } } }),
+    sitemap({ i18n: { defaultLocale: 'es', locales: { es: 'es', en: 'en', de: 'de', fr: 'fr', ru: 'ru' } } }),
   ],
+  // Viewport-triggered prefetch pairs naturally with <ClientRouter /> (view
+  // transitions) already in use — cheap win, no config previously set.
+  prefetch: { defaultStrategy: 'viewport' },
   markdown: {
     // defaultColor: false — the site's theme is manual (`data-theme` attribute,
     // see global.css), not OS `prefers-color-scheme`. Without this, Astro

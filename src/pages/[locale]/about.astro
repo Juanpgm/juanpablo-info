@@ -12,7 +12,13 @@ import { education, certifications } from '../../data/education';
 import profilePhoto from '../../assets/profile-photo.jpg';
 
 export function getStaticPaths() {
-  return [{ params: { locale: 'es' } }, { params: { locale: 'en' } }, { params: { locale: 'de' } }];
+  return [
+    { params: { locale: 'es' } },
+    { params: { locale: 'en' } },
+    { params: { locale: 'de' } },
+    { params: { locale: 'fr' } },
+    { params: { locale: 'ru' } },
+  ];
 }
 
 const locale = useLocale(Astro.params.locale);
@@ -31,7 +37,7 @@ const yearRange = (start: number, end?: number) => (end ? `${start}–${end}` : 
         <p>{t(locale, 'about.narrativeP3')}</p>
       </div>
       <figure class="about-photo-frame">
-        <Image src={profilePhoto} alt={t(locale, 'about.photoAlt')} width={480} height={480} />
+        <Image src={profilePhoto} alt={t(locale, 'about.photoAlt')} width={480} height={480} loading="eager" fetchpriority="high" />
       </figure>
     </div>
   </section>
@@ -80,7 +86,6 @@ const yearRange = (start: number, end?: number) => (end ? `${start}–${end}` : 
     <ul class="definition-list">
       <li class="definition-list__item">{t(locale, 'about.language.es')}</li>
       <li class="definition-list__item">{t(locale, 'about.language.en')}</li>
-      <li class="definition-list__item">{t(locale, 'about.language.de')}</li>
     </ul>
   </section>
 </BaseLayout>

@@ -5,9 +5,11 @@
 import de from './de.json';
 import en from './en.json';
 import es from './es.json';
+import fr from './fr.json';
+import ru from './ru.json';
 
 export type UIKey = keyof typeof es;
-export type Locale = 'es' | 'en' | 'de';
+export type Locale = 'es' | 'en' | 'de' | 'fr' | 'ru';
 
 type Dict = Record<UIKey, string>;
 
@@ -15,9 +17,11 @@ const dictionaries: Record<Locale, Dict> = {
   es,
   en: en satisfies Dict,
   de: de satisfies Dict,
+  fr: fr satisfies Dict,
+  ru: ru satisfies Dict,
 };
 
-const LOCALES: readonly Locale[] = ['es', 'en', 'de'];
+const LOCALES: readonly Locale[] = ['es', 'en', 'de', 'fr', 'ru'];
 
 export function isLocale(value: string | undefined): value is Locale {
   return !!value && (LOCALES as readonly string[]).includes(value);

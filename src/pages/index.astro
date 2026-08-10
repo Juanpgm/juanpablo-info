@@ -1,0 +1,43 @@
+---
+// Bare-domain entry point. Real page (not a static redirect config entry —
+// a redirect can't read navigator.language) that auto-routes the visitor to
+// their preferred locale, client-side, keeping the site 100% static.
+// noindex: the canonical, indexable experience lives at /es/, /en/, etc.
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Juan Pablo Guzmán Martínez</title>
+    <noscript><meta http-equiv="refresh" content="0; url=/es/" /></noscript>
+    <script is:inline>
+      (function () {
+        var SUPPORTED = ['es', 'en', 'de', 'fr', 'ru'];
+        var DEFAULT = 'es';
+        var target = DEFAULT;
+
+        var stored = localStorage.getItem('locale');
+        if (stored && SUPPORTED.indexOf(stored) !== -1) {
+          target = stored;
+        } else {
+          var langs = navigator.languages || [navigator.language || DEFAULT];
+          for (var i = 0; i < langs.length; i++) {
+            var primary = String(langs[i]).split('-')[0].toLowerCase();
+            if (SUPPORTED.indexOf(primary) !== -1) {
+              target = primary;
+              break;
+            }
+          }
+        }
+
+        location.replace('/' + target + '/');
+      })();
+    </script>
+  </head>
+  <body>
+    <p>Redirigiendo… <a href="/es/">Continuar al sitio</a></p>
+  </body>
+</html>

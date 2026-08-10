@@ -53,7 +53,7 @@ describe('mergeProjects', () => {
   const withRepo: ProjectSeed = {
     id: 'with-repo',
     name: 'With Repo',
-    description: { es: '', en: '', de: '' },
+    description: { es: '', en: '', de: '', fr: '', ru: '' },
     stack: [],
     repoUrl: 'https://github.com/owner/repo',
     isExample: false,
@@ -61,14 +61,14 @@ describe('mergeProjects', () => {
   const exampleSeed: ProjectSeed = {
     id: 'example',
     name: 'Example',
-    description: { es: '', en: '', de: '' },
+    description: { es: '', en: '', de: '', fr: '', ru: '' },
     stack: [],
     isExample: true,
   };
   const noRepoUrlSeed: ProjectSeed = {
     id: 'no-repo-url',
     name: 'No Repo URL',
-    description: { es: '', en: '', de: '' },
+    description: { es: '', en: '', de: '', fr: '', ru: '' },
     stack: [],
     isExample: false,
   };

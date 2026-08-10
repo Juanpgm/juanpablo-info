@@ -20,7 +20,7 @@ export const site = {
     number: '',
     message: '',
   },
-  knowsLanguage: ['es', 'en', 'de'] as const,
+  knowsLanguage: ['es', 'en'] as const,
   knowsAbout: [
     'Artificial Intelligence',
     'Data Science',

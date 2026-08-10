@@ -30,3 +30,21 @@ const label = context ? `${t(locale, 'header.languageSelectorLabel')} (${context
     ))
   }
 </nav>
+
+<script>
+  // Persist a manual language choice so a later bare "/" visit (see
+  // src/pages/index.astro) honors it instead of re-running browser-language
+  // auto-detection every time.
+  function bindLangSelector() {
+    document.querySelectorAll<HTMLAnchorElement>('.lang-selector .lang-link').forEach((link) => {
+      if (link.dataset.bound) return;
+      link.dataset.bound = 'true';
+      link.addEventListener('click', () => {
+        const locale = link.getAttribute('lang');
+        if (locale) localStorage.setItem('locale', locale);
+      });
+    });
+  }
+  bindLangSelector();
+  document.addEventListener('astro:page-load', bindLangSelector);
+</script>

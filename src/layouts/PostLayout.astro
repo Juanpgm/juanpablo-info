@@ -75,7 +75,9 @@ const {
       <AuthorByline />
     </header>
 
-    {heroImage && <Image src={heroImage} alt="" width={1200} height={630} class="post-hero-image" />}
+    {heroImage && (
+      <Image src={heroImage} alt="" width={1200} height={630} class="post-hero-image" loading="eager" fetchpriority="high" />
+    )}
 
     <div class="post-body">
       <aside class="post-toc" aria-label="Table of contents">
