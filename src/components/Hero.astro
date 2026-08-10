@@ -4,11 +4,9 @@
 // primary CTAs (Ver experiencia / Descargar CV) + location.
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import { t, useLocale } from '../i18n';
+import { cvHref } from '../lib/cv';
 
 const locale = useLocale(Astro.currentLocale);
-// TODO(Phase 6): replace with lib/cv.ts `cvHref()` once real PDFs land.
-const cvLocale = locale === 'de' ? 'en' : locale;
-const cvHref = `/cv/juan-pablo-guzman-${cvLocale}.pdf`;
 ---
 
 <section class="hero" data-reveal aria-labelledby="hero-title">
@@ -19,7 +17,12 @@ const cvHref = `/cv/juan-pablo-guzman-${cvLocale}.pdf`;
     <a href={getRelativeLocaleUrl(locale, 'experience')} class="btn btn-lg">
       {t(locale, 'hero.ctaExperience')}
     </a>
-    <a href={cvHref} download class="btn btn-lg btn-outline">
+    <a
+      href={cvHref(locale)}
+      download
+      class="btn btn-lg btn-outline"
+      aria-label={t(locale, 'hero.ctaCvAriaLabel')}
+    >
       {t(locale, 'hero.ctaCv')}
     </a>
     <span class="hero-location">{t(locale, 'hero.location')}</span>

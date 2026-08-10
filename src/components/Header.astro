@@ -4,6 +4,7 @@ import LanguageSelector from './LanguageSelector.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import { t, useLocale } from '../i18n';
 import { nav } from '../data/nav';
+import { cvHref } from '../lib/cv';
 
 const locale = useLocale(Astro.currentLocale);
 const currentPath = Astro.url.pathname;
@@ -12,11 +13,6 @@ const navItems = nav.map((item) => ({
   href: getRelativeLocaleUrl(locale, item.route),
   label: t(locale, item.labelKey),
 }));
-
-// TODO(Phase 6, tasks 6.1-6.3): replace with lib/cv.ts `cvHref()` + real
-// user-supplied PDFs at public/cv/. de falls back to en (no DE CV, design §9).
-const cvLocale = locale === 'de' ? 'en' : locale;
-const cvHref = `/cv/juan-pablo-guzman-${cvLocale}.pdf`;
 ---
 
 <header class="site-header" id="site-header" data-scrolled="false">
@@ -44,7 +40,7 @@ const cvHref = `/cv/juan-pablo-guzman-${cvLocale}.pdf`;
     <div class="header-actions">
       <LanguageSelector />
       <ThemeToggle />
-      <a href={cvHref} download class="btn btn-cv" aria-label={t(locale, 'header.cvAriaLabel')}>
+      <a href={cvHref(locale)} download class="btn btn-cv" aria-label={t(locale, 'header.cvAriaLabel')}>
         {t(locale, 'header.cv')}
       </a>
     </div>
