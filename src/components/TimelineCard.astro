@@ -1,0 +1,47 @@
+---
+// One experience role — native <details>/<summary> for zero-JS expand,
+// keyboard + screen-reader accessible for free (design §7). NO image slot:
+// the `experience` schema has no `image` field (design §4/§10, locks
+// proposal O7 — Teatrino renders as a plain text entry, same as every role).
+import type { CollectionEntry } from 'astro:content';
+import { t } from '../i18n';
+import type { Locale } from '../i18n';
+
+interface Props {
+  entry: CollectionEntry<'experience'>;
+  locale: Locale;
+  open?: boolean;
+}
+
+const { entry, locale, open = false } = Astro.props;
+const { company, role, location, startDate, endDate, current, highlights, stack } = entry.data;
+
+const dateFormatter = new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'short' });
+const startLabel = dateFormatter.format(startDate);
+const endLabel = current || !endDate ? t(locale, 'experience.present') : dateFormatter.format(endDate);
+---
+
+<details class="timeline-card" open={open}>
+  <summary class="timeline-card__summary">
+    <span class="timeline-card__year">{startDate.getFullYear()}</span>
+    <span class="timeline-card__heading">
+      <strong>{company}</strong>
+      <span class="timeline-card__role">{role}</span>
+    </span>
+    {current && <span class="badge badge-current">{t(locale, 'experience.current')}</span>}
+  </summary>
+  <div class="timeline-card__body">
+    <p class="timeline-card__meta">{startLabel} – {endLabel} · {location}</p>
+    <ul class="timeline-card__highlights">
+      {highlights.map((highlight) => <li>{highlight}</li>)}
+    </ul>
+    {
+      stack.length > 0 && (
+        <p class="timeline-card__stack">
+          <span class="timeline-card__stack-label">{t(locale, 'experience.stackLabel')}:</span>
+          {stack.map((tech) => <span class="badge badge-stack">{tech}</span>)}
+        </p>
+      )
+    }
+  </div>
+</details>

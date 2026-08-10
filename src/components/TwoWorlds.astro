@@ -1,0 +1,28 @@
+---
+// "Dos mundos que convergen" skills section (proposal §4.1, design §3/A5).
+// Two converging columns with a connecting gradient bridge between them —
+// tasteful, CSS-only, no JS.
+import { t, useLocale } from '../i18n';
+import { skills } from '../data/skills';
+
+const locale = useLocale(Astro.currentLocale);
+---
+
+<section class="two-worlds" data-reveal aria-labelledby="two-worlds-heading">
+  <h2 id="two-worlds-heading">{t(locale, 'skills.heading')}</h2>
+  <div class="two-worlds-grid">
+    <div class="world world-ai">
+      <h3>{t(locale, 'skills.aiColumn')}</h3>
+      <ul>
+        {skills.ai.map((skill) => <li>{t(locale, skill.labelKey)}</li>)}
+      </ul>
+    </div>
+    <div class="world-connector" aria-hidden="true"></div>
+    <div class="world world-civil">
+      <h3>{t(locale, 'skills.civilColumn')}</h3>
+      <ul>
+        {skills.civil.map((skill) => <li>{t(locale, skill.labelKey)}</li>)}
+      </ul>
+    </div>
+  </div>
+</section>

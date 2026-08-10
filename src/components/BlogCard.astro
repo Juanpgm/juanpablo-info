@@ -1,0 +1,35 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import type { CollectionEntry } from 'astro:content';
+import { t } from '../i18n';
+import type { Locale, UIKey } from '../i18n';
+import { readingTimeMinutes } from '../lib/reading-time';
+
+interface Props {
+  entry: CollectionEntry<'blog'>;
+  locale: Locale;
+}
+
+const { entry, locale } = Astro.props;
+// entry.id is "{locale}/{slug}" (design.md §4) — the route only needs slug.
+const slug = entry.id.slice(entry.id.indexOf('/') + 1);
+const href = getRelativeLocaleUrl(locale, `blog/${slug}`);
+const dateFormatter = new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'long' });
+const minutes = readingTimeMinutes(entry.body ?? '');
+---
+
+<article class="blog-card" data-reveal data-tags={entry.data.tags.join(' ')}>
+  <p class="blog-card__meta">
+    <time datetime={entry.data.pubDate.toISOString()}>{dateFormatter.format(entry.data.pubDate)}</time>
+    <span aria-hidden="true"> · </span>
+    {minutes} {t(locale, 'blog.readingTimeSuffix')}
+  </p>
+  <h3 class="blog-card__title">
+    <a href={href}>{entry.data.title}</a>
+  </h3>
+  <p class="blog-card__description">{entry.data.description}</p>
+  <ul class="blog-card__tags">
+    {entry.data.tags.map((tag) => <li class="badge badge-tag">{t(locale, `blog.tag.${tag}` as UIKey)}</li>)}
+  </ul>
+  <a href={href} class="nav-link">{t(locale, 'blog.readMore')} →</a>
+</article>

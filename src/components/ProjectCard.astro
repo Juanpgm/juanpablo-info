@@ -1,0 +1,57 @@
+---
+// Stack badges + star/lang/updated slots. Live GitHub enrichment is Phase 5
+// (`lib/github.ts`) — for now every seed renders from `data/projects.ts`
+// as-is with its `isExample` badge; the optional `stars`/`primaryLanguage`/
+// `lastUpdated`/`stale` props are accepted now so Phase 5 only has to pass
+// data, not touch this template.
+import { t } from '../i18n';
+import type { Locale } from '../i18n';
+import type { ProjectSeed } from '../data/projects';
+
+interface Props {
+  project: ProjectSeed & {
+    stars?: number | null;
+    primaryLanguage?: string | null;
+    lastUpdated?: string | null;
+    stale?: boolean;
+  };
+  locale: Locale;
+}
+
+const { project, locale } = Astro.props;
+const hasLiveMeta = project.stars != null || project.primaryLanguage != null || project.lastUpdated != null;
+---
+
+<article class="project-card" data-reveal>
+  <header class="project-card__header">
+    <h3>{project.name}</h3>
+    {project.isExample && <span class="badge badge-example">{t(locale, 'projects.exampleBadge')}</span>}
+    {!project.isExample && project.stale && <span class="badge badge-stale">{t(locale, 'projects.staleBadge')}</span>}
+  </header>
+
+  <p class="project-card__description">{project.description[locale]}</p>
+
+  <ul class="project-card__stack">
+    {project.stack.map((tech) => <li class="badge badge-stack">{tech}</li>)}
+  </ul>
+
+  {
+    hasLiveMeta && (
+      <p class="project-card__meta">
+        {project.stars != null && <span>★ {project.stars}</span>}
+        {project.primaryLanguage && <span>{project.primaryLanguage}</span>}
+        {project.lastUpdated && (
+          <time datetime={project.lastUpdated}>{new Date(project.lastUpdated).toLocaleDateString(locale)}</time>
+        )}
+      </p>
+    )
+  }
+
+  {
+    project.repoUrl && (
+      <a href={project.repoUrl} class="nav-link" target="_blank" rel="noreferrer noopener">
+        {t(locale, 'projects.viewRepo')}
+      </a>
+    )
+  }
+</article>

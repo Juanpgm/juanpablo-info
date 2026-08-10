@@ -1,0 +1,24 @@
+---
+// Renders the 'recent' experience group as TimelineCard[]. The first (most
+// recent) card starts expanded, matching the wireframe (proposal §4.2).
+import type { CollectionEntry } from 'astro:content';
+import TimelineCard from './TimelineCard.astro';
+import type { Locale } from '../i18n';
+
+interface Props {
+  entries: CollectionEntry<'experience'>[];
+  locale: Locale;
+}
+
+const { entries, locale } = Astro.props;
+---
+
+<ol class="timeline">
+  {
+    entries.map((entry, index) => (
+      <li>
+        <TimelineCard entry={entry} locale={locale} open={index === 0} />
+      </li>
+    ))
+  }
+</ol>

@@ -1,0 +1,27 @@
+---
+// Home hero (proposal.md §4.1, design §3). Confident display typography
+// (Fraunces via h1), the mandatory "puentes entre..." hook, and the two
+// primary CTAs (Ver experiencia / Descargar CV) + location.
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { t, useLocale } from '../i18n';
+
+const locale = useLocale(Astro.currentLocale);
+// TODO(Phase 6): replace with lib/cv.ts `cvHref()` once real PDFs land.
+const cvLocale = locale === 'de' ? 'en' : locale;
+const cvHref = `/cv/juan-pablo-guzman-${cvLocale}.pdf`;
+---
+
+<section class="hero" data-reveal aria-labelledby="hero-title">
+  <p class="hero-eyebrow">{t(locale, 'hero.subtitle')}</p>
+  <h1 id="hero-title" class="hero-title">{t(locale, 'hero.title')}</h1>
+  <p class="hero-tagline">{t(locale, 'hero.tagline')}</p>
+  <div class="hero-actions">
+    <a href={getRelativeLocaleUrl(locale, 'experience')} class="btn btn-lg">
+      {t(locale, 'hero.ctaExperience')}
+    </a>
+    <a href={cvHref} download class="btn btn-lg btn-outline">
+      {t(locale, 'hero.ctaCv')}
+    </a>
+    <span class="hero-location">{t(locale, 'hero.location')}</span>
+  </div>
+</section>

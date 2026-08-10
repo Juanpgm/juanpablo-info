@@ -1,0 +1,32 @@
+---
+// Collapsed accordion for the 'early' experience group — compact, one line
+// per role, closed by default (design §3/§7, proposal §4.2).
+import type { CollectionEntry } from 'astro:content';
+import { t } from '../i18n';
+import type { Locale } from '../i18n';
+
+interface Props {
+  entries: CollectionEntry<'experience'>[];
+  locale: Locale;
+}
+
+const { entries, locale } = Astro.props;
+const yearFormatter = new Intl.DateTimeFormat(locale, { year: 'numeric' });
+---
+
+<details class="early-experience">
+  <summary class="early-experience__summary">{t(locale, 'experience.earlyLabel')}</summary>
+  <ul class="early-experience__list">
+    {
+      entries.map((entry) => (
+        <li class="early-experience__item">
+          <span class="early-experience__year">{yearFormatter.format(entry.data.startDate)}</span>
+          <span class="early-experience__role">
+            <strong>{entry.data.company}</strong> — {entry.data.role}
+          </span>
+          <span class="early-experience__note">{entry.data.highlights[0]}</span>
+        </li>
+      ))
+    }
+  </ul>
+</details>

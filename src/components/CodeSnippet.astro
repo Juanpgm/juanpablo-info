@@ -1,0 +1,55 @@
+---
+// Static, Shiki-highlighted, clearly-labeled showcase block (design §3/O9).
+// Uses Astro's built-in <Code> component (astro:components) — it wraps Shiki
+// at build time, so no extra dependency is needed on top of the markdown
+// highlighter already configured in astro.config.mjs.
+//
+// The snippet below is a real, hand-written excerpt representative of the
+// DAGMA-360 GCP/ETL pipeline (proposal §4.1/experience seed): a BigQuery
+// load followed by a simple feature transform. It is illustrative only —
+// it omits auth, error handling, and config wiring, and is explicitly
+// labeled as non-executable, never presented as a working script.
+import { Code } from 'astro:components';
+import { t } from '../i18n';
+import type { Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const code = `"""Illustrative excerpt -- GCP ETL fragment (DAGMA-360 pipeline).
+Not runnable as-is: omits auth, error handling, and config wiring.
+"""
+from google.cloud import bigquery
+
+
+def load_air_quality_readings(client: bigquery.Client, rows: list[dict]) -> None:
+    """Load raw air-quality sensor readings into the staging table."""
+    table_id = "dagma_360.stg_air_quality_readings"
+    errors = client.insert_rows_json(table_id, rows)
+    if errors:
+        raise RuntimeError(f"BigQuery insert failed: {errors}")
+
+
+def normalize_risk_score(readings: list[dict]) -> list[dict]:
+    """Feature transform: min-max normalize PM2.5 into a 0-1 risk score
+    per monitoring station, ready for the spatiotemporal risk model."""
+    values = [r["pm25"] for r in readings]
+    lo, hi = min(values), max(values)
+    span = hi - lo or 1  # avoid divide-by-zero on a flat batch
+    return [
+        {**r, "risk_score": round((r["pm25"] - lo) / span, 4)}
+        for r in readings
+    ]
+`;
+---
+
+<div class="code-snippet" data-reveal>
+  <p class="code-snippet__label">
+    <span class="badge badge-example">Python</span>
+    {t(locale, 'about.codeSnippetLabel')}
+  </p>
+  <Code code={code} lang="python" theme="github-dark" />
+</div>

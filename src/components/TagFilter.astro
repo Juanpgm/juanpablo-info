@@ -1,0 +1,56 @@
+---
+// Vanilla chip filter, blog index only (design §7 — the one widget that
+// could justify a framework, at 4-6 posts it's ~20 lines of DOM code).
+// No dedicated /blog/tags/[tag]/ routes. Progressive enhancement: chips are
+// real <button>s; without JS no filtering happens, so every post stays
+// visible (nothing is hidden behind JS).
+import { t } from '../i18n';
+import type { Locale, UIKey } from '../i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const TAGS = ['ia', 'data-engineering', 'bim', 'geointeligencia', 'carrera'] as const;
+---
+
+<div class="tag-filter" data-tag-filter role="group" aria-label={t(locale, 'blog.heading')}>
+  <button type="button" class="chip is-active" data-tag="all" aria-pressed="true">
+    {t(locale, 'blog.filterAll')}
+  </button>
+  {
+    TAGS.map((tag) => (
+      <button type="button" class="chip" data-tag={tag} aria-pressed="false">
+        {t(locale, `blog.tag.${tag}` as UIKey)}
+      </button>
+    ))
+  }
+</div>
+
+<script type="module" is:inline>
+  const container = document.querySelector('[data-tag-filter]');
+
+  if (container) {
+    const chips = Array.from(container.querySelectorAll('.chip'));
+    const cards = Array.from(document.querySelectorAll('.blog-card'));
+
+    container.addEventListener('click', (event) => {
+      const chip = event.target.closest('.chip');
+      if (!chip) return;
+
+      const tag = chip.dataset.tag;
+      chips.forEach((c) => {
+        const active = c === chip;
+        c.classList.toggle('is-active', active);
+        c.setAttribute('aria-pressed', String(active));
+      });
+
+      cards.forEach((card) => {
+        const tags = (card.dataset.tags || '').split(' ');
+        const visible = tag === 'all' || tags.includes(tag);
+        card.classList.toggle('hidden', !visible);
+      });
+    });
+  }
+</script>

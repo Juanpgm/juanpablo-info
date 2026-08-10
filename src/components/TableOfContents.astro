@@ -1,0 +1,33 @@
+---
+// Auto-generated from post headings (Astro's `render()` return value — design
+// §3, blog spec "Auto TOC and Reading Time"). Only h2/h3 are listed to keep
+// the sidebar scannable.
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+  label: string;
+}
+
+const { headings, label } = Astro.props;
+const items = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+---
+
+{
+  items.length > 0 && (
+    <nav aria-label={label}>
+      <p class="toc-heading">{label}</p>
+      <ul class="toc-list">
+        {items.map((heading) => (
+          <li class={`toc-item toc-item--depth-${heading.depth}`}>
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
