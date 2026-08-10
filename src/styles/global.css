@@ -61,6 +61,7 @@
   --text-lg: 1.125rem;
   --text-xl: 1.25rem;
   --text-2xl: 1.75rem;
+  --text-3xl: 2.25rem; /* page-level h1 tier (About/Experience/Projects/Blog) */
   --text-display-sm: clamp(1.1rem, 1vw + 1rem, 1.375rem);
   --text-display-lg: clamp(2.5rem, 5vw + 1rem, 4.25rem);
 }
@@ -97,10 +98,43 @@ body {
   overflow-wrap: break-word;
 }
 
+/*
+ * Heading hierarchy (typography fast-follow, post-launch). Tailwind's
+ * Preflight resets ALL heading font-size/font-weight to `inherit` and all
+ * margins to 0 — without these rules every h1/h2/h3 site-wide silently fell
+ * back to plain 1rem/400 body text with zero margin, not a browser default.
+ * These are FALLBACK defaults for any heading anywhere; specific tiers below
+ * (.page-title, .section-header h2, card titles, .hero-title,
+ * .contact-modal__header h2) override on top of this base.
+ */
 h1,
 h2,
 h3 {
   font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: var(--space-sm);
+}
+
+h1 {
+  font-size: var(--text-2xl);
+}
+
+h2 {
+  font-size: var(--text-xl);
+}
+
+h3 {
+  font-size: var(--text-lg);
+}
+
+/* Page-level h1 (About/Experience/Projects/Blog index/blog post title) — the
+   single most prominent heading on its page: bigger than a
+   .section-header h2 (28px), clearly smaller than the hero h1 (40-68px). */
+.page-title {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  margin-bottom: var(--space-lg);
 }
 
 /* Accessible focus ring — never removed, never left to the browser default. */
@@ -386,6 +420,10 @@ h3 {
 
 .section-header h2 {
   font-size: var(--text-2xl);
+  font-weight: 700;
+  /* .section-header itself owns the bottom spacing (margin-bottom below) —
+     zero the h2's own margin so they don't stack. */
+  margin-bottom: 0;
 }
 
 .hidden {
@@ -450,6 +488,7 @@ h3 {
 .hero-title {
   margin-block: var(--space-xs) var(--space-sm);
   font-size: var(--text-display-lg);
+  font-weight: 700;
   line-height: 1.05;
 }
 
@@ -594,6 +633,31 @@ h3 {
 
 .world h3 {
   margin-bottom: var(--space-sm);
+}
+
+/* Card-title tier — one shared size/weight for every "card heading" role
+   site-wide (project cards, blog cards, TwoWorlds skill columns, timeline
+   entries), so they read as the same visual tier regardless of which
+   element happens to hold them. `.timeline-card__heading strong` isn't a
+   real heading element (it lives inside a native <summary>, see
+   TimelineCard.astro) so it needs font-family/weight spelled out here too;
+   the others are real h2/h3 and would already get most of this from the
+   base h1/h2/h3 rule above — spelled out explicitly anyway as one
+   single source of truth for this tier instead of relying on cascade luck. */
+.project-card__title,
+.blog-card__title,
+.world h3,
+.timeline-card__heading strong {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+
+.project-card__title,
+.blog-card__title {
+  /* Cards use grid `gap` for spacing — zero the heading's own margin so it
+     doesn't stack on top of the gap. */
+  margin: 0;
 }
 
 .world ul {
@@ -855,6 +919,14 @@ h3 {
   font-size: var(--text-sm);
 }
 
+.blog-card__image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 0.75rem;
+}
+
 .blog-card__title a {
   color: var(--color-ink);
   text-decoration: none;
@@ -1099,7 +1171,13 @@ dialog#contact-modal[open]::backdrop {
 }
 
 .contact-modal__header h2 {
+  font-size: var(--text-2xl);
+  font-weight: 700;
   margin: 0;
+}
+
+.post-header {
+  margin-bottom: var(--space-xl);
 }
 
 .post-back-link {
@@ -1107,10 +1185,124 @@ dialog#contact-modal[open]::backdrop {
   margin-bottom: var(--space-sm);
 }
 
-.post-date {
+/* Combined date + reading-time meta line (post-launch fast-follow) — reads
+   the same "muted small text" tier as .project-card__meta/.blog-card__meta
+   elsewhere on the site. */
+.post-meta {
+  margin-top: var(--space-xs);
   color: var(--color-ink-muted);
   font-size: var(--text-sm);
-  margin-bottom: var(--space-md);
+}
+
+.post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2xs);
+  list-style: none;
+  margin-top: var(--space-sm);
+}
+
+.post-hero-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: var(--space-xl);
+  border-radius: 0.75rem;
+}
+
+/* Article body prose (post-launch fast-follow) — .post-content previously
+   had ZERO dedicated CSS, so every real post rendered as an unspaced wall
+   of text once Tailwind Preflight stripped default browser margins/list
+   styles. Cap the reading measure; every child gets deliberate rhythm. */
+.post-content {
+  max-width: 70ch;
+}
+
+.post-content > :first-child {
+  margin-top: 0;
+}
+
+.post-content p,
+.post-content ul,
+.post-content ol,
+.post-content blockquote,
+.post-content pre,
+.post-content img,
+.post-content h2,
+.post-content h3 {
+  margin-top: var(--space-md);
+}
+
+.post-content h2 {
+  font-size: var(--text-2xl);
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-sm);
+}
+
+.post-content h3 {
+  font-size: var(--text-xl);
+  margin-top: var(--space-lg);
+  margin-bottom: var(--space-2xs);
+}
+
+.post-content ul,
+.post-content ol {
+  padding-left: var(--space-lg);
+  display: grid;
+  gap: var(--space-2xs);
+}
+
+.post-content ul {
+  list-style: disc;
+}
+
+.post-content ol {
+  list-style: decimal;
+}
+
+.post-content blockquote {
+  padding: var(--space-sm) var(--space-md);
+  border-left: 3px solid var(--color-primary);
+  background-color: var(--color-surface-subtle);
+  color: var(--color-ink-muted);
+  font-style: italic;
+  border-radius: 0 0.375rem 0.375rem 0;
+}
+
+.post-content code {
+  padding: 0.1em 0.4em;
+  background-color: var(--color-surface-subtle);
+  border-radius: 0.25rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+}
+
+/* Inline-code chip above must not leak into Shiki's own fenced code blocks
+   (pre.astro-code, dual-theme styling already handled further up this
+   file) — reset back to Shiki's own look inside <pre>. */
+.post-content pre code {
+  padding: 0;
+  background: none;
+  border-radius: 0;
+  font-size: inherit;
+}
+
+.post-content a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.post-content a:hover {
+  color: var(--color-primary-hover);
+}
+
+.post-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-inline: auto;
+  border-radius: 0.75rem;
 }
 
 /* Education / certifications / languages lists (About page) */

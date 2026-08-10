@@ -34,7 +34,7 @@ const Heading = headingLevel;
 
 <article class="project-card" data-reveal>
   <header class="project-card__header">
-    <Heading>{project.name}</Heading>
+    <Heading class="project-card__title">{project.name}</Heading>
     {project.isExample && <span class="badge badge-example">{t(locale, 'projects.exampleBadge')}</span>}
   </header>
 
