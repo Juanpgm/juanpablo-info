@@ -6,7 +6,7 @@
 import type { CollectionEntry } from 'astro:content';
 import { t } from '../i18n';
 import type { Locale } from '../i18n';
-import { formatCalendarDate, getCalendarYear } from '../lib/format-date';
+import { formatCalendarDate, formatCalendarDuration, getCalendarDuration, getCalendarYear } from '../lib/format-date';
 
 interface Props {
   entry: CollectionEntry<'experience'>;
@@ -20,6 +20,14 @@ const { company, role, location, startDate, endDate, current, highlights, stack 
 const dateOptions: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short' };
 const startLabel = formatCalendarDate(startDate, locale, dateOptions);
 const endLabel = current || !endDate ? t(locale, 'experience.present') : formatCalendarDate(endDate, locale, dateOptions);
+const durationWords = {
+  year: t(locale, 'experience.year'),
+  years: t(locale, 'experience.years'),
+  month: t(locale, 'experience.month'),
+  months: t(locale, 'experience.months'),
+  connector: t(locale, 'experience.counterConnector'),
+};
+const duration = formatCalendarDuration(getCalendarDuration(startDate, endDate ?? new Date()), durationWords);
 ---
 
 <details class="timeline-card" open={open}>
@@ -32,7 +40,7 @@ const endLabel = current || !endDate ? t(locale, 'experience.present') : formatC
     {current && <span class="badge badge-current">{t(locale, 'experience.current')}</span>}
   </summary>
   <div class="timeline-card__body">
-    <p class="timeline-card__meta">{startLabel} – {endLabel} · {location}</p>
+    <p class="timeline-card__meta">{startLabel} – {endLabel} · {duration} · {location}</p>
     <ul class="timeline-card__highlights">
       {highlights.map((highlight) => <li>{highlight}</li>)}
     </ul>
