@@ -79,7 +79,7 @@ export const projects: ProjectSeed[] = [
       en: 'WhatsApp environmental-emergency response backend for DAGMA: voice transcription with Whisper, data extraction with LangChain and GPT-4o, automatic severity classification, and geolocation with PostGIS.',
       de: 'WhatsApp-Backend zur Bearbeitung von Umweltnotfällen für DAGMA: Sprachtranskription mit Whisper, Datenextraktion mit LangChain und GPT-4o, automatische Schweregrad-Klassifizierung und Geolokalisierung mit PostGIS.',
     },
-    stack: ['Python', 'LangChain', 'GPT-4o', 'PostGIS'],
+    stack: ['Python', 'LangChain', 'Groq', 'PostGIS'],
     repoUrl: 'https://github.com/Juanpgm/emergencias-chatbot-dagma',
     isExample: false,
     featured: false,
