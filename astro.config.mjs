@@ -17,6 +17,12 @@ export default defineConfig({
     routing: { prefixDefaultLocale: true, fallbackType: 'rewrite' },
     fallback: { de: 'en' },
   },
+  // Pages live under the custom `[locale]` dynamic segment (getStaticPaths),
+  // not Astro's own folder-based i18n routing — so Astro's automatic
+  // "/" → "/{defaultLocale}/" redirect never gets generated. Without this,
+  // the bare domain root 404s. Static redirect (design output: 'static'
+  // compatible) to the default locale.
+  redirects: { '/': '/es/' },
   integrations: [
     sitemap({ i18n: { defaultLocale: 'es', locales: { es: 'es', en: 'en', de: 'de' } } }),
   ],
