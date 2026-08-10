@@ -1,21 +1,34 @@
-// Decorative theme-aware neural-network node graph for the Hero background
-// (post-launch fast-follow, design §7 ADR A1: vanilla-only islands, §8 motion
-// contract). Pure ambient texture: aria-hidden, paused off-screen/tab-hidden,
-// frozen to a single static frame under `prefers-reduced-motion: reduce`.
+// Decorative theme-aware "deep learning" network diagram — global fixed page
+// background (post-launch fast-follow, design §7 ADR A1: vanilla-only
+// islands, §8 motion contract). Pure ambient texture: aria-hidden, frozen to
+// a single static frame under `prefers-reduced-motion: reduce`, paused while
+// the tab is hidden.
 //
-// ponytail: O(n²) pairwise distance check for line-drawing — fine at ~40
-// nodes (≈780 pairs/frame); upgrade to a spatial grid only if node count
-// grows an order of magnitude.
+// Layered feed-forward diagram, not a random particle field: nodes sit in
+// LAYER_SIZES.length fixed columns, connected only to the adjacent layer
+// (classic dense/fully-connected look) — cheaper than the old O(n²) all-pairs
+// distance check it replaces (only adjacent-layer pairs, no distance test).
+//
+// ponytail: mounted once as a fixed full-viewport backdrop (see
+// BaseLayout.astro) — no longer needs its own IntersectionObserver
+// off-screen guard, a "background behind everything" is always on-screen
+// while the tab is open. document.visibilitychange still pauses it for a
+// backgrounded tab.
 
 interface Node {
-  x: number; // normalized [0,1], resize-independent
-  y: number;
-  vx: number;
-  vy: number;
+  baseX: number; // normalized [0,1] layer column position, fixed
+  baseY: number; // normalized [0,1] slot position within its layer, fixed
+  phaseX: number; // idle-jitter phase offsets, randomized per node
+  phaseY: number;
 }
 
-const NODE_COUNT = 40;
-const MAX_LINK_DIST = 130; // CSS px
+const LAYER_SIZES = [5, 8, 10, 8, 5]; // hourglass shape reads as a real net diagram
+const JITTER_AMP_X = 0.006; // normalized — texture only, columns stay visually crisp
+const JITTER_AMP_Y = 0.015;
+const JITTER_TIME_STEP = 0.006;
+const LINE_ALPHA = 0.2;
+const NODE_ALPHA = 0.38;
+const NODE_RADIUS = 1.75; // CSS px
 const MAX_DPR = 2;
 const RESIZE_DEBOUNCE_MS = 150;
 
@@ -28,13 +41,14 @@ export function initNetworkCanvas(canvas: HTMLCanvasElement): () => void {
   // `const`s), so the nested functions reference this one instead.
   const ctx: CanvasRenderingContext2D = ctx2d;
 
-  const nodes: Node[] = Array.from({ length: NODE_COUNT }, () => ({
-    x: Math.random(),
-    y: Math.random(),
-    // Very slow drift — ambient texture, not an attention-grabbing effect.
-    vx: (Math.random() - 0.5) * 0.00025,
-    vy: (Math.random() - 0.5) * 0.00025,
-  }));
+  const layers: Node[][] = LAYER_SIZES.map((count, layerIndex) =>
+    Array.from({ length: count }, (_, slotIndex) => ({
+      baseX: (layerIndex + 1) / (LAYER_SIZES.length + 1),
+      baseY: (slotIndex + 1) / (count + 1),
+      phaseX: Math.random() * Math.PI * 2,
+      phaseY: Math.random() * Math.PI * 2,
+    })),
+  );
 
   const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -44,8 +58,8 @@ export function initNetworkCanvas(canvas: HTMLCanvasElement): () => void {
   let lineColor = '#4b5563';
   let rafId = 0;
   let running = false;
-  let intersecting = false;
   let resizeTimer = 0;
+  let t = 0;
 
   function readColors(): void {
     const styles = getComputedStyle(document.documentElement);
@@ -54,10 +68,9 @@ export function initNetworkCanvas(canvas: HTMLCanvasElement): () => void {
   }
 
   function resize(): void {
-    const rect = canvas.getBoundingClientRect();
+    width = window.innerWidth;
+    height = window.innerHeight;
     const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
-    width = rect.width;
-    height = rect.height;
     canvas.width = Math.round(width * dpr);
     canvas.height = Math.round(height * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -69,15 +82,16 @@ export function initNetworkCanvas(canvas: HTMLCanvasElement): () => void {
     resizeTimer = window.setTimeout(resize, RESIZE_DEBOUNCE_MS);
   }
 
+  function nodeX(n: Node): number {
+    return n.baseX + Math.sin(t + n.phaseX) * JITTER_AMP_X;
+  }
+
+  function nodeY(n: Node): number {
+    return n.baseY + Math.sin(t * 0.8 + n.phaseY) * JITTER_AMP_Y;
+  }
+
   function step(): void {
-    for (const n of nodes) {
-      n.x += n.vx;
-      n.y += n.vy;
-      if (n.x <= 0 || n.x >= 1) n.vx *= -1;
-      if (n.y <= 0 || n.y >= 1) n.vy *= -1;
-      n.x = Math.min(1, Math.max(0, n.x));
-      n.y = Math.min(1, Math.max(0, n.y));
-    }
+    t += JITTER_TIME_STEP;
   }
 
   function render(): void {
@@ -85,30 +99,29 @@ export function initNetworkCanvas(canvas: HTMLCanvasElement): () => void {
     ctx.clearRect(0, 0, width, height);
 
     ctx.lineWidth = 1;
-    for (let i = 0; i < nodes.length; i++) {
-      const a = nodes[i];
-      for (let j = i + 1; j < nodes.length; j++) {
-        const b = nodes[j];
-        const dx = (a.x - b.x) * width;
-        const dy = (a.y - b.y) * height;
-        const dist = Math.hypot(dx, dy);
-        if (dist < MAX_LINK_DIST) {
-          ctx.globalAlpha = (1 - dist / MAX_LINK_DIST) * 0.14;
-          ctx.strokeStyle = lineColor;
+    ctx.strokeStyle = lineColor;
+    ctx.globalAlpha = LINE_ALPHA;
+    for (let i = 0; i < layers.length - 1; i++) {
+      for (const a of layers[i]) {
+        const ax = nodeX(a) * width;
+        const ay = nodeY(a) * height;
+        for (const b of layers[i + 1]) {
           ctx.beginPath();
-          ctx.moveTo(a.x * width, a.y * height);
-          ctx.lineTo(b.x * width, b.y * height);
+          ctx.moveTo(ax, ay);
+          ctx.lineTo(nodeX(b) * width, nodeY(b) * height);
           ctx.stroke();
         }
       }
     }
 
-    ctx.globalAlpha = 0.3;
+    ctx.globalAlpha = NODE_ALPHA;
     ctx.fillStyle = nodeColor;
-    for (const n of nodes) {
-      ctx.beginPath();
-      ctx.arc(n.x * width, n.y * height, 1.75, 0, Math.PI * 2);
-      ctx.fill();
+    for (const layer of layers) {
+      for (const n of layer) {
+        ctx.beginPath();
+        ctx.arc(nodeX(n) * width, nodeY(n) * height, NODE_RADIUS, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
     ctx.globalAlpha = 1;
   }
@@ -120,7 +133,7 @@ export function initNetworkCanvas(canvas: HTMLCanvasElement): () => void {
   }
 
   function shouldAnimate(): boolean {
-    return !reduceMotionQuery.matches && !document.hidden && intersecting;
+    return !reduceMotionQuery.matches && !document.hidden;
   }
 
   function syncRunState(): void {
@@ -139,15 +152,7 @@ export function initNetworkCanvas(canvas: HTMLCanvasElement): () => void {
 
   readColors();
   resize();
-
-  const intersectionObserver = new IntersectionObserver(
-    (entries) => {
-      intersecting = entries[entries.length - 1]?.isIntersecting ?? false;
-      syncRunState();
-    },
-    { threshold: 0.1 },
-  );
-  intersectionObserver.observe(canvas);
+  syncRunState();
 
   const themeObserver = new MutationObserver(() => {
     readColors();
@@ -166,7 +171,6 @@ export function initNetworkCanvas(canvas: HTMLCanvasElement): () => void {
     if (running) cancelAnimationFrame(rafId);
     running = false;
     window.clearTimeout(resizeTimer);
-    intersectionObserver.disconnect();
     themeObserver.disconnect();
     document.removeEventListener('visibilitychange', onVisibilityChange);
     reduceMotionQuery.removeEventListener('change', onReduceMotionChange);
