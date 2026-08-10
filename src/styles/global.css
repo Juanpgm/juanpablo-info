@@ -1154,6 +1154,11 @@ h3 {
   min-height: 6rem;
 }
 
+.contact-form__hint {
+  font-size: var(--text-xs);
+  color: var(--color-ink-muted);
+}
+
 .contact-form__submit {
   width: 100%;
 }
@@ -1179,6 +1184,33 @@ h3 {
 
 [data-theme='dark'] .contact-form__status--error {
   color: #f87171;
+}
+
+/* Success state — replaces the form (not a subtle inline line) so the user
+   unambiguously registers "this worked" before the dialog auto-closes. No
+   transition/animation: an instant swap has nothing for
+   prefers-reduced-motion to guard against. */
+.contact-form__success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: var(--space-lg) 0;
+  text-align: center;
+}
+
+.contact-form__success svg {
+  color: var(--color-primary);
+}
+
+.contact-form__success-heading {
+  font-size: var(--text-xl);
+  font-weight: 700;
+}
+
+.contact-form__success-text {
+  font-size: var(--text-base);
+  color: var(--color-ink-muted);
 }
 
 .contact-modal__divider {

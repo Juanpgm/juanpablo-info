@@ -47,6 +47,12 @@ const whatsappHref = getWhatsAppHref(site.whatsapp.number, site.whatsapp.message
       <textarea id="contact-message" name="message" required minlength="10" maxlength="5000" rows="4"></textarea>
     </div>
 
+    <div class="contact-form__field">
+      <label for="contact-files">{t(locale, 'contact.formFilesLabel')}</label>
+      <input type="file" id="contact-files" name="files" accept="image/*,.pdf,.doc,.docx" multiple />
+      <p class="contact-form__hint">{t(locale, 'contact.formFilesHint')}</p>
+    </div>
+
     {/* Honeypot: invisible to sighted users and to assistive tech, but still
         present in the DOM/markup for a bot's naive autofill to catch. A
         human never sees or tabs into this field. */}
@@ -76,10 +82,23 @@ const whatsappHref = getWhatsAppHref(site.whatsapp.number, site.whatsapp.message
       role="status"
       aria-live="polite"
       hidden
-      data-success-message={t(locale, 'contact.formSuccess')}
       data-error-message={t(locale, 'contact.formError')}
+      data-files-invalid-message={t(locale, 'contact.formFilesInvalid')}
     ></p>
   </form>
+
+  {/* Success state (replaces the form, not just an inline line) — shown
+      briefly after a successful submit, then the dialog auto-closes so the
+      user lands back on the page underneath having clearly registered "this
+      worked". Sibling of <form>, toggled via `hidden` in initContactForm. */}
+  <div class="contact-form__success" role="status" aria-live="polite" hidden>
+    <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M8 12.5l2.5 2.5L16 9.5" />
+    </svg>
+    <p class="contact-form__success-heading">{t(locale, 'contact.formSuccessHeading')}</p>
+    <p class="contact-form__success-text">{t(locale, 'contact.formSuccess')}</p>
+  </div>
 
   <p class="contact-modal__divider">{t(locale, 'contact.otherChannels')}</p>
 
@@ -117,6 +136,8 @@ const whatsappHref = getWhatsAppHref(site.whatsapp.number, site.whatsapp.message
 </dialog>
 
 <script>
+  import { validateAttachments } from '../lib/contact-form';
+
   // View-Transition-safe wiring (same astro:page-load re-init pattern as
   // Header.astro/ThemeToggle.astro): re-queries the DOM and re-attaches
   // listeners on every navigation, since script modules only execute once
@@ -138,64 +159,112 @@ const whatsappHref = getWhatsAppHref(site.whatsapp.number, site.whatsapp.message
     });
   }
 
-  // Vanilla-JS submit handler (ADR A1 — no framework). POSTs JSON to
-  // /api/contact, shows a pending state, then an inline success/error
+  // How long the success state stays visible before the dialog auto-closes
+  // (returns the user to the page underneath). Long enough to read a short
+  // confirmation, short enough not to feel stuck.
+  const CLOSE_DELAY_MS = 2000;
+
+  // Vanilla-JS submit handler (ADR A1 — no framework). Submits real
+  // multipart/form-data (not JSON — the file input needs it) to
+  // /api/contact, shows a pending state, then either a distinct success
+  // state (swaps out the form, auto-closes the dialog) or an inline error
   // message read from the server's { ok } response — no alert(), no reload.
   function initContactForm() {
     const form = document.getElementById('contact-form');
-    if (!(form instanceof HTMLFormElement)) return;
+    const dialog = document.getElementById('contact-modal');
+    if (!(form instanceof HTMLFormElement) || !(dialog instanceof HTMLDialogElement)) return;
     // Re-init guard: astro:page-load can fire again for the same persisted
     // DOM node in some navigation cases; avoid double-binding the listener.
     if (form.dataset.bound === 'true') return;
     form.dataset.bound = 'true';
 
-    const submitButton = form.querySelector('.contact-form__submit');
-    const status = form.querySelector('.contact-form__status');
-    if (!(submitButton instanceof HTMLButtonElement) || !(status instanceof HTMLElement)) return;
+    const rawSubmitButton = form.querySelector('.contact-form__submit');
+    const rawStatus = form.querySelector('.contact-form__status');
+    const rawSuccessBlock = dialog.querySelector('.contact-form__success');
+    const rawFileInput = form.querySelector('#contact-files');
+    if (
+      !(rawSubmitButton instanceof HTMLButtonElement) ||
+      !(rawStatus instanceof HTMLElement) ||
+      !(rawSuccessBlock instanceof HTMLElement) ||
+      !(rawFileInput instanceof HTMLInputElement)
+    ) {
+      return;
+    }
+    // Re-bound to explicitly typed consts: TS's control-flow narrowing from
+    // the `instanceof` guard above doesn't survive into the nested closures
+    // below (they may run long after this guard, e.g. on a later `submit`
+    // event), so it would otherwise widen back to `Element | null` there.
+    const submitButton: HTMLButtonElement = rawSubmitButton;
+    const status: HTMLElement = rawStatus;
+    const successBlock: HTMLElement = rawSuccessBlock;
+    const fileInput: HTMLInputElement = rawFileInput;
 
     const idleLabel = submitButton.dataset.idleLabel ?? submitButton.textContent ?? '';
     const pendingLabel = submitButton.dataset.pendingLabel ?? idleLabel;
-    const successMessage = status.dataset.successMessage ?? '';
     const errorMessage = status.dataset.errorMessage ?? '';
+    const filesInvalidMessage = status.dataset.filesInvalidMessage ?? errorMessage;
+
+    function showError(message: string) {
+      status.textContent = message;
+      status.classList.add('contact-form__status--error');
+      status.hidden = false;
+    }
+
+    // Reopening the modal (or closing it after any outcome) should never
+    // show stale success/error state or a previous submission's leftover
+    // input — a single `close` listener covers every close path (X button,
+    // backdrop click, ESC, or our own auto-close on success).
+    dialog.addEventListener('close', () => {
+      form.reset();
+      form.hidden = false;
+      successBlock.hidden = true;
+      status.hidden = true;
+      status.classList.remove('contact-form__status--error');
+    });
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
 
+      status.hidden = true;
+      status.classList.remove('contact-form__status--error');
+
+      // Client-side pre-flight check, using the same pure validator the
+      // server re-runs — this is UX only (avoids a slow/wasted upload for an
+      // obviously invalid selection), never a substitute for the server's
+      // own re-validation.
+      const files = Array.from(fileInput.files ?? []);
+      const attachmentsCheck = validateAttachments(
+        files.map((file) => ({ name: file.name, size: file.size, type: file.type }))
+      );
+      if (!attachmentsCheck.valid) {
+        showError(filesInvalidMessage);
+        return;
+      }
+
       submitButton.disabled = true;
       submitButton.textContent = pendingLabel;
-      status.hidden = true;
-      status.classList.remove('contact-form__status--success', 'contact-form__status--error');
 
+      // FormData(form) already picks up every named field, including the
+      // file input's actual files (multipart encoding, set automatically by
+      // fetch from the FormData body) — `locale` isn't a real form field, so
+      // it's appended manually from the dataset set by Astro.
       const formData = new FormData(form);
-      const payload = {
-        name: String(formData.get('name') ?? ''),
-        email: String(formData.get('email') ?? ''),
-        message: String(formData.get('message') ?? ''),
-        website: String(formData.get('website') ?? ''),
-        locale: form.dataset.locale ?? 'es',
-      };
+      formData.append('locale', form.dataset.locale ?? 'es');
 
       try {
-        const response = await fetch('/api/contact', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
+        const response = await fetch('/api/contact', { method: 'POST', body: formData });
         const result = await response.json().catch(() => ({ ok: false }));
 
         if (response.ok && result.ok) {
-          form.reset();
-          status.textContent = successMessage;
-          status.classList.add('contact-form__status--success');
+          form.hidden = true;
+          successBlock.hidden = false;
+          window.setTimeout(() => dialog.close(), CLOSE_DELAY_MS);
         } else {
-          status.textContent = errorMessage;
-          status.classList.add('contact-form__status--error');
+          showError(errorMessage);
         }
       } catch {
-        status.textContent = errorMessage;
-        status.classList.add('contact-form__status--error');
+        showError(errorMessage);
       } finally {
-        status.hidden = false;
         submitButton.disabled = false;
         submitButton.textContent = idleLabel;
       }
