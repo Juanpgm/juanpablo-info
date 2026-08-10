@@ -92,7 +92,9 @@ const whatsappHref = getWhatsAppHref(site.whatsapp.number, site.whatsapp.message
   </section>
 
   <section class="section" data-reveal aria-labelledby="contact-heading">
-    <h2 id="contact-heading">{t(locale, 'contact.heading')}</h2>
+    <div class="section-header">
+      <h2 id="contact-heading">{t(locale, 'contact.heading')}</h2>
+    </div>
     <div class="contact-actions">
       <a href={`mailto:${site.email}`} class="btn btn-lg">
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">

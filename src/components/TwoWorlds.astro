@@ -8,8 +8,10 @@ import { skills } from '../data/skills';
 const locale = useLocale(Astro.currentLocale);
 ---
 
-<section class="two-worlds" data-reveal aria-labelledby="two-worlds-heading">
-  <h2 id="two-worlds-heading">{t(locale, 'skills.heading')}</h2>
+<section class="section" data-reveal aria-labelledby="two-worlds-heading">
+  <div class="section-header">
+    <h2 id="two-worlds-heading">{t(locale, 'skills.heading')}</h2>
+  </div>
   <div class="two-worlds-grid">
     <div class="world world-ai">
       <h3>{t(locale, 'skills.aiColumn')}</h3>
