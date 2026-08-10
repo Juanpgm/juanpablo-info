@@ -66,9 +66,9 @@ Slugs: obras-control-erosion, ingenieria-estructural-fundamentos, nsr-10-revisio
 
 ## Phase 5: Polish
 
-- [ ] 5.1 `.post-hero-image`/`.blog-card__image`: add `background:var(--color-surface-subtle)` + `border:1px solid var(--color-border)`.
-- [ ] 5.2 `.post-hero{margin-bottom:var(--space-xl)}`; `.post-hero figcaption{color:var(--color-ink-muted);font-size:var(--text-sm);margin-top:var(--space-2xs);text-align:center}`.
-- [ ] 5.3 `.post-tags{margin-top:var(--space-md)}` (was `--space-sm`).
+- [x] 5.1 `.post-hero-image`/`.blog-card__image`: add `background:var(--color-surface-subtle)` + `border:1px solid var(--color-border)`.
+- [x] 5.2 `.post-hero{margin-bottom:var(--space-xl)}`; `.post-hero figcaption{color:var(--color-ink-muted);font-size:var(--text-sm);margin-top:var(--space-2xs);text-align:center}`.
+- [x] 5.3 `.post-tags{margin-top:var(--space-md)}` (was `--space-sm`).
 
 ## Phase 6: Verification
 
