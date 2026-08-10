@@ -22,4 +22,15 @@ await sql`
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
   )
 `;
+
+// Fast-follow: file/image attachment support (Vercel Blob-backed). Native
+// Postgres array column — `attachment_urls` holds each uploaded file's Blob
+// URL (private access, read back server-side via @vercel/blob's get()/put()
+// result). ADD COLUMN IF NOT EXISTS keeps this idempotent on an
+// already-existing table from a prior run of this script.
+await sql`
+  ALTER TABLE contact_submissions
+  ADD COLUMN IF NOT EXISTS attachment_urls TEXT[]
+`;
+
 console.log('Table ready.');

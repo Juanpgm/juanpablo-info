@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { validateContactSubmission } from './contact-form';
+import {
+  validateContactSubmission,
+  validateAttachments,
+  MAX_ATTACHMENTS,
+  MAX_ATTACHMENT_SIZE_BYTES,
+  MAX_TOTAL_ATTACHMENTS_SIZE_BYTES,
+} from './contact-form';
 
 describe('validateContactSubmission', () => {
   it('accepts a valid submission', () => {
@@ -99,5 +105,54 @@ describe('validateContactSubmission', () => {
         honeypot: true,
       },
     });
+  });
+});
+
+describe('validateAttachments', () => {
+  it('accepts files within the count/size/type limits', () => {
+    const result = validateAttachments([
+      { name: 'photo.png', size: 1024, type: 'image/png' },
+      { name: 'brief.pdf', size: 2048, type: 'application/pdf' },
+    ]);
+    expect(result).toEqual({ valid: true });
+  });
+
+  it('accepts zero files', () => {
+    expect(validateAttachments([])).toEqual({ valid: true });
+  });
+
+  it('rejects an oversized file', () => {
+    const result = validateAttachments([
+      { name: 'huge.png', size: MAX_ATTACHMENT_SIZE_BYTES + 1, type: 'image/png' },
+    ]);
+    expect(result.valid).toBe(false);
+    expect(result.valid || result.errors.some((e) => e.includes('huge.png'))).toBe(true);
+  });
+
+  it('rejects too many files', () => {
+    const files = Array.from({ length: MAX_ATTACHMENTS + 1 }, (_, i) => ({
+      name: `file-${i}.png`,
+      size: 100,
+      type: 'image/png',
+    }));
+    const result = validateAttachments(files);
+    expect(result.valid).toBe(false);
+    expect(result.valid || result.errors.some((e) => e.includes('up to'))).toBe(true);
+  });
+
+  it('rejects a disallowed file type', () => {
+    const result = validateAttachments([{ name: 'script.exe', size: 100, type: 'application/x-msdownload' }]);
+    expect(result.valid).toBe(false);
+    expect(result.valid || result.errors.some((e) => e.includes('unsupported file type'))).toBe(true);
+  });
+
+  it('rejects when combined attachment size exceeds the aggregate limit', () => {
+    const perFile = Math.floor(MAX_TOTAL_ATTACHMENTS_SIZE_BYTES / 2) + 1;
+    const result = validateAttachments([
+      { name: 'a.png', size: perFile, type: 'image/png' },
+      { name: 'b.png', size: perFile, type: 'image/png' },
+    ]);
+    expect(result.valid).toBe(false);
+    expect(result.valid || result.errors.some((e) => e.includes('Combined'))).toBe(true);
   });
 });

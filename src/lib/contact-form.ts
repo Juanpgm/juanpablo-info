@@ -27,6 +27,73 @@ const MAX_NAME_LENGTH = 200;
 const MIN_MESSAGE_LENGTH = 10;
 const MAX_MESSAGE_LENGTH = 5000;
 
+/**
+ * Attachment constraints, shared by the client (ContactModal.astro's script,
+ * pre-flight check before upload) and the server (pages/api/contact.ts, the
+ * real trust boundary — the client check is UX only, never trusted alone).
+ *
+ * Per-file/combined caps are deliberately conservative: Vercel serverless
+ * functions cap the whole request body at ~4.5MB (undocumented in code, but
+ * a real platform ceiling) — 3 files at a naive "5MB each" would already
+ * blow past that before this code ever runs. 3MB/file + 4MB combined leaves
+ * headroom for multipart boundaries and the text fields.
+ */
+export const MAX_ATTACHMENTS = 3;
+export const MAX_ATTACHMENT_SIZE_BYTES = 3 * 1024 * 1024;
+export const MAX_TOTAL_ATTACHMENTS_SIZE_BYTES = 4 * 1024 * 1024;
+
+const ALLOWED_ATTACHMENT_MIME_PREFIXES = ['image/'];
+const ALLOWED_ATTACHMENT_MIME_TYPES = new Set([
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+]);
+
+export interface AttachmentInfo {
+  name: string;
+  size: number;
+  type: string;
+}
+
+export type ValidateAttachmentsResult = { valid: true } | { valid: false; errors: string[] };
+
+function isAllowedAttachmentType(type: string): boolean {
+  return (
+    ALLOWED_ATTACHMENT_MIME_PREFIXES.some((prefix) => type.startsWith(prefix)) ||
+    ALLOWED_ATTACHMENT_MIME_TYPES.has(type)
+  );
+}
+
+/**
+ * Pure validator for file attachments (count/size/type) — sibling to
+ * `validateContactSubmission` rather than folded into it, since attachments
+ * are optional and structurally distinct (a `File[]`, not a form field).
+ */
+export function validateAttachments(files: AttachmentInfo[]): ValidateAttachmentsResult {
+  const errors: string[] = [];
+
+  if (files.length > MAX_ATTACHMENTS) {
+    errors.push(`You can attach up to ${MAX_ATTACHMENTS} files`);
+  }
+
+  let totalSize = 0;
+  for (const file of files) {
+    totalSize += file.size;
+    if (file.size > MAX_ATTACHMENT_SIZE_BYTES) {
+      errors.push(`"${file.name}" exceeds the ${MAX_ATTACHMENT_SIZE_BYTES / (1024 * 1024)}MB limit per file`);
+    }
+    if (!isAllowedAttachmentType(file.type)) {
+      errors.push(`"${file.name}" has an unsupported file type`);
+    }
+  }
+
+  if (totalSize > MAX_TOTAL_ATTACHMENTS_SIZE_BYTES) {
+    errors.push(`Combined attachments exceed the ${MAX_TOTAL_ATTACHMENTS_SIZE_BYTES / (1024 * 1024)}MB limit`);
+  }
+
+  return errors.length > 0 ? { valid: false, errors } : { valid: true };
+}
+
 export function validateContactSubmission(data: unknown): ValidateContactResult {
   if (typeof data !== 'object' || data === null) {
     return { valid: false, errors: ['Invalid request body'] };
