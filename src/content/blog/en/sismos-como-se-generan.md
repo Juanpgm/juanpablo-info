@@ -3,7 +3,9 @@ title: "Earthquakes: How They Form and Why Colombia Lives With the Risk"
 description: "How earthquakes are generated, the plate tectonics behind them, and why Colombia, and the Cauca Valley in particular, lives under high seismic hazard."
 pubDate: 2026-03-10
 tags: ["sismica", "gestion-riesgo"]
-heroImage: ../../../assets/blog/sismos-como-se-generan.svg
+heroImage: ../../../assets/blog/sismos-como-se-generan.en.svg
+heroImageAlt: "Schematic cross-section: Nazca–South American plate subduction and the Cauca-Romeral fault near Cali"
+heroImageCaption: "Cali sits near the Cauca-Romeral trace in a high seismic-hazard zone (NSR-10)."
 draft: false
 ---
 

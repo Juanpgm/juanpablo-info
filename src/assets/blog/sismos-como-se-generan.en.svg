@@ -1,25 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" font-family="Arial, Helvetica, sans-serif">
-  <text x="600" y="60" text-anchor="middle" font-size="26" font-weight="bold" fill="var(--diagram-ink)">Interacción de placas y sistema de fallas (corte esquemático)</text>
+  <text x="600" y="60" text-anchor="middle" font-size="26" font-weight="bold" fill="var(--diagram-ink)">Plate interaction and fault system (schematic cross-section)</text>
 
   <!-- crust layers -->
   <rect x="80" y="140" width="480" height="60" fill="var(--diagram-line)" stroke="var(--diagram-ink)" stroke-width="2" />
-  <text x="320" y="175" text-anchor="middle" font-size="18" fill="var(--diagram-ink)">Placa Nazca (oceánica)</text>
+  <text x="320" y="175" text-anchor="middle" font-size="18" fill="var(--diagram-ink)">Nazca Plate (oceanic)</text>
 
   <rect x="640" y="120" width="480" height="80" fill="var(--diagram-line)" stroke="var(--diagram-ink)" stroke-width="2" />
-  <text x="880" y="165" text-anchor="middle" font-size="18" fill="var(--diagram-ink)">Placa Suramericana (continental)</text>
+  <text x="880" y="165" text-anchor="middle" font-size="18" fill="var(--diagram-ink)">South American Plate (continental)</text>
 
   <!-- subduction slab -->
   <path d="M 560 200 L 760 480" stroke="var(--diagram-accent)" stroke-width="10" fill="none" />
-  <text x="700" y="330" font-size="16" fill="var(--diagram-accent)" transform="rotate(58 700 330)">Zona de subducción</text>
+  <text x="700" y="330" font-size="16" fill="var(--diagram-accent)" transform="rotate(58 700 330)">Subduction zone</text>
 
   <!-- mantle -->
   <rect x="80" y="200" width="1040" height="330" fill="var(--diagram-fill)" stroke="var(--diagram-line)" stroke-width="2" />
-  <text x="150" y="500" font-size="16" fill="var(--diagram-ink)">Manto superior</text>
+  <text x="150" y="500" font-size="16" fill="var(--diagram-ink)">Upper mantle</text>
 
   <!-- fault system Cauca-Romeral -->
   <line x1="900" y1="120" x2="960" y2="480" stroke="var(--diagram-accent-2)" stroke-width="6" stroke-dasharray="10 6" />
-  <text x="975" y="300" font-size="16" fill="var(--diagram-accent-2)">Sistema de fallas</text>
-  <text x="975" y="322" font-size="16" fill="var(--diagram-accent-2)">Cauca-Romeral</text>
+  <text x="975" y="300" font-size="16" fill="var(--diagram-accent-2)">Cauca-Romeral</text>
+  <text x="975" y="322" font-size="16" fill="var(--diagram-accent-2)">fault system</text>
 
   <!-- arrows showing convergence -->
   <path d="M 420 130 L 500 130" stroke="var(--diagram-ink)" stroke-width="3" marker-end="url(#arrow)" />
@@ -33,7 +33,7 @@
 
   <!-- hypocenter -->
   <circle cx="700" cy="330" r="8" fill="var(--diagram-accent-2)" />
-  <text x="716" y="335" font-size="16" fill="var(--diagram-ink)">Hipocentro (foco)</text>
+  <text x="716" y="335" font-size="16" fill="var(--diagram-ink)">Hypocenter (focus)</text>
 
-  <text x="600" y="600" text-anchor="middle" font-size="15" fill="var(--diagram-ink)">Cali se ubica cerca de la traza del sistema Cauca-Romeral, dentro de una zona de amenaza sísmica alta (NSR-10)</text>
+  <text x="600" y="600" text-anchor="middle" font-size="15" fill="var(--diagram-ink)">Cali sits near the Cauca-Romeral fault trace, in a high seismic-hazard zone (NSR-10)</text>
 </svg>

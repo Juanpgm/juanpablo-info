@@ -4,6 +4,8 @@ description: "Diferencias reales entre machine learning clásico y deep learning
 pubDate: 2026-06-02
 tags: ["ia", "data-engineering"]
 heroImage: ../../../assets/blog/telematica-modelos-predictivos-ml-dl.svg
+heroImageAlt: "Pipeline de sensores telemétricos a un modelo de ML/DL que produce un indicador de riesgo predicho en tiempo real"
+heroImageCaption: "De la señal cruda del sensor a una alerta accionable: el mismo flujo detrás de un sistema de alerta temprana."
 draft: false
 ---
 

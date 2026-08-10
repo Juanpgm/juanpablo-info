@@ -4,6 +4,8 @@ description: "Taxonomía geotécnica de los movimientos de remoción en masa: ca
 pubDate: 2026-04-07
 tags: ["geotecnia", "gestion-riesgo"]
 heroImage: ../../../assets/blog/movimientos-remocion-en-masa-tipos.svg
+heroImageAlt: "Cuatro paneles esquemáticos comparando caída, deslizamiento rotacional, flujo de detritos y reptación como tipos de movimientos de remoción en masa"
+heroImageCaption: "El tipo de movimiento determina tanto su velocidad de ocurrencia como la estrategia de mitigación adecuada."
 draft: false
 ---
 

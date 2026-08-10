@@ -4,6 +4,8 @@ description: "Cómo funcionan los sistemas de alerta temprana sísmica: sensores
 pubDate: 2026-03-24
 tags: ["sismica", "gestion-riesgo", "data-engineering"]
 heroImage: ../../../assets/blog/sistemas-alerta-temprana-sismos.svg
+heroImageAlt: "Diagrama de flujo de una alerta sísmica temprana, desde la red de sensores hasta la difusión, con la línea de tiempo entre la onda P y la onda S"
+heroImageCaption: "La ventaja de una alerta temprana son los segundos entre la detección de la onda P y la llegada de la onda S destructiva."
 draft: false
 ---
 

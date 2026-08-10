@@ -4,6 +4,8 @@ description: "Cómo se generan los sismos, la tectónica de placas detrás de el
 pubDate: 2026-03-10
 tags: ["sismica", "gestion-riesgo"]
 heroImage: ../../../assets/blog/sismos-como-se-generan.svg
+heroImageAlt: "Corte esquemático: subducción de la placa Nazca bajo la Suramericana y el sistema de fallas Cauca-Romeral cerca de Cali"
+heroImageCaption: "Cali se ubica cerca de la traza del sistema Cauca-Romeral, en una zona de amenaza sísmica alta (NSR-10)."
 draft: false
 ---
 

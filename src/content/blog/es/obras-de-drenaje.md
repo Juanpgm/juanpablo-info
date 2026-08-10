@@ -4,6 +4,8 @@ description: "Drenaje superficial y subterráneo, caudal de diseño, período de
 pubDate: 2026-05-05
 tags: ["hidraulica", "geotecnia"]
 heroImage: ../../../assets/blog/obras-de-drenaje.svg
+heroImageAlt: "Sección esquemática de drenaje vial: cuneta superficial, alcantarilla y subdrén evacuando el agua del talud"
+heroImageCaption: "El agua mal conducida, superficial o subterránea, es la causa raíz de la mayoría de fallas de taludes y pavimentos."
 draft: false
 ---
 
