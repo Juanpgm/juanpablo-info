@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" font-family="Arial, Helvetica, sans-serif">
-  <text x="600" y="55" text-anchor="middle" font-size="26" font-weight="bold" fill="var(--diagram-ink)">Obras de control de erosión en un talud</text>
+  <text x="600" y="55" text-anchor="middle" font-size="26" font-weight="bold" fill="var(--diagram-ink)">Erosion control works on a slope</text>
 
   <!-- slope profile -->
   <path d="M 100 500 L 100 420 L 500 180 L 1100 180 L 1100 500 Z" fill="var(--diagram-fill)" stroke="var(--diagram-ink)" stroke-width="2" />
@@ -9,8 +9,8 @@
   <line x1="100" y1="440" x2="240" y2="440" stroke="var(--diagram-ink)" stroke-width="1.5" />
   <line x1="100" y1="460" x2="240" y2="460" stroke="var(--diagram-ink)" stroke-width="1.5" />
   <line x1="100" y1="480" x2="240" y2="480" stroke="var(--diagram-ink)" stroke-width="1.5" />
-  <text x="170" y="540" text-anchor="middle" font-size="15" fill="var(--diagram-ink)">Muro de gaviones</text>
-  <text x="170" y="558" text-anchor="middle" font-size="13" fill="var(--diagram-ink)">(pie del talud)</text>
+  <text x="170" y="540" text-anchor="middle" font-size="15" fill="var(--diagram-ink)">Gabion wall</text>
+  <text x="170" y="558" text-anchor="middle" font-size="13" fill="var(--diagram-ink)">(slope toe)</text>
 
   <!-- trinchos on the slope -->
   <g stroke="var(--diagram-accent-2)" stroke-width="5">
@@ -18,7 +18,7 @@
     <line x1="440" y1="300" x2="530" y2="270" />
     <line x1="550" y1="240" x2="620" y2="215" />
   </g>
-  <text x="470" y="200" text-anchor="middle" font-size="15" fill="var(--diagram-accent-2)">Trinchos escalonados</text>
+  <text x="470" y="200" text-anchor="middle" font-size="15" fill="var(--diagram-accent-2)">Staggered brush barriers</text>
 
   <!-- bioengineering / revegetation on upper slope -->
   <g fill="var(--diagram-accent)">
@@ -30,11 +30,11 @@
     <circle cx="900" cy="182" r="10" />
     <circle cx="940" cy="185" r="10" />
   </g>
-  <text x="820" y="150" text-anchor="middle" font-size="15" fill="var(--diagram-accent)">Revegetación / bioingeniería</text>
+  <text x="820" y="150" text-anchor="middle" font-size="15" fill="var(--diagram-accent)">Revegetation / bioengineering</text>
 
   <!-- water flow arrow -->
   <path d="M 550 190 Q 400 320 260 430" stroke="var(--diagram-ink)" stroke-width="3" fill="none" stroke-dasharray="6 5" marker-end="url(#arrow3)" />
-  <text x="330" y="300" font-size="14" fill="var(--diagram-ink)">escorrentía superficial</text>
+  <text x="330" y="300" font-size="14" fill="var(--diagram-ink)">surface runoff</text>
 
   <defs>
     <marker id="arrow3" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
@@ -42,5 +42,5 @@
     </marker>
   </defs>
 
-  <text x="600" y="580" text-anchor="middle" font-size="14" fill="var(--diagram-ink)">La combinación de obras depende del tipo de suelo, la pendiente y la presencia de agua</text>
+  <text x="600" y="580" text-anchor="middle" font-size="14" fill="var(--diagram-ink)">The combination of works depends on soil type, slope angle, and water presence</text>
 </svg>

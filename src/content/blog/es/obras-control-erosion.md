@@ -4,6 +4,8 @@ description: "Catálogo práctico de obras de control de erosión (gaviones, mur
 pubDate: 2026-04-21
 tags: ["geotecnia", "hidraulica"]
 heroImage: ../../../assets/blog/obras-control-erosion.svg
+heroImageAlt: "Sección de un talud con muro de gaviones en el pie, trinchos escalonados y revegetación en la parte alta, con la escorrentía superficial señalada"
+heroImageCaption: "La combinación de obras depende del tipo de suelo, la pendiente y la presencia de agua."
 draft: false
 ---
 

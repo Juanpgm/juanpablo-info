@@ -1,38 +1,38 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" font-family="Arial, Helvetica, sans-serif">
-  <text x="600" y="55" text-anchor="middle" font-size="24" font-weight="bold" fill="var(--diagram-ink)">NSR-10: organización en títulos A–K</text>
-  <text x="600" y="82" text-anchor="middle" font-size="15" fill="var(--diagram-ink)">Reglamento Colombiano de Construcción Sismo Resistente (esquema simplificado)</text>
+  <text x="600" y="55" text-anchor="middle" font-size="24" font-weight="bold" fill="var(--diagram-ink)">NSR-10: organization into Titles A–K</text>
+  <text x="600" y="82" text-anchor="middle" font-size="15" fill="var(--diagram-ink)">Colombian Seismic-Resistant Construction Code (simplified overview)</text>
 
   <!-- title rows -->
   <g font-size="15" fill="var(--diagram-ink)">
     <!-- A: highlighted -->
     <rect x="220" y="115" width="760" height="38" fill="var(--diagram-accent)" stroke="var(--diagram-accent)" stroke-width="1" />
-    <text x="240" y="139" fill="var(--color-surface)">Título A — Requisitos generales de diseño sismo resistente</text>
+    <text x="240" y="139" fill="var(--color-surface)">Title A — General requirements for seismic-resistant design</text>
 
     <rect x="220" y="158" width="760" height="38" fill="var(--diagram-fill)" stroke="var(--diagram-line)" stroke-width="1.5" />
-    <text x="240" y="182">Título B — Cargas</text>
+    <text x="240" y="182">Title B — Loads</text>
 
     <rect x="220" y="201" width="760" height="38" fill="var(--diagram-fill)" stroke="var(--diagram-line)" stroke-width="1.5" />
-    <text x="240" y="225">Título C — Concreto estructural</text>
+    <text x="240" y="225">Title C — Structural concrete</text>
 
     <rect x="220" y="244" width="760" height="38" fill="var(--diagram-fill)" stroke="var(--diagram-line)" stroke-width="1.5" />
-    <text x="240" y="268">Título D — Mampostería estructural (estructural)</text>
+    <text x="240" y="268">Title D — Structural masonry</text>
 
     <rect x="220" y="287" width="760" height="38" fill="var(--diagram-fill)" stroke="var(--diagram-line)" stroke-width="1.5" />
-    <text x="240" y="311">Título E — Casas de uno y dos pisos</text>
+    <text x="240" y="311">Title E — One- and two-story houses</text>
 
     <rect x="220" y="330" width="760" height="38" fill="var(--diagram-fill)" stroke="var(--diagram-line)" stroke-width="1.5" />
-    <text x="240" y="354">Título G — Estructuras metálicas</text>
+    <text x="240" y="354">Title G — Steel structures</text>
 
     <rect x="220" y="373" width="760" height="38" fill="var(--diagram-fill)" stroke="var(--diagram-line)" stroke-width="1.5" />
-    <text x="240" y="397">Título H — Estudios geotécnicos</text>
+    <text x="240" y="397">Title H — Geotechnical studies</text>
 
     <rect x="220" y="416" width="760" height="38" fill="var(--diagram-fill)" stroke="var(--diagram-line)" stroke-width="1.5" />
-    <text x="240" y="440">Título I — Supervisión técnica</text>
+    <text x="240" y="440">Title I — Technical supervision</text>
 
     <rect x="220" y="459" width="760" height="38" fill="var(--diagram-fill)" stroke="var(--diagram-line)" stroke-width="1.5" />
-    <text x="240" y="483">Título K — Otros requisitos complementarios</text>
+    <text x="240" y="483">Title K — Other supplementary requirements</text>
   </g>
 
-  <text x="600" y="540" text-anchor="middle" font-size="15" fill="var(--diagram-accent)">Título A: zonas de amenaza sísmica, espectro de diseño, grupos de uso</text>
-  <text x="600" y="590" text-anchor="middle" font-size="14" fill="var(--diagram-ink)">Estructura modular: cada título se revisa y actualiza de forma independiente</text>
+  <text x="600" y="540" text-anchor="middle" font-size="15" fill="var(--diagram-accent)">Title A: seismic hazard zones, design spectrum, use groups</text>
+  <text x="600" y="590" text-anchor="middle" font-size="14" fill="var(--diagram-ink)">Modular structure: each title is reviewed and updated independently</text>
 </svg>

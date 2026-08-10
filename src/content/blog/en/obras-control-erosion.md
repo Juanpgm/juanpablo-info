@@ -3,7 +3,9 @@ title: "Erosion Control Works: How Civil Engineering Stabilizes Terrain"
 description: "A practical catalog of erosion control works (gabions, retaining walls, bioengineering, check dams) and the engineering criteria for choosing between them."
 pubDate: 2026-04-21
 tags: ["geotecnia", "hidraulica"]
-heroImage: ../../../assets/blog/obras-control-erosion.svg
+heroImage: ../../../assets/blog/obras-control-erosion.en.svg
+heroImageAlt: "Slope cross-section with a gabion wall at the toe, staggered brush barriers, and revegetation near the crest, with surface runoff marked"
+heroImageCaption: "The combination of works depends on soil type, slope angle, and water presence."
 draft: false
 ---
 

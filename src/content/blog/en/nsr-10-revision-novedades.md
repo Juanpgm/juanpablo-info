@@ -3,7 +3,9 @@ title: "NSR-10: Current State of Colombia's Seismic Code and What's Coming"
 description: "What Colombia's NSR-10 seismic code is, how its titles A-K are organized, why it gets revised periodically, and how it applies in real structural design."
 pubDate: 2026-06-30
 tags: ["normativa", "estructural", "sismica"]
-heroImage: ../../../assets/blog/nsr-10-revision-novedades.svg
+heroImage: ../../../assets/blog/nsr-10-revision-novedades.en.svg
+heroImageAlt: "List of NSR-10 Titles A through K with Title A highlighted, showing the modular organization of Colombia's seismic-resistant construction code"
+heroImageCaption: "Modular structure: each title is reviewed and updated independently."
 draft: false
 ---
 

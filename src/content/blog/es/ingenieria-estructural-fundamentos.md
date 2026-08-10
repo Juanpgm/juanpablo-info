@@ -4,6 +4,8 @@ description: "Cargas muertas, vivas y sísmicas, estados límite, ductilidad y r
 pubDate: 2026-06-16
 tags: ["estructural", "bim"]
 heroImage: ../../../assets/blog/ingenieria-estructural-fundamentos.svg
+heroImageAlt: "Pórtico esquemático de columnas, viga y cimentación mostrando cargas muertas/vivas verticales y una carga sísmica lateral bajando hasta la cimentación"
+heroImageCaption: "Toda carga necesita una trayectoria continua y dúctil hasta la cimentación: ese es el principio detrás del diseño sismo-resistente."
 draft: false
 ---
 

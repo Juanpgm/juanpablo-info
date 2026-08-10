@@ -3,7 +3,9 @@ title: "EDAN: How Damage and Needs Are Assessed After a Disaster"
 description: "What the EDAN methodology is, how damage and needs get assessed after a disaster in two stages, and what data actually gets collected in the field."
 pubDate: 2026-07-28
 tags: ["gestion-riesgo", "normativa"]
-heroImage: ../../../assets/blog/edan-evaluacion-danos-analisis-necesidades.svg
+heroImage: ../../../assets/blog/edan-evaluacion-danos-analisis-necesidades.en.svg
+heroImageAlt: "Four-step EDAN flow: event, fast initial assessment, sector-by-sector complementary assessment, and consolidated report"
+heroImageCaption: "Standardized data at every stage, consolidable across municipalities."
 draft: false
 ---
 

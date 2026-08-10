@@ -3,7 +3,9 @@ title: "What to Do in an Earthquake: Before, During, and After"
 description: "A practical, technically grounded guide to what to do before, during, and after an earthquake, explained through structural engineering, not just common sense."
 pubDate: 2026-07-14
 tags: ["sismica", "gestion-riesgo"]
-heroImage: ../../../assets/blog/como-actuar-en-caso-de-sismo.svg
+heroImage: ../../../assets/blog/como-actuar-en-caso-de-sismo.en.svg
+heroImageAlt: "Three panels illustrating what to do before, during, and after an earthquake: secure furniture and an emergency kit, drop/cover/hold on, check for cracks"
+heroImageCaption: "Clear protocol + technical judgment reduce risk in the seconds that count."
 draft: false
 ---
 
