@@ -35,6 +35,15 @@ export const { getStaticPaths, GET } = await OGImageRoute({
   getImageOptions: (_path, page) => ({
     title: page.title,
     description: page.description,
+    // Local font file, not astro-og-canvas's network-fetched default
+    // (`https://api.fontsource.org/...`) — a resilience review flagged that
+    // default as an unguarded build-time network dependency with no
+    // retry/timeout: a single CDN hiccup during the Vercel build aborts the
+    // ENTIRE static build (astro's generatePathWithPrerenderer rethrows any
+    // page-render error), not just the OG route. This already-self-hosted
+    // Manrope file (design system body font, see global.css) removes that
+    // dependency entirely.
+    fonts: ['./node_modules/@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2'],
     // Brand gradient: ink (#1a2027) -> primary teal (#0f766e), amber
     // (#b45309) accent border — the site's light-theme palette
     // (global.css `:root`), since the OG card renders once at build time
