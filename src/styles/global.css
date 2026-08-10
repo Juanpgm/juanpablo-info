@@ -371,10 +371,26 @@ h3 {
 
 /* Hero */
 .hero {
+  position: relative;
   max-width: 56rem;
   margin-inline: auto;
   padding: 6rem 1.5rem 5rem;
   text-align: center;
+}
+
+/* Decorative network background (lib/network-canvas.ts). Absolute + z-index:
+   -1 paints it behind .hero's normal-flow text children regardless of DOM
+   order (CSS2.1 painting order), so text contrast/legibility is untouched.
+   Sized to the section only (inset: 0 inside a `position: relative` parent)
+   — cannot cause page-level horizontal overflow. Purely decorative: excluded
+   from the accessibility tree via aria-hidden, never focusable. */
+.hero-network {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
 .hero-eyebrow {
