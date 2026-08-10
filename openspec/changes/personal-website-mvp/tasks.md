@@ -84,12 +84,12 @@ Chain strategy: pending
 
 ## Phase 7: Testing Setup
 
-- [ ] 7.1 Confirm `astro check` + `npm run build` catch schema/type errors (baseline gate).
-- [ ] 7.2 Install Vitest devDependency; `test` script = `vitest run`; update `openspec/config.yaml` `verify.test_command` to `vitest run`.
-- [ ] 7.3 `lib/locale-path.test.ts` (prefix swap incl. root/blog paths).
-- [ ] 7.4 `lib/github.test.ts` (fallback-on-failure contract: null/non-2xx/timeout → seed+stale, never throws).
-- [ ] 7.5 `lib/reading-time.test.ts` (words→minutes boundary).
-- [ ] 7.6 Commit tests.
+- [x] 7.1 Confirm `astro check` + `npm run build` catch schema/type errors (baseline gate).
+- [x] 7.2 Install Vitest devDependency; `test` script = `vitest run`; update `openspec/config.yaml` `verify.test_command` to `vitest run`.
+- [x] 7.3 `lib/locale-path.test.ts` (prefix swap incl. root/blog paths).
+- [x] 7.4 `lib/github.test.ts` (fallback-on-failure contract: null/non-2xx/timeout → seed+stale, never throws).
+- [x] 7.5 `lib/reading-time.test.ts` (words→minutes boundary).
+- [x] 7.6 Commit tests.
 
 ## Phase 8: Deployment Docs
 
