@@ -440,6 +440,59 @@ h3 {
   max-width: 42rem;
 }
 
+/* About intro: text + photo two-column layout. Single column until the
+   photo has room to breathe (64rem, matches the post-body breakpoint). */
+.about-intro-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  align-items: start;
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 64rem) {
+  .about-intro-grid {
+    grid-template-columns: minmax(0, 1fr) 18rem;
+  }
+
+  .about-intro-grid .prose {
+    max-width: none;
+  }
+}
+
+/* Photo duotone treatment: grayscale base + a theme-tinted overlay via
+ * mix-blend-mode, so a single source image reads "warm/light" in light
+ * mode and "cool/graphite" in dark mode without needing two source photos.
+ * PLACEHOLDER photo — see src/assets/about-photo-placeholder.svg. */
+.about-photo-frame {
+  position: relative;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  isolation: isolate;
+}
+
+.about-photo-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: grayscale(1) contrast(1.05);
+}
+
+.about-photo-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: color;
+  background-color: var(--secondary);
+  opacity: 0.35;
+}
+
+[data-theme='dark'] .about-photo-frame::after {
+  background-color: var(--primary);
+  opacity: 0.45;
+}
+
 /* Two worlds */
 .two-worlds-grid {
   display: grid;

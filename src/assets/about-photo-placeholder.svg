@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 600" role="img" aria-hidden="true">
+  <!-- PLACEHOLDER photo — real portrait pending, user-supplied. Neutral
+       silhouette + monogram styled to the site's palette so the About
+       section reads intentionally, not broken, until a real photo lands. -->
+  <rect width="480" height="600" fill="#4b5563"/>
+  <circle cx="240" cy="230" r="90" fill="#6b7280"/>
+  <path d="M80 600c0-110 71.6-190 160-190s160 80 160 190" fill="#6b7280"/>
+  <text x="240" y="340" font-family="Georgia, 'Times New Roman', serif" font-size="72" font-weight="600" fill="#f2ede6" text-anchor="middle">JPGM</text>
+</svg>

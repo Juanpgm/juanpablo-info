@@ -1,10 +1,16 @@
 ---
 // Full About (site-structure spec route list): narrative, education,
 // certifications, languages (proposal §3.2).
+import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CodeSnippet from '../../components/CodeSnippet.astro';
 import { t, useLocale } from '../../i18n';
 import { education, certifications } from '../../data/education';
+// PLACEHOLDER photo — real portrait pending, user-supplied (see
+// src/assets/about-photo-placeholder.svg). Swap this import for the real
+// file once provided; the two-column layout + duotone treatment below
+// don't need to change.
+import photoPlaceholder from '../../assets/about-photo-placeholder.svg';
 
 export function getStaticPaths() {
   return [{ params: { locale: 'es' } }, { params: { locale: 'en' } }, { params: { locale: 'de' } }];
@@ -17,12 +23,17 @@ const yearRange = (start: number, end?: number) => (end ? `${start}–${end}` : 
 <BaseLayout title={t(locale, 'about.heading')} description={t(locale, 'about.summaryP1')} path="about" jsonLd="person">
   <section class="section" data-reveal aria-labelledby="about-heading">
     <h1 id="about-heading">{t(locale, 'about.heading')}</h1>
-    <div class="prose">
-      <p>{t(locale, 'about.summaryP1')}</p>
-      <p>{t(locale, 'about.summaryP2')}</p>
-      <p>{t(locale, 'about.narrativeP1')}</p>
-      <p>{t(locale, 'about.narrativeP2')}</p>
-      <p>{t(locale, 'about.narrativeP3')}</p>
+    <div class="about-intro-grid">
+      <div class="prose">
+        <p>{t(locale, 'about.summaryP1')}</p>
+        <p>{t(locale, 'about.summaryP2')}</p>
+        <p>{t(locale, 'about.narrativeP1')}</p>
+        <p>{t(locale, 'about.narrativeP2')}</p>
+        <p>{t(locale, 'about.narrativeP3')}</p>
+      </div>
+      <figure class="about-photo-frame">
+        <Image src={photoPlaceholder} alt={t(locale, 'about.photoAlt')} width={480} height={600} />
+      </figure>
     </div>
   </section>
 
