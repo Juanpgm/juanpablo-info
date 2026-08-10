@@ -1,0 +1,24 @@
+---
+// Full project grid (site-structure route list). GitHub live-data merge is
+// Phase 5 (`lib/github.ts`) — renders the static seed with `isExample`
+// badges until then.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { t, useLocale } from '../../i18n';
+import { projects } from '../../data/projects';
+
+export function getStaticPaths() {
+  return [{ params: { locale: 'es' } }, { params: { locale: 'en' } }, { params: { locale: 'de' } }];
+}
+
+const locale = useLocale(Astro.params.locale);
+---
+
+<BaseLayout title={t(locale, 'projects.heading')} description={t(locale, 'hero.tagline')} path="projects">
+  <section class="section" data-reveal aria-labelledby="projects-heading">
+    <h1 id="projects-heading">{t(locale, 'projects.heading')}</h1>
+    <div class="project-grid">
+      {projects.map((project) => <ProjectCard project={project} locale={locale} />)}
+    </div>
+  </section>
+</BaseLayout>

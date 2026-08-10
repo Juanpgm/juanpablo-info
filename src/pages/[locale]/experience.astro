@@ -1,0 +1,31 @@
+---
+// Full interactive timeline (site-structure route list, proposal §4.2):
+// all 'recent' roles as expandable TimelineCards + a collapsed
+// EarlyExperience accordion for the 'early' group.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Timeline from '../../components/Timeline.astro';
+import EarlyExperience from '../../components/EarlyExperience.astro';
+import { t, useLocale } from '../../i18n';
+import { getLocalizedEntries } from '../../lib/content-fallback';
+
+export function getStaticPaths() {
+  return [{ params: { locale: 'es' } }, { params: { locale: 'en' } }, { params: { locale: 'de' } }];
+}
+
+const locale = useLocale(Astro.params.locale);
+const entries = await getLocalizedEntries('experience', locale);
+
+const sortByRecency = (a: (typeof entries)[number], b: (typeof entries)[number]) =>
+  (a.data.order ?? 99) - (b.data.order ?? 99) || b.data.startDate.getTime() - a.data.startDate.getTime();
+
+const recent = entries.filter((entry) => entry.data.group === 'recent').sort(sortByRecency);
+const early = entries.filter((entry) => entry.data.group === 'early').sort(sortByRecency);
+---
+
+<BaseLayout title={t(locale, 'experience.heading')} description={t(locale, 'hero.tagline')} path="experience">
+  <section class="section" data-reveal aria-labelledby="experience-heading">
+    <h1 id="experience-heading">{t(locale, 'experience.heading')}</h1>
+    <Timeline entries={recent} locale={locale} />
+    {early.length > 0 && <EarlyExperience entries={early} locale={locale} />}
+  </section>
+</BaseLayout>

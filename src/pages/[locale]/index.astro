@@ -1,27 +1,98 @@
 ---
-// TEMPORARY PLACEHOLDER — Phase 3 (task 3.6) replaces this with the real Home
-// layout (Hero, About summary, Skills, Experience, Projects, Blog, Contact
-// per design §3/proposal §4.1). This file exists so Phase 2's BaseLayout +
-// Header/Footer chrome has a real route to render against.
+// Home (proposal §4.1, site-structure spec "Home Section Order"): Hero ->
+// About summary -> Skills two-worlds -> Featured experience -> Featured
+// projects -> Latest posts -> Contact. `data-reveal` on every major section
+// (lib/scroll-reveal.ts already wired in BaseLayout).
+import { getRelativeLocaleUrl } from 'astro:i18n';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import TwoWorlds from '../../components/TwoWorlds.astro';
+import Timeline from '../../components/Timeline.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import { t, useLocale } from '../../i18n';
+import { getLocalizedEntries } from '../../lib/content-fallback';
+import { projects } from '../../data/projects';
 
 export function getStaticPaths() {
   return [{ params: { locale: 'es' } }, { params: { locale: 'en' } }, { params: { locale: 'de' } }];
 }
 
-const { locale } = Astro.params;
-const greeting: Record<string, string> = { es: 'Hola', en: 'Hello', de: 'Hallo' };
-const description: Record<string, string> = {
-  es: 'Ingeniero civil y especialista en IA y ciencia de datos.',
-  en: 'Civil engineer and AI & data science specialist.',
-  de: 'Bauingenieur und Spezialist für KI und Data Science.',
-};
+const locale = useLocale(Astro.params.locale);
+
+const experience = await getLocalizedEntries('experience', locale);
+const featuredExperience = experience
+  .filter((entry) => entry.data.featured)
+  .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99))
+  .slice(0, 4);
+
+const featuredProjects = projects.filter((project) => project.featured);
+
+const posts = await getLocalizedEntries('blog', locale);
+const latestPosts = posts
+  .filter((entry) => !entry.data.draft)
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .slice(0, 3);
 ---
 
-<BaseLayout
-  title="Juan Pablo Guzmán Martínez"
-  description={description[locale ?? 'es']}
-  isHome
->
-  <p>{greeting[locale ?? 'es']}</p>
+<BaseLayout title={t(locale, 'hero.title')} description={t(locale, 'hero.tagline')} isHome>
+  <Hero />
+
+  <section class="section" data-reveal aria-labelledby="about-summary-heading">
+    <div class="section-header">
+      <h2 id="about-summary-heading">{t(locale, 'about.heading')}</h2>
+    </div>
+    <div class="prose">
+      <p>{t(locale, 'about.summaryP1')}</p>
+      <p>{t(locale, 'about.summaryP2')}</p>
+    </div>
+    <p style="margin-top: 1rem;">
+      <a href={getRelativeLocaleUrl(locale, 'about')} class="nav-link">{t(locale, 'about.readMore')} →</a>
+    </p>
+  </section>
+
+  <TwoWorlds />
+
+  <section class="section" data-reveal aria-labelledby="featured-experience-heading">
+    <div class="section-header">
+      <h2 id="featured-experience-heading">{t(locale, 'experience.featuredHeading')}</h2>
+      <a href={getRelativeLocaleUrl(locale, 'experience')} class="nav-link">{t(locale, 'experience.viewAll')} →</a>
+    </div>
+    <Timeline entries={featuredExperience} locale={locale} />
+  </section>
+
+  <section class="section" data-reveal aria-labelledby="featured-projects-heading">
+    <div class="section-header">
+      <h2 id="featured-projects-heading">{t(locale, 'projects.heading')}</h2>
+      <a href={getRelativeLocaleUrl(locale, 'projects')} class="nav-link">{t(locale, 'projects.viewAll')} →</a>
+    </div>
+    <div class="project-grid">
+      {featuredProjects.map((project) => <ProjectCard project={project} locale={locale} />)}
+    </div>
+  </section>
+
+  <section class="section" data-reveal aria-labelledby="latest-posts-heading">
+    <div class="section-header">
+      <h2 id="latest-posts-heading">{t(locale, 'blog.latestHeading')}</h2>
+      <a href={getRelativeLocaleUrl(locale, 'blog')} class="nav-link">{t(locale, 'blog.viewAll')} →</a>
+    </div>
+    <div class="blog-grid">
+      {latestPosts.map((post) => <BlogCard entry={post} locale={locale} />)}
+    </div>
+  </section>
+
+  <section class="section" data-reveal aria-labelledby="contact-heading">
+    <h2 id="contact-heading">{t(locale, 'contact.heading')}</h2>
+    <div class="contact-actions">
+      <a href="mailto:juanp.gzmz@gmail.com" class="btn btn-lg">{t(locale, 'contact.emailCta')}</a>
+      <a
+        href="https://www.linkedin.com/in/jp-guzman"
+        class="btn btn-lg btn-outline"
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        {t(locale, 'contact.linkedinCta')}
+      </a>
+    </div>
+  </section>
 </BaseLayout>

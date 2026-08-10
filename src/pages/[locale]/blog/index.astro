@@ -1,0 +1,29 @@
+---
+// Blog index: BlogCard grid + TagFilter (blog spec "Client-Side Tag Filter",
+// "Launch Seed Posts"). No dedicated /blog/tags/[tag]/ routes.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import BlogCard from '../../../components/BlogCard.astro';
+import TagFilter from '../../../components/TagFilter.astro';
+import { t, useLocale } from '../../../i18n';
+import { getLocalizedEntries } from '../../../lib/content-fallback';
+
+export function getStaticPaths() {
+  return [{ params: { locale: 'es' } }, { params: { locale: 'en' } }, { params: { locale: 'de' } }];
+}
+
+const locale = useLocale(Astro.params.locale);
+const entries = await getLocalizedEntries('blog', locale);
+const posts = entries
+  .filter((entry) => !entry.data.draft)
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+---
+
+<BaseLayout title={t(locale, 'blog.heading')} description={t(locale, 'hero.tagline')} path="blog">
+  <section class="section" data-reveal aria-labelledby="blog-heading">
+    <h1 id="blog-heading">{t(locale, 'blog.heading')}</h1>
+    <TagFilter locale={locale} />
+    <div class="blog-grid">
+      {posts.map((post) => <BlogCard entry={post} locale={locale} />)}
+    </div>
+  </section>
+</BaseLayout>

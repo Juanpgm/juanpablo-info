@@ -1,0 +1,93 @@
+---
+// Blog post: PostLayout + TOC + reading time + prev/next + rendered
+// Markdown body with Shiki code blocks (blog spec "Markdown Authoring with
+// Syntax Highlighting", "Auto TOC and Reading Time").
+//
+// Routes are generated explicitly per locale from `getLocalizedEntries`
+// (not Astro's automatic i18n page-fallback, which only covers routes
+// Astro itself emits from locale-folder routing — our `[locale]` param
+// scheme bypasses that). This guarantees a real static page exists at
+// every /{locale}/blog/{slug}/ even when the underlying content is the
+// EN/ES fallback (design §5.2 hreflang rationale: "no 404").
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { render, type CollectionEntry } from 'astro:content';
+import PostLayout from '../../../layouts/PostLayout.astro';
+import TableOfContents from '../../../components/TableOfContents.astro';
+import { t, useLocale, type Locale } from '../../../i18n';
+import { getLocalizedEntries } from '../../../lib/content-fallback';
+import { readingTimeMinutes } from '../../../lib/reading-time';
+
+interface Props {
+  entry: CollectionEntry<'blog'>;
+  prevEntry: CollectionEntry<'blog'> | null;
+  nextEntry: CollectionEntry<'blog'> | null;
+}
+
+export async function getStaticPaths() {
+  const locales: Locale[] = ['es', 'en', 'de'];
+  const paths: {
+    params: { locale: Locale; slug: string };
+    props: Props;
+  }[] = [];
+
+  for (const locale of locales) {
+    const entries = await getLocalizedEntries('blog', locale);
+    const sorted = entries
+      .filter((entry) => !entry.data.draft)
+      .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+    sorted.forEach((entry, index) => {
+      const slug = entry.id.slice(entry.id.indexOf('/') + 1);
+      paths.push({
+        params: { locale, slug },
+        props: {
+          entry,
+          prevEntry: sorted[index + 1] ?? null,
+          nextEntry: sorted[index - 1] ?? null,
+        },
+      });
+    });
+  }
+
+  return paths;
+}
+
+const locale = useLocale(Astro.params.locale);
+const { entry, prevEntry, nextEntry } = Astro.props;
+const { Content, headings } = await render(entry);
+const minutes = readingTimeMinutes(entry.body ?? '');
+const dateFormatter = new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'long', day: 'numeric' });
+
+function slugOf(e: CollectionEntry<'blog'>) {
+  return e.id.slice(e.id.indexOf('/') + 1);
+}
+
+const currentSlug = slugOf(entry);
+---
+
+<PostLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  path={`blog/${currentSlug}`}
+  readingTime={`${minutes} ${t(locale, 'blog.readingTimeSuffix')}`}
+  prev={prevEntry ? { href: getRelativeLocaleUrl(locale, `blog/${slugOf(prevEntry)}`), label: prevEntry.data.title } : null}
+  next={nextEntry ? { href: getRelativeLocaleUrl(locale, `blog/${slugOf(nextEntry)}`), label: nextEntry.data.title } : null}
+  backHref={getRelativeLocaleUrl(locale, 'blog')}
+  backLabel={t(locale, 'blog.backToIndex')}
+>
+  <TableOfContents slot="toc" headings={headings} label={t(locale, 'blog.tableOfContents')} />
+  <p class="post-date">
+    {t(locale, 'blog.publishedOn')}
+    {' '}
+    {dateFormatter.format(entry.data.pubDate)}
+    {
+      entry.data.updatedDate && (
+        <>
+          {' · '}
+          {t(locale, 'blog.updatedOn')} {dateFormatter.format(entry.data.updatedDate)}
+        </>
+      )
+    }
+  </p>
+  <Content />
+</PostLayout>

@@ -1,0 +1,83 @@
+---
+// Full About (site-structure spec route list): narrative, education,
+// certifications, languages (proposal §3.2).
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CodeSnippet from '../../components/CodeSnippet.astro';
+import { t, useLocale } from '../../i18n';
+import { education, certifications } from '../../data/education';
+
+export function getStaticPaths() {
+  return [{ params: { locale: 'es' } }, { params: { locale: 'en' } }, { params: { locale: 'de' } }];
+}
+
+const locale = useLocale(Astro.params.locale);
+const yearRange = (start: number, end?: number) => (end ? `${start}–${end}` : `${start}–${t(locale, 'experience.present')}`);
+---
+
+<BaseLayout title={t(locale, 'about.heading')} description={t(locale, 'about.summaryP1')} path="about">
+  <section class="section" data-reveal aria-labelledby="about-heading">
+    <h1 id="about-heading">{t(locale, 'about.heading')}</h1>
+    <div class="prose">
+      <p>{t(locale, 'about.summaryP1')}</p>
+      <p>{t(locale, 'about.summaryP2')}</p>
+      <p>{t(locale, 'about.narrativeP1')}</p>
+      <p>{t(locale, 'about.narrativeP2')}</p>
+      <p>{t(locale, 'about.narrativeP3')}</p>
+    </div>
+  </section>
+
+  <section class="section" data-reveal aria-labelledby="code-snippet-heading">
+    <div class="section-header">
+      <h2 id="code-snippet-heading">{t(locale, 'about.codeSnippetHeading')}</h2>
+    </div>
+    <CodeSnippet locale={locale} />
+  </section>
+
+  <section class="section" data-reveal aria-labelledby="education-heading">
+    <div class="section-header">
+      <h2 id="education-heading">{t(locale, 'about.education')}</h2>
+    </div>
+    <ul class="definition-list">
+      {
+        education.map((entry) => (
+          <li class="definition-list__item">
+            <strong>{entry.institution}</strong> — {entry.program[locale]}
+            <p class="definition-list__meta">
+              {entry.location} · {yearRange(entry.startYear, entry.endYear)}
+              {entry.note && <> · {entry.note[locale]}</>}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="section" data-reveal aria-labelledby="certifications-heading">
+    <div class="section-header">
+      <h2 id="certifications-heading">{t(locale, 'about.certifications')}</h2>
+    </div>
+    <ul class="definition-list">
+      {
+        certifications.map((cert) => (
+          <li class="definition-list__item">
+            <strong>{cert.name[locale]}</strong>
+            <p class="definition-list__meta">
+              {cert.issuer} · {cert.year}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="section" data-reveal aria-labelledby="languages-heading">
+    <div class="section-header">
+      <h2 id="languages-heading">{t(locale, 'about.languages')}</h2>
+    </div>
+    <ul class="definition-list">
+      <li class="definition-list__item">{t(locale, 'about.language.es')}</li>
+      <li class="definition-list__item">{t(locale, 'about.language.en')}</li>
+      <li class="definition-list__item">{t(locale, 'about.language.de')}</li>
+    </ul>
+  </section>
+</BaseLayout>
