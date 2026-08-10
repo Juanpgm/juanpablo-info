@@ -32,12 +32,12 @@ Chain strategy: pending
 
 ## Phase 1: Scaffold & Project Init
 
-- [ ] 1.1 `npm create astro@latest` (TS strict, no starter); `git init`; commit.
-- [ ] 1.2 Install/configure Tailwind v4 (`@tailwindcss/vite`), `@astrojs/vercel`, `@astrojs/sitemap` in `astro.config.mjs` (i18n block: `defaultLocale:'es'`, `locales:['es','en','de']`, `prefixDefaultLocale:true`, `fallback:{de:'en'}`, `fallbackType:'rewrite'`; shiki dual-theme).
-- [ ] 1.3 Set temporary `site: 'https://<project>.vercel.app'` in `astro.config.mjs`, `// TODO: swap real domain` (R1).
-- [ ] 1.4 `tsconfig.json` extends `astro/tsconfigs/strict`.
-- [ ] 1.5 `src/styles/global.css` — Tailwind v4 `@theme` tokens + `prefers-reduced-motion` base guard.
-- [ ] 1.6 Commit scaffold.
+- [x] 1.1 `npm create astro@latest` (TS strict, no starter); `git init`; commit.
+- [x] 1.2 Install/configure Tailwind v4 (`@tailwindcss/vite`), `@astrojs/vercel`, `@astrojs/sitemap` in `astro.config.mjs` (i18n block: `defaultLocale:'es'`, `locales:['es','en','de']`, `prefixDefaultLocale:true`, `fallback:{de:'en'}`, `fallbackType:'rewrite'`; shiki dual-theme).
+- [x] 1.3 Set temporary `site: 'https://<project>.vercel.app'` in `astro.config.mjs`, `// TODO: swap real domain` (R1).
+- [x] 1.4 `tsconfig.json` extends `astro/tsconfigs/strict`.
+- [x] 1.5 `src/styles/global.css` — Tailwind v4 `@theme` tokens + `prefers-reduced-motion` base guard.
+- [x] 1.6 Commit scaffold.
 
 ## Phase 2: Layouts & Shared Components
 
