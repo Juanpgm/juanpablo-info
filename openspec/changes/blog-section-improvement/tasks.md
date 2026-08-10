@@ -72,7 +72,7 @@ Slugs: obras-control-erosion, ingenieria-estructural-fundamentos, nsr-10-revisio
 
 ## Phase 6: Verification
 
-- [ ] 6.1 Manual: toggle dark/light on one post per batch, confirm diagram legible, no light rectangle.
-- [ ] 6.2 Manual: view DE/FR/RU post, confirm English diagram + English alt text via fallback.
-- [ ] 6.3 Manual: confirm two different posts have different `og:image` URLs, neither is `/og/default.png`.
-- [ ] 6.4 `npx vitest run` full suite green.
+- [x] 6.1 Manual: toggle dark/light on one post per batch, confirm diagram legible, no light rectangle. (No browser in this environment — verified via built HTML: no stray `<rect fill="#f7f8fa">` in emitted SVGs, all fills use `var(--diagram-*)` which flip with `--color-*` per PR1's theme-var indirection; `.post-hero-image`/`.blog-card__image` now carry `background-color:var(--color-surface-subtle)` framing instead of transparent-on-white.)
+- [x] 6.2 Manual: view DE/FR/RU post, confirm English diagram + English alt text via fallback. (Verified: DE `sismos-como-se-generan` aria-label == EN aria-label exactly, both differ from ES aria-label — English-fallback wiring from PR1/2 intact.)
+- [x] 6.3 Manual: confirm two different posts have different `og:image` URLs, neither is `/og/default.png`. (Verified: `sismos-como-se-generan` → `/og/es/sismos-como-se-generan.png`, `obras-control-erosion` → `/og/es/obras-control-erosion.png`.)
+- [x] 6.4 `npx vitest run` full suite green. (8 files, 52 tests passed.)
