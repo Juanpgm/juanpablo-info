@@ -55,12 +55,12 @@ Chain strategy: pending
 - [x] 3.3 `data/{site,skills,education,projects,nav}.ts` (typed statics, `isExample`).
 - [x] 3.4 `content/experience/{es,en,de}/*.json` seed roles incl. Teatrino entry, text-only, **no image field/slot**. (ES complete — 13 roles; EN/DE translation is a followup, see apply-progress.)
 - [x] 3.5 `content/blog/{es,en,de}/*.md` — 6 launch seed posts (ES minimum, titles per spec). (ES: all 6 complete; EN: 3 flagship translations done, 3 remaining as followup; DE: intentionally empty per confirmed de→en fallback decision.)
-- [ ] 3.6 `pages/[locale]/index.astro` — Home: Hero → About summary → Skills two-worlds → Featured experience → Featured projects → Latest posts → Contact.
-- [ ] 3.7 `pages/[locale]/about.astro`, `experience.astro`, `projects.astro`.
-- [ ] 3.8 `pages/[locale]/blog/index.astro` + `blog/[...slug].astro`.
-- [ ] 3.9 `Hero`, `TwoWorlds`, `Timeline`, `TimelineCard` (`<details>`, **no image slot**), `EarlyExperience` (collapsed accordion default), `ProjectCard`, `BlogCard`, `TableOfContents`, `CodeSnippet` components.
-- [ ] 3.10 `components/TagFilter.astro` — vanilla `<script type="module">` chip filter, blog index only, no `/blog/tags/[tag]/` routes.
-- [ ] 3.11 Commit content/i18n/pages.
+- [x] 3.6 `pages/[locale]/index.astro` — Home: Hero → About summary → Skills two-worlds → Featured experience → Featured projects → Latest posts → Contact.
+- [x] 3.7 `pages/[locale]/about.astro`, `experience.astro`, `projects.astro`.
+- [x] 3.8 `pages/[locale]/blog/index.astro` + `blog/[...slug].astro`.
+- [x] 3.9 `Hero`, `TwoWorlds`, `Timeline`, `TimelineCard` (`<details>`, **no image slot**), `EarlyExperience` (collapsed accordion default), `ProjectCard`, `BlogCard`, `TableOfContents`, `CodeSnippet` components.
+- [x] 3.10 `components/TagFilter.astro` — vanilla `<script type="module">` chip filter, blog index only, no `/blog/tags/[tag]/` routes.
+- [x] 3.11 Commit content/i18n/pages. (Added `lib/content-fallback.ts` — not in the original task list, but required so EN/DE pages don't render empty/partial given incomplete experience/blog translation; see apply-progress.)
 
 ## Phase 4: SEO / Accessibility / Performance
 
