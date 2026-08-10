@@ -1316,6 +1316,18 @@ dialog#contact-modal[open]::backdrop {
   margin: 0;
 }
 
+/* `article.post` never had the site's standard content-width treatment
+   (`.section`'s max-width/padding/centering) — present since the very
+   first PostLayout commit, but only became visually obvious once the
+   framed/bordered hero diagram (background-color + border, edge-to-edge
+   with zero constraint) made the missing margins impossible to miss.
+   Same values as `.section` so blog posts match every other page. */
+.post {
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: var(--space-2xl) var(--space-md);
+}
+
 .post-header {
   margin-bottom: var(--space-xl);
 }
