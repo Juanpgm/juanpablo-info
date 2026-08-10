@@ -24,7 +24,7 @@ interface Props {
 }
 
 const { project, locale, headingLevel = 'h3' } = Astro.props;
-const hasLiveMeta = project.stars != null || project.primaryLanguage != null || project.lastUpdated != null;
+const hasLiveMeta = project.primaryLanguage != null || project.lastUpdated != null;
 const Heading = headingLevel;
 ---
 
@@ -44,7 +44,6 @@ const Heading = headingLevel;
   {
     hasLiveMeta && (
       <p class="project-card__meta">
-        {project.stars != null && <span>★ {project.stars}</span>}
         {project.primaryLanguage && <span>{project.primaryLanguage}</span>}
         {project.lastUpdated && (
           <time datetime={project.lastUpdated}>{new Date(project.lastUpdated).toLocaleDateString(locale)}</time>
