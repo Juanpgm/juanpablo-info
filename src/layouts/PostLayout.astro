@@ -1,6 +1,10 @@
 ---
 // Article chrome: TOC slot, reading time, prev/next, back-to-index link
-// (Phase 3, task 3.8) wired from the blog post page.
+// (Phase 3, task 3.8) wired from the blog post page. `tags`/`heroImage`
+// added post-launch (fast-follow) — heroImage is optional/progressive, a
+// post that doesn't set one renders nothing extra (no placeholder).
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
 
 interface Props {
@@ -8,13 +12,26 @@ interface Props {
   description: string;
   path: string;
   readingTime?: string;
+  tags?: string[];
+  heroImage?: ImageMetadata;
   prev?: { href: string; label: string } | null;
   next?: { href: string; label: string } | null;
   backHref?: string;
   backLabel?: string;
 }
 
-const { title, description, path, readingTime, prev = null, next = null, backHref, backLabel } = Astro.props;
+const {
+  title,
+  description,
+  path,
+  readingTime,
+  tags = [],
+  heroImage,
+  prev = null,
+  next = null,
+  backHref,
+  backLabel,
+} = Astro.props;
 ---
 
 <BaseLayout title={title} description={description} path={path}>
@@ -23,9 +40,24 @@ const { title, description, path, readingTime, prev = null, next = null, backHre
       {backHref && backLabel && (
         <a href={backHref} class="nav-link post-back-link">← {backLabel}</a>
       )}
-      <h1>{title}</h1>
-      {readingTime && <p class="post-meta">{readingTime}</p>}
+      <h1 class="page-title">{title}</h1>
+      <p class="post-meta">
+        <slot name="meta" />
+        {readingTime && (
+          <>
+            <span aria-hidden="true"> · </span>
+            {readingTime}
+          </>
+        )}
+      </p>
+      {tags.length > 0 && (
+        <ul class="post-tags">
+          {tags.map((tag) => <li class="badge badge-tag">{tag}</li>)}
+        </ul>
+      )}
     </header>
+
+    {heroImage && <Image src={heroImage} alt="" width={1200} height={630} class="post-hero-image" />}
 
     <div class="post-body">
       <aside class="post-toc" aria-label="Table of contents">

@@ -13,7 +13,7 @@ import { getRelativeLocaleUrl } from 'astro:i18n';
 import { render, type CollectionEntry } from 'astro:content';
 import PostLayout from '../../../layouts/PostLayout.astro';
 import TableOfContents from '../../../components/TableOfContents.astro';
-import { t, useLocale, type Locale } from '../../../i18n';
+import { t, useLocale, type Locale, type UIKey } from '../../../i18n';
 import { getLocalizedEntries } from '../../../lib/content-fallback';
 import { readingTimeMinutes } from '../../../lib/reading-time';
 import { formatCalendarDate } from '../../../lib/format-date';
@@ -58,6 +58,7 @@ const { entry, prevEntry, nextEntry } = Astro.props;
 const { Content, headings } = await render(entry);
 const minutes = readingTimeMinutes(entry.body ?? '');
 const dateOptions: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+const tagLabels = entry.data.tags.map((tag) => t(locale, `blog.tag.${tag}` as UIKey));
 
 function slugOf(e: CollectionEntry<'blog'>) {
   return e.id.slice(e.id.indexOf('/') + 1);
@@ -71,13 +72,15 @@ const currentSlug = slugOf(entry);
   description={entry.data.description}
   path={`blog/${currentSlug}`}
   readingTime={`${minutes} ${t(locale, 'blog.readingTimeSuffix')}`}
+  tags={tagLabels}
+  heroImage={entry.data.heroImage}
   prev={prevEntry ? { href: getRelativeLocaleUrl(locale, `blog/${slugOf(prevEntry)}`), label: prevEntry.data.title } : null}
   next={nextEntry ? { href: getRelativeLocaleUrl(locale, `blog/${slugOf(nextEntry)}`), label: nextEntry.data.title } : null}
   backHref={getRelativeLocaleUrl(locale, 'blog')}
   backLabel={t(locale, 'blog.backToIndex')}
 >
   <TableOfContents slot="toc" headings={headings} label={t(locale, 'blog.tableOfContents')} />
-  <p class="post-date">
+  <Fragment slot="meta">
     {t(locale, 'blog.publishedOn')}
     {' '}
     {formatCalendarDate(entry.data.pubDate, locale, dateOptions)}
@@ -89,6 +92,6 @@ const currentSlug = slugOf(entry);
         </>
       )
     }
-  </p>
+  </Fragment>
   <Content />
 </PostLayout>

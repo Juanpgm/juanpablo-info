@@ -1,5 +1,6 @@
 ---
 import { getRelativeLocaleUrl } from 'astro:i18n';
+import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import { t } from '../i18n';
 import type { Locale, UIKey } from '../i18n';
@@ -24,6 +25,9 @@ const Heading = headingLevel;
 ---
 
 <article class="blog-card" data-reveal data-tags={entry.data.tags.join(' ')}>
+  {entry.data.heroImage && (
+    <Image src={entry.data.heroImage} alt="" width={640} height={360} loading="lazy" class="blog-card__image" />
+  )}
   <p class="blog-card__meta">
     <time datetime={entry.data.pubDate.toISOString()}>{formatCalendarDate(entry.data.pubDate, locale, { year: 'numeric', month: 'long' })}</time>
     <span aria-hidden="true"> · </span>
