@@ -65,24 +65,6 @@ body {
   font-family: var(--font-body);
 }
 
-/* Single global decorative network background (lib/network-canvas.ts),
-   mounted once in BaseLayout.astro instead of per-component. `position:
-   fixed` + negative z-index paints it above body's flat background-color but
-   below all real content (header/main/footer are normal-flow, stack level 0,
-   which per CSS2.1 painting order paints above negative-z-index siblings) —
-   confirmed no `.section` or page-content wrapper sets an opaque
-   background-color that would hide it; only inner cards/badges do, and those
-   intentionally paint over it. z-index kept well below .site-header's 50 and
-   .skip-link's 100. Purely decorative: aria-hidden, never focusable. */
-.site-network-bg {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-}
-
 h1,
 h2,
 h3 {

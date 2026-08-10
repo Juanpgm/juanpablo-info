@@ -47,7 +47,6 @@ const locale = Astro.currentLocale ?? 'es';
     <slot name="head" />
   </head>
   <body>
-    <canvas class="site-network-bg" aria-hidden="true" transition:persist></canvas>
     <a href="#main-content" class="skip-link">Skip to content</a>
     <Header />
     <main id="main-content">
@@ -60,27 +59,6 @@ const locale = Astro.currentLocale ?? 'es';
       const run = () => initScrollReveal();
       run();
       document.addEventListener('astro:page-load', run);
-    </script>
-
-    <script>
-      // Single shared decorative network background (lib/network-canvas.ts),
-      // mounted once here instead of per-component. Re-init per View
-      // Transition navigation, torn down on the way out — same lifecycle
-      // pattern as Hero.astro's previous per-component wiring.
-      import { initNetworkCanvas } from '../lib/network-canvas';
-
-      let cleanup: (() => void) | undefined;
-
-      function setup() {
-        cleanup?.();
-        cleanup = undefined;
-        const canvas = document.querySelector<HTMLCanvasElement>('.site-network-bg');
-        if (canvas) cleanup = initNetworkCanvas(canvas);
-      }
-
-      setup();
-      document.addEventListener('astro:page-load', setup);
-      document.addEventListener('astro:before-swap', () => cleanup?.());
     </script>
   </body>
 </html>
