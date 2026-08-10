@@ -1,4 +1,4 @@
-// Projects seed (design.md §3/§6). All 6 entries below are real, public
+// Projects seed (design.md §3/§6). All 11 entries below are real, public
 // GitHub repos (`isExample: false`, `repoUrl` set) — `lib/github.ts` merges
 // `{stars, primaryLanguage, lastUpdated}` at build time via a live GitHub API
 // call per repo, falling back to `stale: true` on the seed if that fetch
@@ -94,6 +94,71 @@ export const projects: ProjectSeed[] = [
     },
     stack: ['Python', 'PDF Parsing', 'Excel'],
     repoUrl: 'https://github.com/Juanpgm/pdf_pptos_civil',
+    isExample: false,
+    featured: false,
+  },
+  {
+    id: 'calitrack-360',
+    name: 'CaliTrack 360',
+    description: {
+      es: 'Progressive Web App para la captura en campo del estado de proyectos de infraestructura de la ciudad: autenticación con Firebase, registro fotográfico y captura de coordenadas GPS desde dispositivos móviles.',
+      en: "Progressive Web App for field capture of the city's infrastructure project status: Firebase authentication, photographic logging, and GPS coordinate capture from mobile devices.",
+      de: 'Progressive Web App zur Felderfassung des Status städtischer Infrastrukturprojekte: Firebase-Authentifizierung, fotografische Dokumentation und GPS-Koordinatenerfassung von mobilen Geräten aus.',
+    },
+    stack: ['Svelte', 'Firebase', 'PWA'],
+    repoUrl: 'https://github.com/Juanpgm/artefacto-calitrack-360',
+    isExample: false,
+    featured: false,
+  },
+  {
+    id: 'gestor-proyectos',
+    name: 'Gestor de Proyectos',
+    description: {
+      es: 'Dashboard interactivo en Next.js para la gestión y visualización de proyectos de inversión pública de la Alcaldía de Santiago de Cali, con métricas compactas y filtros unificados.',
+      en: "Interactive Next.js dashboard for managing and visualizing public investment projects for the Santiago de Cali city government, with compact metrics and unified filters.",
+      de: 'Interaktives Next.js-Dashboard zur Verwaltung und Visualisierung öffentlicher Investitionsprojekte der Stadtverwaltung von Santiago de Cali, mit kompakten Kennzahlen und einheitlichen Filtern.',
+    },
+    stack: ['TypeScript', 'Next.js', 'Vercel'],
+    repoUrl: 'https://github.com/Juanpgm/gestor_proyectos_vercel',
+    isExample: false,
+    featured: false,
+  },
+  {
+    id: 'gestor-proyectos-api',
+    name: 'Gestor de Proyectos API',
+    description: {
+      es: 'API REST en FastAPI que da interoperabilidad al artefacto de seguimiento de proyectos, con Firebase/Firestore como backend de datos en tiempo real.',
+      en: 'REST API built with FastAPI that provides interoperability for the project-tracking artifact, with Firebase/Firestore as a real-time data backend.',
+      de: 'REST-API mit FastAPI, die Interoperabilität für das Projektverfolgungs-Artefakt bereitstellt, mit Firebase/Firestore als Echtzeit-Datenbackend.',
+    },
+    stack: ['Python', 'FastAPI', 'Firebase', 'Firestore'],
+    repoUrl: 'https://github.com/Juanpgm/gestor_proyecto_api',
+    isExample: false,
+    featured: false,
+  },
+  {
+    id: 'dagma-360-capture',
+    name: 'DAGMA-360 Capture',
+    description: {
+      es: 'Despliegue del artefacto de captura de campo CaliTrack 360 adaptado para el DAGMA, para el registro de intervenciones y jornadas técnicas de gestión ambiental.',
+      en: 'Deployment of the CaliTrack 360 field-capture artifact adapted for DAGMA, for logging interventions and technical environmental-management field days.',
+      de: 'Bereitstellung des CaliTrack-360-Felderfassungs-Artefakts, angepasst für DAGMA, zur Dokumentation von Maßnahmen und technischen Einsätzen im Umweltmanagement.',
+    },
+    stack: ['Svelte', 'Firebase', 'PWA'],
+    repoUrl: 'https://github.com/Juanpgm/dagma-360-capture',
+    isExample: false,
+    featured: false,
+  },
+  {
+    id: 'task-tracker-gobops',
+    name: 'Task Tracker GobOps',
+    description: {
+      es: 'Sistema de seguimiento de requerimientos para la Alcaldía de Santiago de Cali, con frontend en Svelte/Vite, autenticación Firebase y pruebas end-to-end multiplataforma con Playwright.',
+      en: 'Requirements-tracking system for the Santiago de Cali city government, with a Svelte/Vite frontend, Firebase authentication, and cross-platform end-to-end testing with Playwright.',
+      de: 'System zur Nachverfolgung von Anforderungen für die Stadtverwaltung von Santiago de Cali, mit Svelte/Vite-Frontend, Firebase-Authentifizierung und plattformübergreifenden End-to-End-Tests mit Playwright.',
+    },
+    stack: ['Svelte', 'TypeScript', 'Firebase', 'Playwright'],
+    repoUrl: 'https://github.com/Juanpgm/task-tracker-gobops',
     isExample: false,
     featured: false,
   },
