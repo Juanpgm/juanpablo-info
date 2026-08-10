@@ -1,30 +1,305 @@
 @import 'tailwindcss';
 
+/* Self-hosted variable fonts (design directive) — no external Google Fonts
+   request, better CWV. wght.css/opsz.css are the smaller single-axis files
+   (skip italic/full/soft/wonk axes, not used here). */
+@import '@fontsource-variable/fraunces/opsz.css';
+@import '@fontsource-variable/manrope/wght.css';
+
 /* Dark mode driven by `data-theme="dark"` on <html> (see design §8),
    not the OS-only `prefers-color-scheme` media variant. */
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
 /*
- * PROVISIONAL palette — placeholder neutral + accent tokens for the scaffold
- * to build/render. Exact hex values, AA-contrast verification (design R4),
- * and any additional shades are a later polish task (Phase 9), not final.
+ * Design tokens. Semantic color tokens are indirected through plain CSS
+ * custom properties (--surface, --ink, ...) overridden per-theme below, so
+ * Tailwind's generated utilities (bg-surface, text-ink, ...) stay reactive
+ * to the `data-theme` attribute at runtime — Tailwind v4's documented
+ * pattern for runtime-switchable themes.
+ *
+ * Palette: warm-tinted ink dark theme / cool-tinted off-white light theme
+ * ("engineering blueprint" feel, not pure black/white). Two accents only:
+ * technical teal (primary) + warm amber/copper (secondary, sparing use).
+ * Exact WCAG AA audit is a later polish task (design R4, Phase 9.1) — these
+ * pairings are chosen to already be close (teal-700/teal-400 class ratios).
  */
 @theme {
-  --color-neutral-50: #f8fafc;
-  --color-neutral-100: #f1f5f9;
-  --color-neutral-200: #e2e8f0;
-  --color-neutral-300: #cbd5e1;
-  --color-neutral-400: #94a3b8;
-  --color-neutral-500: #64748b;
-  --color-neutral-600: #475569;
-  --color-neutral-700: #334155;
-  --color-neutral-800: #1e293b;
-  --color-neutral-900: #0f172a;
-  --color-neutral-950: #020617;
+  --font-display: 'Fraunces Variable', ui-serif, Georgia, serif;
+  --font-body: 'Manrope Variable', ui-sans-serif, system-ui, sans-serif;
 
-  --color-accent-400: #22d3ee;
-  --color-accent-500: #0891b2;
-  --color-accent-600: #0e7490;
+  --color-surface: var(--surface);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+}
+
+:root {
+  --surface: #f7f8fa;
+  --surface-subtle: #eef0f3;
+  --ink: #1a2027;
+  --ink-muted: #4b5563;
+  --border: #dde1e6;
+  --primary: #0f766e;
+  --primary-hover: #115e59;
+  --secondary: #b45309;
+}
+
+[data-theme='dark'] {
+  --surface: #1b1815;
+  --surface-subtle: #242019;
+  --ink: #f2ede6;
+  --ink-muted: #b7ada0;
+  --border: #332d25;
+  --primary: #2dd4bf;
+  --primary-hover: #5eead4;
+  --secondary: #f59e0b;
+}
+
+body {
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+}
+
+/* Accessible focus ring — never removed, never left to the browser default. */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Skip-to-content link: off-screen until focused, then fully visible. */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  border: 1px solid var(--color-border);
+  border-radius: 0.375rem;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* Sticky header: backdrop-blur + subtle shadow-on-scroll (state set by a
+   tiny script in Header.astro via [data-scrolled]). */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background-color: color-mix(in srgb, var(--color-surface) 82%, transparent);
+  border-bottom: 1px solid transparent;
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.site-header[data-scrolled='true'] {
+  box-shadow: 0 4px 20px -8px rgb(0 0 0 / 0.25);
+  border-bottom-color: var(--color-border);
+}
+
+.site-header__inner,
+.site-footer__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: 1rem 1.5rem;
+}
+
+.primary-nav ul {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+/* Animated underline nav links (CSS-only, transform: scaleX). */
+.nav-link {
+  position: relative;
+  color: var(--color-ink-muted);
+  text-decoration: none;
+  padding-bottom: 0.2rem;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background-color: var(--color-primary);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.nav-link:hover,
+.nav-link:focus-visible,
+.nav-link[aria-current='page'],
+.nav-link[aria-current='true'] {
+  color: var(--color-ink);
+}
+
+.nav-link:hover::after,
+.nav-link:focus-visible::after,
+.nav-link[aria-current='page']::after,
+.nav-link[aria-current='true']::after {
+  transform: scaleX(1);
+}
+
+.lang-selector {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Buttons / CTAs: tasteful hover lift + shadow shift. */
+.btn,
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  background-color: var(--color-primary);
+  color: var(--color-surface);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.btn:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -8px rgb(0 0 0 / 0.35);
+}
+
+.btn-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+.btn-icon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -8px rgb(0 0 0 / 0.35);
+}
+
+/* Theme toggle icon swap — sun shown in light, moon shown in dark. */
+.icon-moon {
+  display: none;
+}
+
+[data-theme='dark'] .icon-sun {
+  display: none;
+}
+
+[data-theme='dark'] .icon-moon {
+  display: block;
+}
+
+.site-footer {
+  border-top: 1px solid var(--color-border);
+  margin-top: 4rem;
+}
+
+.footer-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.footer-copy {
+  color: var(--color-ink-muted);
+  font-size: 0.875rem;
+  width: 100%;
+}
+
+/* PostLayout shell (task 2.6) */
+.post-body {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 64rem) {
+  .post-body {
+    grid-template-columns: minmax(0, 1fr) 16rem;
+  }
+
+  .post-toc {
+    order: 2;
+    position: sticky;
+    top: 6rem;
+    align-self: start;
+  }
+}
+
+.post-pagination {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border);
+}
+
+/* Scroll-reveal utility (lib/scroll-reveal.ts): opt in per-section with
+   `data-reveal`. Neutralized below under prefers-reduced-motion. */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -35,5 +310,16 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }
