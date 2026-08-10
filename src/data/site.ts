@@ -1,6 +1,5 @@
-// Minimal stub — Phase 3 (task 3.3) expands this file alongside
-// skills.ts / education.ts / projects.ts / nav.ts. Facts sourced from
-// proposal.md (§1 intent, §8 design JSON-LD Person plan).
+// Person facts for JSON-LD (design.md §8) and Footer contact links. Facts
+// sourced from proposal.md (§1 intent) and design.md §8.
 export const site = {
   name: 'Juan Pablo Guzmán Martínez',
   jobTitle: 'Civil Engineer · AI & Data Science Specialist',
