@@ -50,11 +50,11 @@ Chain strategy: pending
 
 ## Phase 3: Content Model, i18n & Pages
 
-- [ ] 3.1 `src/content.config.ts` — `blog` (glob loader, zod schema, closed `tags` enum) + `experience` (JSON glob loader, schema has **no `image` field anywhere**).
-- [ ] 3.2 `i18n/{es,en,de}.json` + `i18n/index.ts` (typed `t()`, `UIKey = keyof typeof es`, de→en→es fallback).
-- [ ] 3.3 `data/{site,skills,education,projects,nav}.ts` (typed statics, `isExample`).
-- [ ] 3.4 `content/experience/{es,en,de}/*.json` seed roles incl. Teatrino entry, text-only, **no image field/slot**.
-- [ ] 3.5 `content/blog/{es,en,de}/*.md` — 6 launch seed posts (ES minimum, titles per spec).
+- [x] 3.1 `src/content.config.ts` — `blog` (glob loader, zod schema, closed `tags` enum) + `experience` (JSON glob loader, schema has **no `image` field anywhere**).
+- [x] 3.2 `i18n/{es,en,de}.json` + `i18n/index.ts` (typed `t()`, `UIKey = keyof typeof es`, de→en→es fallback).
+- [x] 3.3 `data/{site,skills,education,projects,nav}.ts` (typed statics, `isExample`).
+- [x] 3.4 `content/experience/{es,en,de}/*.json` seed roles incl. Teatrino entry, text-only, **no image field/slot**. (ES complete — 13 roles; EN/DE translation is a followup, see apply-progress.)
+- [x] 3.5 `content/blog/{es,en,de}/*.md` — 6 launch seed posts (ES minimum, titles per spec). (ES: all 6 complete; EN: 3 flagship translations done, 3 remaining as followup; DE: intentionally empty per confirmed de→en fallback decision.)
 - [ ] 3.6 `pages/[locale]/index.astro` — Home: Hero → About summary → Skills two-worlds → Featured experience → Featured projects → Latest posts → Contact.
 - [ ] 3.7 `pages/[locale]/about.astro`, `experience.astro`, `projects.astro`.
 - [ ] 3.8 `pages/[locale]/blog/index.astro` + `blog/[...slug].astro`.
