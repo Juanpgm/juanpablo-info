@@ -17,9 +17,14 @@ interface Props {
   pubDate?: Date;
   updatedDate?: Date;
   heroImageUrl?: string;
+  // Per-post/per-locale OG image, site-relative path (e.g. `/og/es/{slug}.png`
+  // — see `src/pages/og/[...slug].ts`). Forwarded to SeoHead as-is; SeoHead
+  // falls back to `/og/default.png` when this is undefined (non-blog pages).
+  ogImage?: string;
 }
 
-const { title, description, path = '', jsonLd = 'webpage', pubDate, updatedDate, heroImageUrl } = Astro.props;
+const { title, description, path = '', jsonLd = 'webpage', pubDate, updatedDate, heroImageUrl, ogImage } =
+  Astro.props;
 const locale = Astro.currentLocale ?? 'es';
 ---
 
@@ -36,6 +41,7 @@ const locale = Astro.currentLocale ?? 'es';
       pubDate={pubDate}
       updatedDate={updatedDate}
       heroImageUrl={heroImageUrl}
+      ogImage={ogImage}
     />
     <ClientRouter />
 

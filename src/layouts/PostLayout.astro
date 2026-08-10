@@ -24,6 +24,12 @@ interface Props {
   // entry.id ("{locale}/{slug}") — needed to pick the ES/EN diagram variant.
   entryId?: string;
   slug?: string;
+  // Per-post/per-locale OG image, computed by the blog post page (it already
+  // holds the route's `locale` + slug) — forwarded to BaseLayout/SeoHead
+  // as-is. NOT derived from `entryId`'s own locale prefix here: a de/fr/ru
+  // route renders a fallback EN/ES entry, so `entryId` would point at the
+  // wrong locale's OG image URL for those routes.
+  ogImage?: string;
   prev?: { href: string; label: string } | null;
   next?: { href: string; label: string } | null;
   backHref?: string;
@@ -46,6 +52,7 @@ const {
   heroImageCaption,
   entryId,
   slug,
+  ogImage,
   prev = null,
   next = null,
   backHref,
@@ -73,6 +80,7 @@ const heroDiagram = heroImage && entryId && slug ? heroDiagrams[resolveHeroDiagr
   pubDate={pubDate}
   updatedDate={updatedDate}
   heroImageUrl={heroImage?.src}
+  ogImage={ogImage}
 >
   <article class="post" data-reveal>
     <header class="post-header">
