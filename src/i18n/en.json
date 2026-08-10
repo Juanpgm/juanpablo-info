@@ -68,7 +68,7 @@
   "experience.stackLabel": "Stack",
 
   "projects.heading": "Projects",
-  "projects.metaDescription": "Open-source and illustrative projects in data science, AI, and geointelligence applied to the public sector, with GitHub repositories.",
+  "projects.metaDescription": "Open-source projects in data science, AI, and geointelligence applied to the public sector, with real GitHub repositories.",
   "projects.viewAll": "View all",
   "projects.exampleBadge": "Example",
   "projects.staleBadge": "Data not refreshed",
