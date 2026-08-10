@@ -16,6 +16,7 @@ import TableOfContents from '../../../components/TableOfContents.astro';
 import { t, useLocale, type Locale } from '../../../i18n';
 import { getLocalizedEntries } from '../../../lib/content-fallback';
 import { readingTimeMinutes } from '../../../lib/reading-time';
+import { formatCalendarDate } from '../../../lib/format-date';
 
 interface Props {
   entry: CollectionEntry<'blog'>;
@@ -56,7 +57,7 @@ const locale = useLocale(Astro.params.locale);
 const { entry, prevEntry, nextEntry } = Astro.props;
 const { Content, headings } = await render(entry);
 const minutes = readingTimeMinutes(entry.body ?? '');
-const dateFormatter = new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'long', day: 'numeric' });
+const dateOptions: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
 
 function slugOf(e: CollectionEntry<'blog'>) {
   return e.id.slice(e.id.indexOf('/') + 1);
@@ -79,12 +80,12 @@ const currentSlug = slugOf(entry);
   <p class="post-date">
     {t(locale, 'blog.publishedOn')}
     {' '}
-    {dateFormatter.format(entry.data.pubDate)}
+    {formatCalendarDate(entry.data.pubDate, locale, dateOptions)}
     {
       entry.data.updatedDate && (
         <>
           {' · '}
-          {t(locale, 'blog.updatedOn')} {dateFormatter.format(entry.data.updatedDate)}
+          {t(locale, 'blog.updatedOn')} {formatCalendarDate(entry.data.updatedDate, locale, dateOptions)}
         </>
       )
     }

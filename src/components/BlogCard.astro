@@ -4,6 +4,7 @@ import type { CollectionEntry } from 'astro:content';
 import { t } from '../i18n';
 import type { Locale, UIKey } from '../i18n';
 import { readingTimeMinutes } from '../lib/reading-time';
+import { formatCalendarDate } from '../lib/format-date';
 
 interface Props {
   entry: CollectionEntry<'blog'>;
@@ -18,14 +19,13 @@ const { entry, locale, headingLevel = 'h3' } = Astro.props;
 // entry.id is "{locale}/{slug}" (design.md §4) — the route only needs slug.
 const slug = entry.id.slice(entry.id.indexOf('/') + 1);
 const href = getRelativeLocaleUrl(locale, `blog/${slug}`);
-const dateFormatter = new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'long' });
 const minutes = readingTimeMinutes(entry.body ?? '');
 const Heading = headingLevel;
 ---
 
 <article class="blog-card" data-reveal data-tags={entry.data.tags.join(' ')}>
   <p class="blog-card__meta">
-    <time datetime={entry.data.pubDate.toISOString()}>{dateFormatter.format(entry.data.pubDate)}</time>
+    <time datetime={entry.data.pubDate.toISOString()}>{formatCalendarDate(entry.data.pubDate, locale, { year: 'numeric', month: 'long' })}</time>
     <span aria-hidden="true"> · </span>
     {minutes} {t(locale, 'blog.readingTimeSuffix')}
   </p>

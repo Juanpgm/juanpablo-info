@@ -4,6 +4,7 @@
 import type { CollectionEntry } from 'astro:content';
 import { t } from '../i18n';
 import type { Locale } from '../i18n';
+import { formatCalendarDate } from '../lib/format-date';
 
 interface Props {
   entries: CollectionEntry<'experience'>[];
@@ -11,7 +12,6 @@ interface Props {
 }
 
 const { entries, locale } = Astro.props;
-const yearFormatter = new Intl.DateTimeFormat(locale, { year: 'numeric' });
 ---
 
 <details class="early-experience">
@@ -20,7 +20,7 @@ const yearFormatter = new Intl.DateTimeFormat(locale, { year: 'numeric' });
     {
       entries.map((entry) => (
         <li class="early-experience__item">
-          <span class="early-experience__year">{yearFormatter.format(entry.data.startDate)}</span>
+          <span class="early-experience__year">{formatCalendarDate(entry.data.startDate, locale, { year: 'numeric' })}</span>
           <span class="early-experience__role">
             <strong>{entry.data.company}</strong> — {entry.data.role}
           </span>
