@@ -64,6 +64,12 @@
   "experience.present": "Present",
   "experience.earlyLabel": "Early experience",
   "experience.stackLabel": "Stack",
+  "experience.counterHeading": "Years of experience",
+  "experience.counterConnector": "and",
+  "experience.year": "year",
+  "experience.years": "years",
+  "experience.month": "month",
+  "experience.months": "months",
 
   "projects.heading": "Projects",
   "projects.metaDescription": "Open-source projects in data science, AI, and geointelligence applied to the public sector, with real GitHub repositories.",

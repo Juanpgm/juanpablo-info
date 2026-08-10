@@ -64,6 +64,12 @@
   "experience.present": "Presente",
   "experience.earlyLabel": "Experiencia temprana",
   "experience.stackLabel": "Stack",
+  "experience.counterHeading": "Años de experiencia",
+  "experience.counterConnector": "y",
+  "experience.year": "año",
+  "experience.years": "años",
+  "experience.month": "mes",
+  "experience.months": "meses",
 
   "projects.heading": "Proyectos",
   "projects.metaDescription": "Proyectos de código abierto en ciencia de datos, IA y geointeligencia aplicados al sector público, con repositorios reales en GitHub.",
