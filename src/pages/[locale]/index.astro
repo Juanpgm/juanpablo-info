@@ -4,8 +4,13 @@
 // projects -> Latest posts -> Contact. `data-reveal` on every major section
 // (lib/scroll-reveal.ts already wired in BaseLayout).
 import { getRelativeLocaleUrl } from 'astro:i18n';
+import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
+// PLACEHOLDER photo — same source as the dedicated About page (see
+// src/assets/about-photo-placeholder.svg); swap both imports together once
+// a real photo is supplied.
+import photoPlaceholder from '../../assets/about-photo-placeholder.svg';
 import ExperienceCounter from '../../components/ExperienceCounter.astro';
 import TwoWorlds from '../../components/TwoWorlds.astro';
 import Timeline from '../../components/Timeline.astro';
@@ -50,14 +55,17 @@ const whatsappHref = getWhatsAppHref(site.whatsapp.number, site.whatsapp.message
   <section class="section" data-reveal aria-labelledby="about-summary-heading">
     <div class="section-header">
       <h2 id="about-summary-heading">{t(locale, 'about.heading')}</h2>
-    </div>
-    <div class="prose">
-      <p>{t(locale, 'about.summaryP1')}</p>
-      <p>{t(locale, 'about.summaryP2')}</p>
-    </div>
-    <p style="margin-top: 1rem;">
       <a href={getRelativeLocaleUrl(locale, 'about')} class="nav-link">{t(locale, 'about.readMore')} →</a>
-    </p>
+    </div>
+    <div class="about-intro-grid">
+      <div class="prose">
+        <p>{t(locale, 'about.summaryP1')}</p>
+        <p>{t(locale, 'about.summaryP2')}</p>
+      </div>
+      <figure class="about-photo-frame">
+        <Image src={photoPlaceholder} alt={t(locale, 'about.photoAlt')} width={480} height={600} />
+      </figure>
+    </div>
   </section>
 
   <TwoWorlds />
