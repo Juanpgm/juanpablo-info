@@ -938,6 +938,10 @@ h3 {
   display: none;
 }
 
+.timeline > li:last-child .listing-numeral--sm .listing-numeral__ghost {
+  display: none;
+}
+
 .timeline-card__summary {
   display: flex;
   flex-wrap: wrap;
