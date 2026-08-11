@@ -133,39 +133,23 @@ const whatsappHref = getWhatsAppHref(site.whatsapp.number, site.whatsapp.message
     <p class="contact-form__success-text">{t(locale, 'contact.formSuccess')}</p>
   </div>
 
-  <p class="contact-modal__divider">{t(locale, 'contact.otherChannels')}</p>
-
-  <div class="contact-actions">
-    <a href={`mailto:${site.email}`} class="btn btn-lg btn-outline">
-      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
-        <rect x="3" y="5" width="18" height="14" rx="2" />
-        <path d="M3 7l9 6 9-6" />
-      </svg>
-      {t(locale, 'contact.emailCta')}
-    </a>
-    <a
-      href={site.sameAs[0]}
-      class="btn btn-lg btn-outline"
-      target="_blank"
-      rel="noreferrer noopener"
-    >
-      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="6" cy="12" r="3" />
-        <circle cx="18" cy="6" r="3" />
-        <circle cx="18" cy="18" r="3" />
-        <path d="M8.5 10.5l7-3M8.5 13.5l7 3" />
-      </svg>
-      {t(locale, 'contact.linkedinCta')}
-    </a>
-    {whatsappHref && (
-      <a href={whatsappHref} class="btn btn-lg btn-outline" target="_blank" rel="noreferrer noopener">
-        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 3C6.9 3 3 6.6 3 11c0 2.1 1 4 2.6 5.4L4.8 21l4.3-1.6c.9.3 1.9.4 2.9.4 5.1 0 9-3.6 9-8S17.1 3 12 3Z" />
-        </svg>
-        {t(locale, 'contact.whatsappCta')}
-      </a>
-    )}
-  </div>
+  {/* Email/LinkedIn buttons removed (redundant with Footer's own icon
+      links) — the form above is the primary contact path now. WhatsApp
+      stays as the one situational secondary channel, only when configured
+      (site.whatsapp.number), so the divider only renders alongside it. */}
+  {whatsappHref && (
+    <>
+      <p class="contact-modal__divider">{t(locale, 'contact.otherChannels')}</p>
+      <div class="contact-actions">
+        <a href={whatsappHref} class="btn btn-lg btn-outline" target="_blank" rel="noreferrer noopener">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 3C6.9 3 3 6.6 3 11c0 2.1 1 4 2.6 5.4L4.8 21l4.3-1.6c.9.3 1.9.4 2.9.4 5.1 0 9-3.6 9-8S17.1 3 12 3Z" />
+          </svg>
+          {t(locale, 'contact.whatsappCta')}
+        </a>
+      </div>
+    </>
+  )}
 </dialog>
 
 <script>

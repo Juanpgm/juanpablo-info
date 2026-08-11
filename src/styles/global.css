@@ -502,7 +502,10 @@ h3 {
 .hero {
   max-width: 56rem;
   margin-inline: auto;
-  padding: var(--space-3xl) var(--space-md) var(--space-2xl);
+  /* Compacted (was --space-3xl/--space-2xl, 96px/64px) — that plus the
+     next .section's own 64px top padding stacked to 128px of dead space
+     between the CTA row and "Sobre mí" below it. */
+  padding: var(--space-2xl) var(--space-md) var(--space-lg);
   text-align: center;
 }
 
@@ -532,7 +535,7 @@ h3 {
   align-items: center;
   justify-content: center;
   gap: var(--space-md);
-  margin-top: var(--space-lg);
+  margin-top: var(--space-md);
 }
 
 .hero-location {
@@ -928,12 +931,21 @@ h3 {
 .project-card,
 .blog-card {
   display: grid;
+  /* minmax(0, 1fr), not the implicit `auto` an unqualified single-column
+     grid gets by default: `auto` tracks size to the max-content of their
+     widest child, so an unbreakable long title (e.g. a repo name like
+     "AutoML4RainEstimation" with no spaces) grows the card's own internal
+     column past its padding box — `min-width: 0` on the card itself (below)
+     only fixes its sizing as a *grid item* of .project-grid/.blog-card,
+     this fixes it as a *grid container* for its own children. */
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-xs);
   align-content: start;
   padding: var(--space-md);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background-color: var(--color-surface);
+  min-width: 0;
   transition:
     transform 0.15s ease,
     box-shadow 0.15s ease;
