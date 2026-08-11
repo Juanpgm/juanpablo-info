@@ -557,7 +557,8 @@ h3 {
    the top edge — `.hero-content` re-applies the readable column width and
    is pushed below the block's bottom edge (see --hero-block-h below), so
    headline text never overlaps the accent fill and never needs its own
-   on-accent color handling. Text-align switches from center to left. */
+   on-accent color handling. Text-align is centered (2026-08-11: stripped
+   to name+portrait+CTA, see `.hero-content` below). */
 .hero {
   position: relative;
   isolation: isolate;
@@ -595,19 +596,10 @@ h3 {
   max-width: 56rem;
   margin-inline: auto;
   margin-top: calc(var(--hero-block-h) + var(--space-lg));
-}
-
-/* Eyebrow: light-weight, wide-tracked label contrasted against the heavy
-   headline below — --color-accent-ink, not raw --color-accent (real text
-   on --color-surface needs the AA-safe shade, see global.css's palette
-   comment). */
-.hero-eyebrow {
-  display: block;
-  color: var(--color-accent-ink);
-  font-size: 0.625rem;
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  /* Stripped to name + portrait + CTAs (2026-08-11) — centered as one
+     cohesive unit instead of the old left-aligned column, so the now much
+     shorter section still reads balanced rather than sparse/lopsided. */
+  text-align: center;
 }
 
 .hero-title {
@@ -618,58 +610,54 @@ h3 {
   line-height: 1.05;
 }
 
-/* Identity row (2026-08-11 compaction): ASCII portrait + eyebrow/name as one
-   compact unit, so the CTAs right after it become the section's focal
-   point instead of trailing a long tagline paragraph (now removed — it
-   duplicated the About page's narrative prose). */
+/* Identity row: name on the left, ASCII portrait on the right, centered as
+   a pair within `.hero-content`. */
 .hero-identity {
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: var(--space-md);
-}
-
-.hero-namerow {
-  min-width: 0;
+  justify-content: center;
+  gap: var(--space-lg);
 }
 
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: var(--space-md);
-  margin-top: var(--space-md);
+  margin-top: var(--space-lg);
 }
 
-.hero-location {
-  color: var(--color-ink-muted);
-  font-size: var(--text-sm);
-}
-
-/* ASCII portrait (2026-08-11): the profile photo, decoded at build time
-   (Hero.astro frontmatter, sharp) into a grid of monospace <span> cells.
-   Each cell's color is derived from its source luminance via color-mix so
-   the portrait re-themes with the site's ink/accent tokens automatically
-   instead of shipping fixed colors. `role="img"` + aria-label on the outer
-   wrapper carries the accessible name once; the inner grid is
-   aria-hidden so screen readers don't announce every character cell.
-   Positioned to bleed past `.hero-content`'s column edge into the
-   section's surrounding whitespace (no ancestor here clips overflow) —
-   sized/inset conservatively so it never forces horizontal scroll, and
-   shrunk further under the mobile breakpoint below. */
+/* ASCII portrait: the profile photo, decoded at build time (Hero.astro
+   frontmatter, sharp) into a grid of monospace <span> cells, sized up to
+   read as a real visual presence next to the name. Each cell's color is
+   derived from its source luminance via color-mix so the portrait
+   re-themes with the site's ink/accent tokens automatically instead of
+   shipping fixed colors. `role="img"` + aria-label on the outer wrapper
+   carries the accessible name once; the inner grid is aria-hidden so
+   screen readers don't announce every character cell. `--fade` (set
+   inline per cell, Hero.astro) fades cells toward transparent by distance
+   from center, so the grid's rectangular extent reads larger than the
+   visible portrait — no straight border. Slight negative inset lets it
+   bleed a little past `.hero-content`'s edge into the section's
+   surrounding whitespace (no ancestor here clips overflow) — kept modest,
+   and shrunk further under the mobile breakpoint below, so it never
+   forces horizontal scroll. */
 .hero-ascii-portrait {
   position: relative;
   flex-shrink: 0;
-  width: clamp(5.5rem, 16vw, 9rem);
-  aspect-ratio: 44 / 26;
+  width: clamp(9rem, 24vw, 16rem);
+  aspect-ratio: 56 / 34;
 }
 
 .hero-ascii-portrait__grid {
   position: absolute;
-  inset: -18% -22% -10% -12%;
+  inset: -10% -12% -6% -8%;
   display: grid;
   grid-template-columns: repeat(var(--cols), 1fr);
   line-height: 0.9;
-  font-size: clamp(0.32rem, 0.85vw, 0.5rem);
+  font-size: clamp(0.28rem, 0.7vw, 0.42rem);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   pointer-events: none;
 }
@@ -682,87 +670,42 @@ h3 {
     var(--color-ink) calc((1 - var(--lum, 0.5)) * 100%),
     var(--color-accent) calc(var(--lum, 0.5) * 100%)
   );
-  animation: hero-ascii-shimmer 3.6s ease-in-out infinite;
+  opacity: var(--fade, 1);
+  animation: hero-ascii-shimmer 4.2s ease-in-out infinite;
 }
 
 /* Subtle shimmer, not a strobe: per-cell `animation-delay` (set inline,
-   Hero.astro) staggers the pulse across the grid. Neutralized by the
-   sitewide `*, *::before, *::after { animation-duration: 0.01ms !important }`
+   Hero.astro) staggers a brief accent-colored glow across the grid — a
+   soft `text-shadow` in `--color-accent`, distinct from each cell's own
+   resting ink-to-accent color, rather than a brightness pulse of that same
+   color. Only the 50% keyframe is defined; the browser interpolates from
+   each span's own resting `color`/no-shadow at 0%/100%, so amplitude stays
+   low. Neutralized by the sitewide
+   `*, *::before, *::after { animation-duration: 0.01ms !important }`
    prefers-reduced-motion guard further down this file — no separate
    override needed here. */
 @keyframes hero-ascii-shimmer {
-  0%,
-  100% {
-    opacity: 0.55;
-  }
   50% {
-    opacity: 1;
+    color: var(--color-accent);
+    text-shadow: 0 0 0.3em color-mix(in oklab, var(--color-accent) 45%, transparent);
   }
 }
 
 @media (max-width: 40rem) {
   .hero-ascii-portrait {
-    width: clamp(4rem, 22vw, 5.5rem);
+    width: clamp(5.5rem, 30vw, 8rem);
   }
 
   .hero-ascii-portrait__grid {
-    inset: -8% -8% -5% -5%;
+    inset: -4% -5% -3% -3%;
   }
 
   .hero-title {
-    font-size: clamp(1.75rem, 7vw, 2.5rem);
-  }
-}
-
-/* Marquee ribbon: secondary kinetic element below the fold line, CSS-only
-   (no JS animation library). It sits after the CTA row in both source
-   order and visual position on every viewport, so the primary CTA always
-   reads first — mobile just shrinks its height/font-size, per the
-   responsive requirement. prefers-reduced-motion is handled by the
-   sitewide `*, *::before, *::after { animation-duration: 0.01ms !important }`
-   guard further down this file — no separate rule needed here. */
-.hero-marquee {
-  margin-top: var(--space-lg);
-  overflow: hidden;
-  border-top: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
-  padding-block: var(--space-2xs);
-}
-
-.hero-marquee__track {
-  display: flex;
-  width: max-content;
-  gap: var(--space-lg);
-  animation: hero-marquee-scroll 32s linear infinite;
-}
-
-.hero-marquee__item {
-  flex-shrink: 0;
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--color-ink-muted);
-  white-space: nowrap;
-}
-
-@keyframes hero-marquee-scroll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    /* The track is rendered twice (see Hero.astro) — translating by
-       exactly -50% of the doubled track loops seamlessly with no jump. */
-    transform: translateX(-50%);
-  }
-}
-
-@media (max-width: 40rem) {
-  .hero-marquee {
-    margin-top: var(--space-lg);
-    padding-block: var(--space-3xs);
+    font-size: clamp(1.5rem, 6vw, 2.25rem);
   }
 
-  .hero-marquee__item {
-    font-size: var(--text-xs);
+  .hero-identity {
+    gap: var(--space-sm);
   }
 }
 

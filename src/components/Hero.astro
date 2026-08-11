@@ -1,22 +1,18 @@
 ---
-// Home hero (2026-08-10 visual redesign, compacted 2026-08-11): full-bleed
-// diagonal accent block bleeding from the top edge, a photo+name identity
-// row, the two CTAs promoted right after it, and a secondary CSS-only
-// marquee of skill keywords below the fold line. The narrative tagline
-// paragraph was dropped — it duplicated the About page's prose — so the
-// CTAs are the section's visual focus (proposal.md §4.1 follow-up).
+// Home hero (2026-08-10 visual redesign; stripped to essentials 2026-08-11):
+// full-bleed diagonal accent block bleeding from the top edge, and a
+// centered name+portrait+CTA block — the section's only content. Eyebrow,
+// location line, and the skills marquee were removed: the marquee
+// duplicated skill labels already shown in the TwoWorlds section further
+// down this same home page, and eyebrow/location added no CTA-adjacent
+// value once the tagline was already gone (proposal.md §4.1 follow-up).
 import path from 'node:path';
 import sharp from 'sharp';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import ContactModal from './ContactModal.astro';
 import { t, useLocale } from '../i18n';
-import { skills } from '../data/skills';
 
 const locale = useLocale(Astro.currentLocale);
-// Marquee content: real, already-localized skill labels (data/skills.ts) —
-// no new i18n strings needed. Duplicated once so the CSS-only loop
-// (@keyframes translateX -50%) has no visible seam.
-const marqueeItems = [...skills.ai, ...skills.civil].map((skill) => t(locale, skill.labelKey));
 
 // Build-time ASCII portrait: decode the real photo with sharp (already a
 // dependency — see About page's astro:assets usage) and map each pixel's
@@ -29,8 +25,8 @@ const marqueeItems = [...skills.ai, ...skills.civil].map((skill) => t(locale, sk
 // asset alongside it, so a `new URL('../assets/...', import.meta.url)`
 // lookup 404s at build time even though it works fine in dev.
 const photoPath = path.join(process.cwd(), 'src/assets/profile-photo.jpg');
-const GRID_COLS = 44;
-const GRID_ROWS = 26; // photo is a 400x400 square; rows ≈ cols * 0.6 compensates for monospace cells being taller than wide.
+const GRID_COLS = 56;
+const GRID_ROWS = 34; // photo is a 400x400 square; rows ≈ cols * 0.6 compensates for monospace cells being taller than wide.
 const RAMP = ' .:-=+*#%@'; // sparse-to-dense; bright pixels render as near-blank, dark pixels as heavy glyphs.
 
 const { data: asciiPixels } = await sharp(photoPath)
@@ -39,10 +35,22 @@ const { data: asciiPixels } = await sharp(photoPath)
   .raw()
   .toBuffer({ resolveWithObject: true });
 
-const asciiGrid = Array.from(asciiPixels, (lum) => {
+// Edge-softening: fade each cell toward transparent by its normalized
+// distance from the grid's center (0 = center, 1 = furthest corner), so the
+// grid's actual rectangular extent reads larger than the visible "portrait"
+// — no straight-line border anywhere around it.
+const centerCol = (GRID_COLS - 1) / 2;
+const centerRow = (GRID_ROWS - 1) / 2;
+const cornerDist = Math.sqrt(centerCol ** 2 + centerRow ** 2);
+
+const asciiGrid = Array.from(asciiPixels, (lum, i) => {
+  const col = i % GRID_COLS;
+  const row = Math.floor(i / GRID_COLS);
+  const dist = Math.sqrt((col - centerCol) ** 2 + (row - centerRow) ** 2) / cornerDist;
+  const fade = Math.max(0, 1 - dist ** 2);
   const t = lum / 255;
   const idx = Math.floor((1 - t) * (RAMP.length - 1));
-  return { char: RAMP[idx] || ' ', lum: t };
+  return { char: RAMP[idx] || ' ', lum: t, fade };
 });
 ---
 
@@ -50,16 +58,17 @@ const asciiGrid = Array.from(asciiPixels, (lum) => {
   <div class="hero-block" aria-hidden="true"></div>
   <div class="hero-content">
     <div class="hero-identity">
+      <h1 id="hero-title" class="hero-title">{t(locale, 'hero.title')}</h1>
       <div class="hero-ascii-portrait" role="img" aria-label={t(locale, 'about.photoAlt')}>
         <div class="hero-ascii-portrait__grid" style={`--cols:${GRID_COLS}`} aria-hidden="true">
           {asciiGrid.map((cell, i) => (
-            <span style={`--lum:${cell.lum.toFixed(2)};animation-delay:${(i % 12) * 0.15}s`}>{cell.char}</span>
+            <span
+              style={`--lum:${cell.lum.toFixed(2)};--fade:${cell.fade.toFixed(2)};animation-delay:${(i % 12) * 0.15}s`}
+            >
+              {cell.char}
+            </span>
           ))}
         </div>
-      </div>
-      <div class="hero-namerow">
-        <p class="hero-eyebrow">{t(locale, 'hero.subtitle')}</p>
-        <h1 id="hero-title" class="hero-title">{t(locale, 'hero.title')}</h1>
       </div>
     </div>
     <div class="hero-actions">
@@ -69,13 +78,6 @@ const asciiGrid = Array.from(asciiPixels, (lum) => {
       <button type="button" class="btn btn-lg btn-outline" data-open-contact-modal>
         {t(locale, 'hero.ctaContact')}
       </button>
-      <span class="hero-location">{t(locale, 'hero.location')}</span>
-    </div>
-  </div>
-  <div class="hero-marquee" aria-hidden="true">
-    <div class="hero-marquee__track">
-      {marqueeItems.map((item) => <span class="hero-marquee__item">{item}</span>)}
-      {marqueeItems.map((item) => <span class="hero-marquee__item">{item}</span>)}
     </div>
   </div>
 </section>
