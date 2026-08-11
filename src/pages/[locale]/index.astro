@@ -87,7 +87,7 @@ const latestPosts = posts
       <a href={getRelativeLocaleUrl(locale, 'projects')} class="nav-link">{t(locale, 'projects.viewAll')} →</a>
     </div>
     <div class="project-grid">
-      {featuredProjects.map((project) => <ProjectCard project={project} locale={locale} />)}
+      {featuredProjects.map((project, index) => <ProjectCard project={project} locale={locale} index={index} />)}
     </div>
   </section>
 
@@ -97,7 +97,7 @@ const latestPosts = posts
       <a href={getRelativeLocaleUrl(locale, 'blog')} class="nav-link">{t(locale, 'blog.viewAll')} →</a>
     </div>
     <div class="blog-grid">
-      {latestPosts.map((post) => <BlogCard entry={post} locale={locale} />)}
+      {latestPosts.map((post, index) => <BlogCard entry={post} locale={locale} index={index} />)}
     </div>
   </section>
 </BaseLayout>

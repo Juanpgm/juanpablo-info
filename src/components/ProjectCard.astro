@@ -25,41 +25,51 @@ interface Props {
    * when nested under an h2 section heading like the home page's "featured
    * projects"). */
   headingLevel?: 'h2' | 'h3';
+  /** 0-based position in the listing — drives the oversized index numeral
+   * (2026-08-10 visual redesign). Must match the array index the caller
+   * maps over. */
+  index: number;
 }
 
-const { project, locale, headingLevel = 'h3' } = Astro.props;
+const { project, locale, headingLevel = 'h3', index } = Astro.props;
 const hasLiveMeta = project.primaryLanguage != null || project.lastUpdated != null;
 const Heading = headingLevel;
 ---
 
 <article class="project-card" data-reveal>
-  <header class="project-card__header">
-    <Heading class="project-card__title">{project.name}</Heading>
-    {project.isExample && <span class="badge badge-example">{t(locale, 'projects.exampleBadge')}</span>}
-  </header>
+  <div class="listing-numeral" aria-hidden="true">
+    <span class="listing-numeral__ghost">{String(index + 2).padStart(2, '0')}</span>
+    <span class="listing-numeral__index">{String(index + 1).padStart(2, '0')}</span>
+  </div>
+  <div class="listing-content">
+    <header class="project-card__header">
+      <Heading class="project-card__title">{project.name}</Heading>
+      {project.isExample && <span class="badge badge-example">{t(locale, 'projects.exampleBadge')}</span>}
+    </header>
 
-  <p class="project-card__description">{project.description[locale]}</p>
+    <p class="project-card__description">{project.description[locale]}</p>
 
-  <ul class="project-card__stack">
-    {project.stack.map((tech) => <li class="badge badge-stack">{tech}</li>)}
-  </ul>
+    <ul class="project-card__stack">
+      {project.stack.map((tech) => <li class="badge badge-stack">{tech}</li>)}
+    </ul>
 
-  {
-    hasLiveMeta && (
-      <p class="project-card__meta">
-        {project.primaryLanguage && <span>{project.primaryLanguage}</span>}
-        {project.lastUpdated && (
-          <time datetime={project.lastUpdated}>{new Date(project.lastUpdated).toLocaleDateString(locale)}</time>
-        )}
-      </p>
-    )
-  }
+    {
+      hasLiveMeta && (
+        <p class="project-card__meta">
+          {project.primaryLanguage && <span>{project.primaryLanguage}</span>}
+          {project.lastUpdated && (
+            <time datetime={project.lastUpdated}>{new Date(project.lastUpdated).toLocaleDateString(locale)}</time>
+          )}
+        </p>
+      )
+    }
 
-  {
-    project.repoUrl && (
-      <a href={project.repoUrl} class="nav-link" target="_blank" rel="noreferrer noopener">
-        {t(locale, 'projects.viewRepo')}
-      </a>
-    )
-  }
+    {
+      project.repoUrl && (
+        <a href={project.repoUrl} class="nav-link" target="_blank" rel="noreferrer noopener">
+          {t(locale, 'projects.viewRepo')}
+        </a>
+      )
+    }
+  </div>
 </article>

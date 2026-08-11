@@ -1054,12 +1054,15 @@ h3 {
   color: var(--color-ink-muted);
 }
 
-/* Project cards */
+/* Project / blog listings (2026-08-10 visual redesign): the bordered-card
+   grid is replaced by a staggered, asymmetric list — an oversized index
+   numeral anchors each entry, a skewed divider rule replaces the card
+   border, and alternating left/right indentation (desktop only, see the
+   min-width media query below) replaces the uniform grid rhythm. */
 .project-grid,
 .blog-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
-  gap: var(--space-md);
+  display: flex;
+  flex-direction: column;
 }
 
 .blog-empty-state {
@@ -1070,31 +1073,100 @@ h3 {
 
 .project-card,
 .blog-card {
+  position: relative;
   display: grid;
-  /* minmax(0, 1fr), not the implicit `auto` an unqualified single-column
-     grid gets by default: `auto` tracks size to the max-content of their
-     widest child, so an unbreakable long title (e.g. a repo name like
-     "AutoML4RainEstimation" with no spaces) grows the card's own internal
-     column past its padding box — `min-width: 0` on the card itself (below)
-     only fixes its sizing as a *grid item* of .project-grid/.blog-card,
-     this fixes it as a *grid container* for its own children. */
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-xs);
-  align-content: start;
-  padding: var(--space-md);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  background-color: var(--color-surface);
+  grid-template-columns: clamp(3.5rem, 8vw, 6rem) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-md);
+  padding-block: var(--space-lg);
   min-width: 0;
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
+  transition: padding-inline-start 0.15s ease;
 }
 
 .project-card:hover,
 .blog-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 24px -12px rgb(0 0 0 / 0.25);
+  padding-inline-start: var(--space-sm);
+}
+
+/* Divider: a thin rule with a slight skewY, isolated on its own
+   pseudo-element (not the card's own border-bottom) so the skew never
+   distorts the card's actual text content. */
+.project-card::after,
+.blog-card::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background-color: var(--color-border);
+  transform: skewY(-1deg);
+}
+
+.project-card:last-child::after,
+.blog-card:last-child::after {
+  display: none;
+}
+
+@media (min-width: 48rem) {
+  .project-card:nth-child(even),
+  .blog-card:nth-child(even) {
+    margin-inline-start: var(--space-xl);
+  }
+
+  .project-card:nth-child(odd),
+  .blog-card:nth-child(odd) {
+    margin-inline-end: var(--space-xl);
+  }
+}
+
+/* Oversized index numeral: clamp() (same technique as --text-display-lg)
+   so it scales down and never forces horizontal scroll on mobile. The
+   first entry in the list reads as "active/current" (--color-accent-ink,
+   the AA-safe accent shade); every other entry's numeral is a low-opacity
+   ink "ghost" instead, giving the staggered/overlapping depth cue the
+   design calls for. Reused (with a --sm/--xs size modifier) by Timeline
+   and EarlyExperience. */
+.listing-numeral {
+  position: relative;
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  user-select: none;
+}
+
+.listing-numeral__index {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  color: var(--color-ink);
+}
+
+.project-card:first-child .listing-numeral__index,
+.blog-card:first-child .listing-numeral__index {
+  color: var(--color-accent-ink);
+}
+
+.listing-numeral__ghost {
+  position: absolute;
+  top: 0.4em;
+  left: 0.5em;
+  z-index: 0;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  color: var(--color-ink);
+  opacity: 0.08;
+}
+
+.project-card:last-child .listing-numeral__ghost,
+.blog-card:last-child .listing-numeral__ghost {
+  display: none;
+}
+
+.listing-content {
+  display: grid;
+  gap: var(--space-xs);
+  min-width: 0;
 }
 
 .project-card__header {

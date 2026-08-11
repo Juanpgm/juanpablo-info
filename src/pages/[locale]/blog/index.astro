@@ -29,7 +29,7 @@ const posts = entries
     <h1 id="blog-heading" class="page-title">{t(locale, 'blog.heading')}</h1>
     <TagFilter locale={locale} />
     <div class="blog-grid">
-      {posts.map((post) => <BlogCard entry={post} locale={locale} headingLevel="h2" />)}
+      {posts.map((post, index) => <BlogCard entry={post} locale={locale} index={index} headingLevel="h2" />)}
     </div>
     <p class="blog-empty-state" data-tag-filter-empty hidden>{t(locale, 'blog.noPostsMatch')}</p>
   </section>
