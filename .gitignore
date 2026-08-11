@@ -13,3 +13,4 @@ dist/
 .claude/
 .agents/
 skills-lock.json
+.superpowers/
