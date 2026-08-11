@@ -74,10 +74,12 @@ const latestPosts = posts
 
   <section class="section" data-reveal aria-labelledby="featured-experience-heading">
     <div class="section-header">
-      <h2 id="featured-experience-heading">{t(locale, 'experience.featuredHeading')}</h2>
+      <div class="section-header__title-group">
+        <h2 id="featured-experience-heading">{t(locale, 'experience.featuredHeading')}</h2>
+        <ExperienceCounter />
+      </div>
       <a href={getRelativeLocaleUrl(locale, 'experience')} class="nav-link">{t(locale, 'experience.viewAll')} →</a>
     </div>
-    <ExperienceCounter />
     <Timeline entries={featuredExperience} locale={locale} />
   </section>
 

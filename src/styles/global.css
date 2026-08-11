@@ -491,10 +491,16 @@ h3 {
 .section-header {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: var(--space-sm);
   margin-bottom: var(--space-lg);
+}
+
+.section-header__title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
 }
 
 .section-header h2 {
@@ -703,25 +709,26 @@ h3 {
    section. Reuses .project-card's visual weight (border/radius/surface) at
    a smaller footprint. */
 .experience-counter {
-  max-width: 20rem;
-  margin-bottom: var(--space-lg);
-  padding: var(--space-md) var(--space-lg);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  background-color: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+  white-space: nowrap;
 }
 
 .experience-counter__value {
   font-family: var(--font-display);
-  font-size: var(--text-2xl);
+  font-size: var(--text-lg);
   font-weight: 700;
   line-height: 1.2;
+  color: var(--color-accent-ink);
 }
 
 .experience-counter__label {
-  margin-top: var(--space-3xs);
+  margin-top: 0;
   color: var(--color-ink-muted);
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
+  font-weight: 500;
 }
 
 /* About summary / narrative */
