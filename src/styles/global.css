@@ -1066,7 +1066,10 @@ h3 {
 }
 
 .blog-card__title a:hover {
-  color: var(--color-primary);
+  /* --color-accent-ink, not raw --color-primary (which now aliases bright
+     --accent cyan, failing AA on light surface) — text needs the AA-safe
+     darker shade (scripts/check-contrast.mjs). */
+  color: var(--color-accent-ink);
 }
 
 /* Tag filter chips */
@@ -1126,7 +1129,10 @@ h3 {
 }
 
 .toc-list a:hover {
-  color: var(--color-primary);
+  /* --color-accent-ink, not raw --color-primary (which now aliases bright
+     --accent cyan, failing AA on light surface) — text needs the AA-safe
+     darker shade (scripts/check-contrast.mjs). */
+  color: var(--color-accent-ink);
 }
 
 /* Visually hidden but still in the DOM/accessibility tree's layout flow —
@@ -1523,7 +1529,10 @@ dialog#contact-modal[open]::backdrop {
 }
 
 .post-content a {
-  color: var(--color-primary);
+  /* --color-accent-ink, not raw --color-primary (which now aliases bright
+     --accent cyan, failing AA on light surface) — text needs the AA-safe
+     darker shade (scripts/check-contrast.mjs). */
+  color: var(--color-accent-ink);
   text-decoration: underline;
   text-underline-offset: 0.15em;
 }
