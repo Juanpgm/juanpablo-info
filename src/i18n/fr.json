@@ -76,6 +76,8 @@
   "projects.viewAll": "Voir tout",
   "projects.exampleBadge": "Exemple",
   "projects.viewRepo": "Voir le dépôt",
+  "projects.viewDetails": "Voir le détail",
+  "projects.backToIndex": "Retour aux projets",
 
   "blog.heading": "Blog",
   "blog.metaDescription": "Articles sur l'intelligence artificielle, l'ingénierie des données, le BIM et la transition du génie civil vers la science des données.",

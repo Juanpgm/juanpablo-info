@@ -76,6 +76,8 @@
   "projects.viewAll": "Alle ansehen",
   "projects.exampleBadge": "Beispiel",
   "projects.viewRepo": "Repository ansehen",
+  "projects.viewDetails": "Details ansehen",
+  "projects.backToIndex": "Zurück zu Projekten",
 
   "blog.heading": "Blog",
   "blog.metaDescription": "Artikel über künstliche Intelligenz, Data Engineering, BIM und den Übergang vom Bauingenieurwesen zur Data Science.",

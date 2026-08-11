@@ -41,6 +41,11 @@ const featuredProjects = await mergeProjects(
   import.meta.env.GITHUB_TOKEN
 );
 
+const projectDetailEntries = await getLocalizedEntries('projects', locale);
+const detailSlugByProjectId = new Map(
+  projectDetailEntries.map((entry) => [entry.data.projectId, entry.id.slice(entry.id.indexOf('/') + 1)]),
+);
+
 const posts = await getLocalizedEntries('blog', locale);
 const latestPosts = posts
   .filter((entry) => !entry.data.draft)
@@ -67,7 +72,13 @@ const latestPosts = posts
       <a href={getRelativeLocaleUrl(locale, 'projects')} class="nav-link">{t(locale, 'projects.viewAll')} →</a>
     </div>
     <div class="project-grid">
-      {featuredProjects.map((project, index) => <ProjectCard project={project} locale={locale} index={index} />)}
+      {
+        featuredProjects.map((project, index) => {
+          const detailSlug = detailSlugByProjectId.get(project.id);
+          const detailHref = detailSlug ? getRelativeLocaleUrl(locale, `projects/${detailSlug}`) : undefined;
+          return <ProjectCard project={project} locale={locale} index={index} detailHref={detailHref} />;
+        })
+      }
     </div>
   </section>
 

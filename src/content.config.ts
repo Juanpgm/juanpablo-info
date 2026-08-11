@@ -40,6 +40,22 @@ const blog = defineCollection({
     }),
 });
 
+// DeepWiki-style project detail docs (`/projects/{slug}/`) — one markdown
+// entry per `data/projects.ts` seed via `projectId`. Same per-locale-folder
+// id scheme as `blog`; unpublished locales fall back through
+// `getLocalizedEntries` like everything else.
+const projects = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
+  schema: z.object({
+    title: z.string().max(120),
+    description: z.string().max(200),
+    projectId: z.string(), // matches ProjectSeed.id in data/projects.ts
+    pubDate: z.coerce.date(),
+    updatedDate: z.coerce.date().optional(),
+    draft: z.boolean().default(false),
+  }),
+});
+
 const experience = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/experience' }),
   schema: z.object({
@@ -58,4 +74,4 @@ const experience = defineCollection({
   }),
 });
 
-export const collections = { blog, experience };
+export const collections = { blog, experience, projects };

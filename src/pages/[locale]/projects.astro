@@ -7,6 +7,8 @@ import ProjectCard from '../../components/ProjectCard.astro';
 import { t, useLocale } from '../../i18n';
 import { projects as projectSeeds } from '../../data/projects';
 import { mergeProjects } from '../../lib/github';
+import { getLocalizedEntries } from '../../lib/content-fallback';
+import { getRelativeLocaleUrl } from 'astro:i18n';
 
 export function getStaticPaths() {
   return [
@@ -21,13 +23,27 @@ export function getStaticPaths() {
 const locale = useLocale(Astro.params.locale);
 
 const projects = await mergeProjects(projectSeeds, import.meta.env.GITHUB_TOKEN);
+
+// DeepWiki-style detail docs are opt-in per project (`content/projects/**`) —
+// most seeds won't have one yet, so the card's internal link only renders
+// when a matching entry exists for this locale (fallback chain included).
+const detailEntries = await getLocalizedEntries('projects', locale);
+const detailSlugByProjectId = new Map(
+  detailEntries.map((entry) => [entry.data.projectId, entry.id.slice(entry.id.indexOf('/') + 1)]),
+);
 ---
 
 <BaseLayout title={t(locale, 'projects.heading')} description={t(locale, 'projects.metaDescription')} path="projects">
   <section class="section" data-reveal aria-labelledby="projects-heading">
     <h1 id="projects-heading" class="page-title">{t(locale, 'projects.heading')}</h1>
     <div class="project-grid">
-      {projects.map((project, index) => <ProjectCard project={project} locale={locale} index={index} headingLevel="h2" />)}
+      {
+        projects.map((project, index) => {
+          const detailSlug = detailSlugByProjectId.get(project.id);
+          const detailHref = detailSlug ? getRelativeLocaleUrl(locale, `projects/${detailSlug}`) : undefined;
+          return <ProjectCard project={project} locale={locale} index={index} headingLevel="h2" detailHref={detailHref} />;
+        })
+      }
     </div>
   </section>
 </BaseLayout>

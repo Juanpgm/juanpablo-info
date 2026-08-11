@@ -29,9 +29,13 @@ interface Props {
    * (2026-08-10 visual redesign). Must match the array index the caller
    * maps over. */
   index: number;
+  /** Site-relative URL of the DeepWiki-style detail page, when one exists
+   * for this project + locale (content/projects/** is opt-in per project —
+   * most seeds won't have a doc yet). Omitted entirely otherwise. */
+  detailHref?: string;
 }
 
-const { project, locale, headingLevel = 'h3', index } = Astro.props;
+const { project, locale, headingLevel = 'h3', index, detailHref } = Astro.props;
 const hasLiveMeta = project.primaryLanguage != null || project.lastUpdated != null;
 const Heading = headingLevel;
 ---
@@ -64,12 +68,21 @@ const Heading = headingLevel;
       )
     }
 
-    {
-      project.repoUrl && (
-        <a href={project.repoUrl} class="nav-link" target="_blank" rel="noreferrer noopener">
-          {t(locale, 'projects.viewRepo')}
-        </a>
-      )
-    }
+    <p class="project-card__links">
+      {
+        detailHref && (
+          <a href={detailHref} class="nav-link">
+            {t(locale, 'projects.viewDetails')}
+          </a>
+        )
+      }
+      {
+        project.repoUrl && (
+          <a href={project.repoUrl} class="nav-link" target="_blank" rel="noreferrer noopener">
+            {t(locale, 'projects.viewRepo')}
+          </a>
+        )
+      }
+    </p>
   </div>
 </article>

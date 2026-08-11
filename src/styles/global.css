@@ -1376,6 +1376,12 @@ h3 {
   font-size: var(--text-sm);
 }
 
+.project-card__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
 .blog-card__meta {
   color: var(--color-ink-muted);
   font-size: var(--text-sm);
