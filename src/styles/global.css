@@ -772,17 +772,21 @@ h3 {
   filter: grayscale(1) contrast(1.05);
 }
 
+/* Retinted to the single new accent (2026-08-10 visual redesign) — same
+   hex in both themes (see global.css's palette tokens), only the overlay
+   opacity still differs per theme (unblended cyan reads slightly more
+   intense against a near-black dark surface than against a near-white
+   light one). */
 .about-photo-frame::after {
   content: '';
   position: absolute;
   inset: 0;
   mix-blend-mode: color;
-  background-color: var(--secondary);
+  background-color: var(--accent);
   opacity: 0.35;
 }
 
 [data-theme='dark'] .about-photo-frame::after {
-  background-color: var(--primary);
   opacity: 0.45;
 }
 
@@ -879,6 +883,8 @@ h3 {
     position: relative;
   }
 
+  /* Re-skinned (2026-08-10 visual redesign): the two-color gradient line
+     becomes a solid --accent bar (one accent now, not a teal/amber duo). */
   .world-connector::before {
     content: '';
     position: absolute;
@@ -886,9 +892,13 @@ h3 {
     left: 50%;
     width: 2px;
     transform: translateX(-50%);
-    background: linear-gradient(to bottom, var(--color-primary), var(--color-secondary));
+    background: var(--color-accent);
   }
 
+  /* Circular glyph badge becomes a diagonal-cut badge (same clip-path
+     value as Hero's default/mobile diagonal block) — replaces
+     border-radius: 50% with the site's structural motif instead of a
+     third shape language. */
   .world-connector::after {
     content: '⇄';
     position: absolute;
@@ -900,10 +910,10 @@ h3 {
     justify-content: center;
     width: 2.25rem;
     height: 2.25rem;
-    border-radius: 50%;
+    clip-path: polygon(0 0, 100% 0, 100% 78%, 0 100%);
     background-color: var(--color-surface);
     border: 1px solid var(--color-border);
-    color: var(--color-primary);
+    color: var(--color-accent-ink);
     font-size: var(--text-sm);
   }
 }
