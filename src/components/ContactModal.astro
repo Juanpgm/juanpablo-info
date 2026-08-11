@@ -36,20 +36,53 @@ const whatsappHref = getWhatsAppHref(site.whatsapp.number, site.whatsapp.message
   <form id="contact-form" class="contact-form" data-locale={locale} novalidate>
     <div class="contact-form__field">
       <label for="contact-name">{t(locale, 'contact.formNameLabel')}</label>
-      <input type="text" id="contact-name" name="name" required maxlength="200" autocomplete="name" />
+      <input
+        type="text"
+        id="contact-name"
+        name="name"
+        required
+        maxlength="200"
+        autocomplete="name"
+        aria-describedby="contact-name-error"
+      />
+      <p class="contact-form__field-error" id="contact-name-error" hidden>{t(locale, 'contact.fieldErrorName')}</p>
     </div>
     <div class="contact-form__field">
       <label for="contact-email">{t(locale, 'contact.formEmailLabel')}</label>
-      <input type="email" id="contact-email" name="email" required autocomplete="email" />
+      <input
+        type="email"
+        id="contact-email"
+        name="email"
+        required
+        autocomplete="email"
+        aria-describedby="contact-email-error"
+      />
+      <p class="contact-form__field-error" id="contact-email-error" hidden>{t(locale, 'contact.fieldErrorEmail')}</p>
     </div>
     <div class="contact-form__field">
       <label for="contact-message">{t(locale, 'contact.formMessageLabel')}</label>
-      <textarea id="contact-message" name="message" required minlength="10" maxlength="5000" rows="4"></textarea>
+      <textarea
+        id="contact-message"
+        name="message"
+        required
+        minlength="10"
+        maxlength="5000"
+        rows="4"
+        aria-describedby="contact-message-error"></textarea>
+      <p class="contact-form__field-error" id="contact-message-error" hidden>{t(locale, 'contact.fieldErrorMessage')}</p>
     </div>
 
     <div class="contact-form__field">
       <label for="contact-files">{t(locale, 'contact.formFilesLabel')}</label>
-      <input type="file" id="contact-files" name="files" accept="image/*,.pdf,.doc,.docx" multiple />
+      <input
+        type="file"
+        id="contact-files"
+        name="files"
+        accept="image/*,.pdf,.doc,.docx"
+        multiple
+        data-remove-file-label={t(locale, 'contact.removeFileLabel')}
+      />
+      <ul class="contact-form__file-list" data-file-list></ul>
       <p class="contact-form__hint">{t(locale, 'contact.formFilesHint')}</p>
     </div>
 
@@ -136,7 +169,8 @@ const whatsappHref = getWhatsAppHref(site.whatsapp.number, site.whatsapp.message
 </dialog>
 
 <script>
-  import { validateAttachments } from '../lib/contact-form';
+  import { validateAttachments, validateContactSubmission } from '../lib/contact-form';
+  import type { ContactFieldError } from '../lib/contact-form';
 
   // View-Transition-safe wiring (same astro:page-load re-init pattern as
   // Header.astro/ThemeToggle.astro): re-queries the DOM and re-attaches
@@ -182,11 +216,19 @@ const whatsappHref = getWhatsAppHref(site.whatsapp.number, site.whatsapp.message
     const rawStatus = form.querySelector('.contact-form__status');
     const rawSuccessBlock = dialog.querySelector('.contact-form__success');
     const rawFileInput = form.querySelector('#contact-files');
+    const rawFileList = form.querySelector('[data-file-list]');
+    const rawNameInput = form.querySelector('#contact-name');
+    const rawEmailInput = form.querySelector('#contact-email');
+    const rawMessageInput = form.querySelector('#contact-message');
     if (
       !(rawSubmitButton instanceof HTMLButtonElement) ||
       !(rawStatus instanceof HTMLElement) ||
       !(rawSuccessBlock instanceof HTMLElement) ||
-      !(rawFileInput instanceof HTMLInputElement)
+      !(rawFileInput instanceof HTMLInputElement) ||
+      !(rawFileList instanceof HTMLElement) ||
+      !(rawNameInput instanceof HTMLInputElement) ||
+      !(rawEmailInput instanceof HTMLInputElement) ||
+      !(rawMessageInput instanceof HTMLTextAreaElement)
     ) {
       return;
     }
@@ -198,17 +240,91 @@ const whatsappHref = getWhatsAppHref(site.whatsapp.number, site.whatsapp.message
     const status: HTMLElement = rawStatus;
     const successBlock: HTMLElement = rawSuccessBlock;
     const fileInput: HTMLInputElement = rawFileInput;
+    const fileList: HTMLElement = rawFileList;
+    const nameInput: HTMLInputElement = rawNameInput;
+    const emailInput: HTMLInputElement = rawEmailInput;
+    const messageInput: HTMLTextAreaElement = rawMessageInput;
 
     const idleLabel = submitButton.dataset.idleLabel ?? submitButton.textContent ?? '';
     const pendingLabel = submitButton.dataset.pendingLabel ?? idleLabel;
     const errorMessage = status.dataset.errorMessage ?? '';
     const filesInvalidMessage = status.dataset.filesInvalidMessage ?? errorMessage;
+    const removeFileLabel = fileInput.dataset.removeFileLabel ?? 'Remove';
 
     function showError(message: string) {
       status.textContent = message;
       status.classList.add('contact-form__status--error');
       status.hidden = false;
     }
+
+    // One input + one pre-localized <p class="contact-form__field-error">
+    // per validated field (see ContactModal's markup above) — the paragraph
+    // already holds its generic translated message, so showing/hiding it is
+    // all the script needs to do per field.
+    const fieldInputs: Record<ContactFieldError['field'], HTMLInputElement | HTMLTextAreaElement> = {
+      name: nameInput,
+      email: emailInput,
+      message: messageInput,
+    };
+
+    function clearFieldErrors() {
+      (Object.keys(fieldInputs) as ContactFieldError['field'][]).forEach((field) => {
+        const input = fieldInputs[field];
+        input.removeAttribute('aria-invalid');
+        const errorEl = document.getElementById(`${input.id}-error`);
+        if (errorEl) errorEl.hidden = true;
+      });
+    }
+
+    function showFieldErrors(errors: ContactFieldError[]) {
+      errors.forEach(({ field }) => {
+        const input = fieldInputs[field];
+        input.setAttribute('aria-invalid', 'true');
+        const errorEl = document.getElementById(`${input.id}-error`);
+        if (errorEl) errorEl.hidden = false;
+      });
+    }
+
+    function formatFileSize(bytes: number): string {
+      if (bytes < 1024) return `${bytes} B`;
+      const kb = bytes / 1024;
+      if (kb < 1024) return `${kb.toFixed(1)} KB`;
+      return `${(kb / 1024).toFixed(1)} MB`;
+    }
+
+    function removeFileAt(index: number) {
+      // The only platform-native way to mutate an <input type="file">'s
+      // otherwise-read-only FileList.
+      const dt = new DataTransfer();
+      Array.from(fileInput.files ?? []).forEach((file, i) => {
+        if (i !== index) dt.items.add(file);
+      });
+      fileInput.files = dt.files;
+      renderFileList();
+    }
+
+    function renderFileList() {
+      fileList.innerHTML = '';
+      Array.from(fileInput.files ?? []).forEach((file, index) => {
+        const item = document.createElement('li');
+        item.className = 'contact-form__file-item';
+
+        const label = document.createElement('span');
+        label.textContent = `${file.name} — ${formatFileSize(file.size)}`;
+
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'contact-form__file-remove';
+        removeButton.setAttribute('aria-label', removeFileLabel);
+        removeButton.textContent = '×';
+        removeButton.addEventListener('click', () => removeFileAt(index));
+
+        item.append(label, removeButton);
+        fileList.append(item);
+      });
+    }
+
+    fileInput.addEventListener('change', renderFileList);
 
     // Reopening the modal (or closing it after any outcome) should never
     // show stale success/error state or a previous submission's leftover
@@ -220,6 +336,8 @@ const whatsappHref = getWhatsAppHref(site.whatsapp.number, site.whatsapp.message
       successBlock.hidden = true;
       status.hidden = true;
       status.classList.remove('contact-form__status--error');
+      clearFieldErrors();
+      renderFileList();
     });
 
     form.addEventListener('submit', async (event) => {
@@ -227,6 +345,20 @@ const whatsappHref = getWhatsAppHref(site.whatsapp.number, site.whatsapp.message
 
       status.hidden = true;
       status.classList.remove('contact-form__status--error');
+      clearFieldErrors();
+
+      // Per-field pre-flight check, using the same pure validator the server
+      // re-runs — this is UX only, never a substitute for the server's own
+      // re-validation.
+      const fieldsCheck = validateContactSubmission({
+        name: nameInput.value,
+        email: emailInput.value,
+        message: messageInput.value,
+      });
+      if (!fieldsCheck.valid) {
+        showFieldErrors(fieldsCheck.errors);
+        return;
+      }
 
       // Client-side pre-flight check, using the same pure validator the
       // server re-runs — this is UX only (avoids a slow/wasted upload for an

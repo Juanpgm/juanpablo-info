@@ -63,6 +63,21 @@ const locale = Astro.currentLocale ?? 'es';
       })();
     </script>
 
+    <!--
+      No-JS fallback: `[data-reveal]` sections/cards start invisible
+      (opacity/transform) until lib/scroll-reveal.ts reveals them on
+      IntersectionObserver. Without JS that script never runs, so force full
+      visibility here instead of leaving content permanently hidden.
+    -->
+    <noscript>
+      <style>
+        [data-reveal] {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+      </style>
+    </noscript>
+
     <slot name="head" />
   </head>
   <body>

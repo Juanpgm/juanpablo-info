@@ -120,5 +120,9 @@
   "contact.formFilesLabel": "Pièces jointes (facultatif)",
   "contact.formFilesHint": "Jusqu'à 3 fichiers, 3 Mo chacun (images, PDF ou Word).",
   "contact.formFilesInvalid": "Vérifiez vos pièces jointes : jusqu'à 3 fichiers, 3 Mo chacun, images, PDF ou Word uniquement.",
+  "contact.fieldErrorName": "Veuillez indiquer votre nom.",
+  "contact.fieldErrorEmail": "Veuillez indiquer une adresse e-mail valide.",
+  "contact.fieldErrorMessage": "Veuillez écrire un message.",
+  "contact.removeFileLabel": "Retirer",
   "contact.otherChannels": "Ou contactez-moi directement"
 }

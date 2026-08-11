@@ -81,7 +81,7 @@ export const POST: APIRoute = async ({ request }) => {
     locale: formData.get('locale'),
   });
   if (!result.valid) {
-    return json({ ok: false, error: result.errors.join('; ') }, 400);
+    return json({ ok: false, error: result.errors.map((e) => e.message).join('; ') }, 400);
   }
 
   const { name, email, message, locale, honeypot } = result.data;

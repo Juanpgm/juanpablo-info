@@ -12,9 +12,15 @@ interface Props {
   entry: CollectionEntry<'experience'>;
   locale: Locale;
   open?: boolean;
+  /** Heading level for the company/role title — must match the page's heading
+   * hierarchy at the call site (h2 directly under an h1 page heading like
+   * /experience/, h3 when nested under an h2 section heading like the home
+   * page's "featured experience"). */
+  headingLevel?: 'h2' | 'h3';
 }
 
-const { entry, locale, open = false } = Astro.props;
+const { entry, locale, open = false, headingLevel = 'h3' } = Astro.props;
+const Heading = headingLevel;
 const { company, role, location, startDate, endDate, current, highlights, stack } = entry.data;
 
 const dateOptions: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short' };
@@ -32,11 +38,11 @@ const duration = formatCalendarDuration(getCalendarDuration(startDate, endDate ?
 
 <details class="timeline-card" open={open}>
   <summary class="timeline-card__summary">
-    <span class="timeline-card__year">{getCalendarYear(startDate)}</span>
-    <span class="timeline-card__heading">
+    <Heading class="timeline-card__heading">
       <strong>{company}</strong>
       <span class="timeline-card__role">{role}</span>
-    </span>
+    </Heading>
+    <span class="timeline-card__year">{getCalendarYear(startDate)}</span>
     {current && <span class="badge badge-current">{t(locale, 'experience.current')}</span>}
   </summary>
   <div class="timeline-card__body">

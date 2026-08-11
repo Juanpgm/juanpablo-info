@@ -120,5 +120,9 @@
   "contact.formFilesLabel": "Вложения (необязательно)",
   "contact.formFilesHint": "До 3 файлов, до 3 МБ каждый (изображения, PDF или Word).",
   "contact.formFilesInvalid": "Проверьте вложения: до 3 файлов, до 3 МБ каждый, только изображения, PDF или Word.",
+  "contact.fieldErrorName": "Введите ваше имя.",
+  "contact.fieldErrorEmail": "Введите корректный адрес электронной почты.",
+  "contact.fieldErrorMessage": "Напишите сообщение.",
+  "contact.removeFileLabel": "Удалить",
   "contact.otherChannels": "Или свяжитесь со мной напрямую"
 }

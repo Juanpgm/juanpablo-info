@@ -120,5 +120,9 @@
   "contact.formFilesLabel": "Adjuntos (opcional)",
   "contact.formFilesHint": "Máximo 3 archivos, 3MB cada uno (imágenes, PDF o Word).",
   "contact.formFilesInvalid": "Revisa los archivos adjuntos: máximo 3, 3MB cada uno, solo imágenes, PDF o Word.",
+  "contact.fieldErrorName": "Ingresa tu nombre.",
+  "contact.fieldErrorEmail": "Ingresa un correo electrónico válido.",
+  "contact.fieldErrorMessage": "Escribe un mensaje.",
+  "contact.removeFileLabel": "Quitar",
   "contact.otherChannels": "O contáctame directamente"
 }

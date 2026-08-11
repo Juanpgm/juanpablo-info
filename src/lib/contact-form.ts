@@ -18,9 +18,14 @@ export interface ContactSubmissionData {
   honeypot: boolean;
 }
 
+export interface ContactFieldError {
+  field: 'name' | 'email' | 'message';
+  message: string;
+}
+
 export type ValidateContactResult =
   | { valid: true; data: ContactSubmissionData }
-  | { valid: false; errors: string[] };
+  | { valid: false; errors: ContactFieldError[] };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_NAME_LENGTH = 200;
@@ -96,7 +101,11 @@ export function validateAttachments(files: AttachmentInfo[]): ValidateAttachment
 
 export function validateContactSubmission(data: unknown): ValidateContactResult {
   if (typeof data !== 'object' || data === null) {
-    return { valid: false, errors: ['Invalid request body'] };
+    // Structural error (not a single field) — 'name' is an arbitrary but
+    // harmless tag: this branch never fires from the real form (both the
+    // client script and pages/api/contact.ts always pass a plain object),
+    // and no caller currently renders this specific message per-field.
+    return { valid: false, errors: [{ field: 'name', message: 'Invalid request body' }] };
   }
 
   const record = data as Record<string, unknown>;
@@ -106,26 +115,26 @@ export function validateContactSubmission(data: unknown): ValidateContactResult 
   const locale = typeof record.locale === 'string' && record.locale ? record.locale : 'es';
   const honeypot = typeof record.website === 'string' && record.website.trim().length > 0;
 
-  const errors: string[] = [];
+  const errors: ContactFieldError[] = [];
 
   if (!name) {
-    errors.push('Name is required');
+    errors.push({ field: 'name', message: 'Name is required' });
   } else if (name.length > MAX_NAME_LENGTH) {
-    errors.push(`Name must be ${MAX_NAME_LENGTH} characters or fewer`);
+    errors.push({ field: 'name', message: `Name must be ${MAX_NAME_LENGTH} characters or fewer` });
   }
 
   if (!email) {
-    errors.push('Email is required');
+    errors.push({ field: 'email', message: 'Email is required' });
   } else if (!EMAIL_RE.test(email)) {
-    errors.push('Email is not valid');
+    errors.push({ field: 'email', message: 'Email is not valid' });
   }
 
   if (!message) {
-    errors.push('Message is required');
+    errors.push({ field: 'message', message: 'Message is required' });
   } else if (message.length < MIN_MESSAGE_LENGTH) {
-    errors.push(`Message must be at least ${MIN_MESSAGE_LENGTH} characters`);
+    errors.push({ field: 'message', message: `Message must be at least ${MIN_MESSAGE_LENGTH} characters` });
   } else if (message.length > MAX_MESSAGE_LENGTH) {
-    errors.push(`Message must be ${MAX_MESSAGE_LENGTH} characters or fewer`);
+    errors.push({ field: 'message', message: `Message must be ${MAX_MESSAGE_LENGTH} characters or fewer` });
   }
 
   if (errors.length > 0) {

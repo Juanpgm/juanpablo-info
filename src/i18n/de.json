@@ -120,5 +120,9 @@
   "contact.formFilesLabel": "Anhänge (optional)",
   "contact.formFilesHint": "Maximal 3 Dateien, je 3MB (Bilder, PDF oder Word).",
   "contact.formFilesInvalid": "Prüfe die Anhänge: maximal 3 Dateien, je 3MB, nur Bilder, PDF oder Word.",
+  "contact.fieldErrorName": "Bitte gib deinen Namen ein.",
+  "contact.fieldErrorEmail": "Bitte gib eine gültige E-Mail-Adresse ein.",
+  "contact.fieldErrorMessage": "Bitte schreibe eine Nachricht.",
+  "contact.removeFileLabel": "Entfernen",
   "contact.otherChannels": "Oder erreiche mich direkt"
 }

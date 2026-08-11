@@ -38,17 +38,23 @@ describe('validateContactSubmission', () => {
   });
 
   it('rejects a non-object body', () => {
-    expect(validateContactSubmission(null)).toEqual({ valid: false, errors: ['Invalid request body'] });
-    expect(validateContactSubmission('nope')).toEqual({ valid: false, errors: ['Invalid request body'] });
+    expect(validateContactSubmission(null)).toEqual({
+      valid: false,
+      errors: [{ field: 'name', message: 'Invalid request body' }],
+    });
+    expect(validateContactSubmission('nope')).toEqual({
+      valid: false,
+      errors: [{ field: 'name', message: 'Invalid request body' }],
+    });
   });
 
   it('rejects missing/empty fields', () => {
     const result = validateContactSubmission({ name: '', email: '', message: '' });
     expect(result.valid).toBe(false);
     expect(result.valid || result.errors).toEqual([
-      'Name is required',
-      'Email is required',
-      'Message is required',
+      { field: 'name', message: 'Name is required' },
+      { field: 'email', message: 'Email is required' },
+      { field: 'message', message: 'Message is required' },
     ]);
   });
 
@@ -59,13 +65,15 @@ describe('validateContactSubmission', () => {
       message: 'Hello, I saw your portfolio and would like to talk.',
     });
     expect(result.valid).toBe(false);
-    expect(result.valid || result.errors).toEqual(['Email is not valid']);
+    expect(result.valid || result.errors).toEqual([{ field: 'email', message: 'Email is not valid' }]);
   });
 
   it('rejects a too-short message', () => {
     const result = validateContactSubmission({ name: 'Ada', email: 'ada@example.com', message: 'hi' });
     expect(result.valid).toBe(false);
-    expect(result.valid || result.errors).toEqual(['Message must be at least 10 characters']);
+    expect(result.valid || result.errors).toEqual([
+      { field: 'message', message: 'Message must be at least 10 characters' },
+    ]);
   });
 
   it('rejects an over-length message', () => {
@@ -75,7 +83,9 @@ describe('validateContactSubmission', () => {
       message: 'a'.repeat(5001),
     });
     expect(result.valid).toBe(false);
-    expect(result.valid || result.errors).toEqual(['Message must be 5000 characters or fewer']);
+    expect(result.valid || result.errors).toEqual([
+      { field: 'message', message: 'Message must be 5000 characters or fewer' },
+    ]);
   });
 
   it('rejects an over-length name', () => {
@@ -85,7 +95,9 @@ describe('validateContactSubmission', () => {
       message: 'Hello, I saw your portfolio and would like to talk.',
     });
     expect(result.valid).toBe(false);
-    expect(result.valid || result.errors).toEqual(['Name must be 200 characters or fewer']);
+    expect(result.valid || result.errors).toEqual([
+      { field: 'name', message: 'Name must be 200 characters or fewer' },
+    ]);
   });
 
   it('flags the honeypot field as triggered without failing validation', () => {
