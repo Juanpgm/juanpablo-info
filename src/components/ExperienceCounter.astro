@@ -1,6 +1,7 @@
 ---
-// Live "years of experience" counter: compact inline chip in the featured-experience
-// section header. Build-time fallback (progressive enhancement, no-JS/SSR-safe)
+// Live "years of experience" counter: compact inline chip next to the <h1>
+// on the dedicated /experience page, inside its .page-title-group wrapper.
+// Build-time fallback (progressive enhancement, no-JS/SSR-safe)
 // computed once here; re-computed client-side on every page load from the real
 // current date (lib/experience-duration.ts — pure, reused build- and client-side).
 import { t, useLocale } from '../i18n';

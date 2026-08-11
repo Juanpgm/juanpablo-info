@@ -792,9 +792,9 @@ h3 {
   background-color: var(--color-surface-subtle);
 }
 
-/* Experience counter: compact inline chip within the featured-experience
-   section header, next to the title. Renders as a small vertical stack
-   (number above label), center-aligned with the h2. */
+/* Experience counter: compact inline chip within the /experience page's
+   .page-title-group, next to the h1. Renders as a small vertical stack
+   (number above label), center-aligned with the h1. */
 .experience-counter {
   display: flex;
   flex-direction: column;
