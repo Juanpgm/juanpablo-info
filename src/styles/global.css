@@ -546,33 +546,74 @@ h3 {
   border: 1px solid var(--color-border);
 }
 
-/* Hero */
+/* Hero (2026-08-10 visual redesign): full-bleed section (no more centered
+   max-width column) so `.hero-block`'s diagonal clip-path can bleed across
+   the top edge — `.hero-content` re-applies the readable column width and
+   is pushed below the block's bottom edge (see --hero-block-h below), so
+   headline text never overlaps the accent fill and never needs its own
+   on-accent color handling. Text-align switches from center to left. */
 .hero {
-  max-width: 56rem;
-  margin-inline: auto;
-  /* Compacted (was --space-3xl/--space-2xl, 96px/64px) — that plus the
-     next .section's own 64px top padding stacked to 128px of dead space
-     between the CTA row and "Sobre mí" below it. */
-  padding: var(--space-2xl) var(--space-md) var(--space-lg);
-  text-align: center;
+  position: relative;
+  isolation: isolate;
+  padding: var(--space-lg) var(--space-md) var(--space-lg);
+  --hero-block-h: 8rem;
 }
 
+/* Diagonal accent block — the site's structural motif. Steep ~52% cut is a
+   desktop flourish; mobile keeps a shallower ~78% cut so it stays a small
+   band, matching "never a large ambient background" — see the responsive
+   override below. Solid fill (not tinted): the design spec explicitly
+   calls out "the diagonal block fill" as one of the few places raw accent
+   saturation belongs. */
+.hero-block {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: -1;
+  height: var(--hero-block-h);
+  background-color: var(--color-accent);
+  clip-path: polygon(0 0, 100% 0, 100% 78%, 0 100%);
+}
+
+@media (min-width: 64rem) {
+  .hero {
+    --hero-block-h: 12rem;
+  }
+
+  .hero-block {
+    clip-path: polygon(0 0, 100% 0, 100% 52%, 0 100%);
+  }
+}
+
+.hero-content {
+  position: relative;
+  max-width: 56rem;
+  margin-inline: auto;
+  margin-top: calc(var(--hero-block-h) + var(--space-lg));
+}
+
+/* Eyebrow: light-weight, wide-tracked label contrasted against the heavy
+   headline below — --color-accent-ink, not raw --color-accent (real text
+   on --color-surface needs the AA-safe shade, see global.css's palette
+   comment). */
 .hero-eyebrow {
-  color: var(--color-primary);
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  display: block;
+  color: var(--color-accent-ink);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
 .hero-title {
   margin-block: var(--space-xs) var(--space-sm);
   font-size: var(--text-display-lg);
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: -0.04em;
   line-height: 1.05;
 }
 
 .hero-tagline {
   max-width: 42rem;
-  margin-inline: auto;
   font-size: var(--text-display-sm);
   color: var(--color-ink-muted);
 }
@@ -581,7 +622,6 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
   gap: var(--space-md);
   margin-top: var(--space-md);
 }
@@ -589,6 +629,58 @@ h3 {
 .hero-location {
   color: var(--color-ink-muted);
   font-size: var(--text-sm);
+}
+
+/* Marquee ribbon: secondary kinetic element below the fold line, CSS-only
+   (no JS animation library). It sits after the CTA row in both source
+   order and visual position on every viewport, so the primary CTA always
+   reads first — mobile just shrinks its height/font-size, per the
+   responsive requirement. prefers-reduced-motion is handled by the
+   sitewide `*, *::before, *::after { animation-duration: 0.01ms !important }`
+   guard further down this file — no separate rule needed here. */
+.hero-marquee {
+  margin-top: var(--space-xl);
+  overflow: hidden;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  padding-block: var(--space-2xs);
+}
+
+.hero-marquee__track {
+  display: flex;
+  width: max-content;
+  gap: var(--space-lg);
+  animation: hero-marquee-scroll 32s linear infinite;
+}
+
+.hero-marquee__item {
+  flex-shrink: 0;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-ink-muted);
+  white-space: nowrap;
+}
+
+@keyframes hero-marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* The track is rendered twice (see Hero.astro) — translating by
+       exactly -50% of the doubled track loops seamlessly with no jump. */
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 40rem) {
+  .hero-marquee {
+    margin-top: var(--space-lg);
+    padding-block: var(--space-3xs);
+  }
+
+  .hero-marquee__item {
+    font-size: var(--text-xs);
+  }
 }
 
 .btn-lg {
