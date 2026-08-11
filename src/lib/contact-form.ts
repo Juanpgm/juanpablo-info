@@ -19,7 +19,9 @@ export interface ContactSubmissionData {
 }
 
 export interface ContactFieldError {
-  field: 'name' | 'email' | 'message';
+  // 'form' = structural error, not tied to one input (e.g. malformed
+  // payload) — callers must not assume every error maps to a real field.
+  field: 'name' | 'email' | 'message' | 'form';
   message: string;
 }
 
@@ -101,11 +103,10 @@ export function validateAttachments(files: AttachmentInfo[]): ValidateAttachment
 
 export function validateContactSubmission(data: unknown): ValidateContactResult {
   if (typeof data !== 'object' || data === null) {
-    // Structural error (not a single field) — 'name' is an arbitrary but
-    // harmless tag: this branch never fires from the real form (both the
-    // client script and pages/api/contact.ts always pass a plain object),
-    // and no caller currently renders this specific message per-field.
-    return { valid: false, errors: [{ field: 'name', message: 'Invalid request body' }] };
+    // Structural error, not a single field's fault — this branch never fires
+    // from the real form (both the client script and pages/api/contact.ts
+    // always pass a plain object).
+    return { valid: false, errors: [{ field: 'form', message: 'Invalid request body' }] };
   }
 
   const record = data as Record<string, unknown>;

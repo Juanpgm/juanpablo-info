@@ -261,7 +261,10 @@ const whatsappHref = getWhatsAppHref(site.whatsapp.number, site.whatsapp.message
     // per validated field (see ContactModal's markup above) — the paragraph
     // already holds its generic translated message, so showing/hiding it is
     // all the script needs to do per field.
-    const fieldInputs: Record<ContactFieldError['field'], HTMLInputElement | HTMLTextAreaElement> = {
+    // Partial: 'form' (structural errors, see contact-form.ts) has no input
+    // to attach to — showFieldErrors/clearFieldErrors below must guard for
+    // that rather than assume every ContactFieldError maps to a real field.
+    const fieldInputs: Partial<Record<ContactFieldError['field'], HTMLInputElement | HTMLTextAreaElement>> = {
       name: nameInput,
       email: emailInput,
       message: messageInput,
@@ -270,6 +273,7 @@ const whatsappHref = getWhatsAppHref(site.whatsapp.number, site.whatsapp.message
     function clearFieldErrors() {
       (Object.keys(fieldInputs) as ContactFieldError['field'][]).forEach((field) => {
         const input = fieldInputs[field];
+        if (!input) return;
         input.removeAttribute('aria-invalid');
         const errorEl = document.getElementById(`${input.id}-error`);
         if (errorEl) errorEl.hidden = true;
@@ -279,11 +283,19 @@ const whatsappHref = getWhatsAppHref(site.whatsapp.number, site.whatsapp.message
     function showFieldErrors(errors: ContactFieldError[]) {
       errors.forEach(({ field }) => {
         const input = fieldInputs[field];
+        if (!input) return;
         input.setAttribute('aria-invalid', 'true');
         const errorEl = document.getElementById(`${input.id}-error`);
         if (errorEl) errorEl.hidden = false;
       });
     }
+
+    // Feature-detected once: DataTransfer is the only platform-native way to
+    // mutate an <input type="file">'s otherwise-read-only FileList, but it's
+    // not guaranteed everywhere. If it's unavailable, still list the
+    // selected files (useful on its own) but skip offering a remove button
+    // that would silently no-op instead of doing something broken.
+    const supportsDataTransfer = typeof DataTransfer !== 'undefined';
 
     function formatFileSize(bytes: number): string {
       if (bytes < 1024) return `${bytes} B`;
@@ -293,14 +305,30 @@ const whatsappHref = getWhatsAppHref(site.whatsapp.number, site.whatsapp.message
     }
 
     function removeFileAt(index: number) {
-      // The only platform-native way to mutate an <input type="file">'s
-      // otherwise-read-only FileList.
-      const dt = new DataTransfer();
-      Array.from(fileInput.files ?? []).forEach((file, i) => {
-        if (i !== index) dt.items.add(file);
-      });
-      fileInput.files = dt.files;
+      try {
+        const dt = new DataTransfer();
+        Array.from(fileInput.files ?? []).forEach((file, i) => {
+          if (i !== index) dt.items.add(file);
+        });
+        fileInput.files = dt.files;
+      } catch {
+        return; // Leave the selection untouched rather than half-mutate it.
+      }
+      // The button the user just activated is about to be removed from the
+      // DOM (renderFileList rebuilds the whole list) — without this, focus
+      // would silently drop to <body>, stranding keyboard/screen-reader
+      // users. Land on whatever now occupies the same slot; the list
+      // shifted up by one, so the same index is the next item, or the
+      // previous one if this was the last row, or the file input itself
+      // once the list is empty.
+      const remaining = fileInput.files?.length ?? 0;
+      const nextFocusIndex = remaining === 0 ? null : Math.min(index, remaining - 1);
       renderFileList();
+      if (nextFocusIndex === null) {
+        fileInput.focus();
+      } else {
+        fileList.querySelectorAll<HTMLButtonElement>('.contact-form__file-remove')[nextFocusIndex]?.focus();
+      }
     }
 
     function renderFileList() {
@@ -311,15 +339,18 @@ const whatsappHref = getWhatsAppHref(site.whatsapp.number, site.whatsapp.message
 
         const label = document.createElement('span');
         label.textContent = `${file.name} — ${formatFileSize(file.size)}`;
+        item.append(label);
 
-        const removeButton = document.createElement('button');
-        removeButton.type = 'button';
-        removeButton.className = 'contact-form__file-remove';
-        removeButton.setAttribute('aria-label', removeFileLabel);
-        removeButton.textContent = '×';
-        removeButton.addEventListener('click', () => removeFileAt(index));
+        if (supportsDataTransfer) {
+          const removeButton = document.createElement('button');
+          removeButton.type = 'button';
+          removeButton.className = 'contact-form__file-remove';
+          removeButton.setAttribute('aria-label', removeFileLabel);
+          removeButton.textContent = '×';
+          removeButton.addEventListener('click', () => removeFileAt(index));
+          item.append(removeButton);
+        }
 
-        item.append(label, removeButton);
         fileList.append(item);
       });
     }

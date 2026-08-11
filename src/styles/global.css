@@ -1179,10 +1179,6 @@ h3 {
   font-weight: 600;
 }
 
-.contact-form__status--success {
-  color: var(--color-primary);
-}
-
 .contact-form__status--error {
   color: var(--color-error);
 }

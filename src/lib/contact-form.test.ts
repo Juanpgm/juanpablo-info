@@ -40,11 +40,11 @@ describe('validateContactSubmission', () => {
   it('rejects a non-object body', () => {
     expect(validateContactSubmission(null)).toEqual({
       valid: false,
-      errors: [{ field: 'name', message: 'Invalid request body' }],
+      errors: [{ field: 'form', message: 'Invalid request body' }],
     });
     expect(validateContactSubmission('nope')).toEqual({
       valid: false,
-      errors: [{ field: 'name', message: 'Invalid request body' }],
+      errors: [{ field: 'form', message: 'Invalid request body' }],
     });
   });
 
