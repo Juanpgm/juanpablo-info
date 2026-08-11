@@ -82,7 +82,7 @@
   --text-2xl: 1.75rem;
   --text-3xl: 2.25rem; /* page-level h1 tier (About/Experience/Projects/Blog) */
   --text-display-sm: clamp(1.1rem, 1vw + 1rem, 1.375rem);
-  --text-display-lg: clamp(2.5rem, 5vw + 1rem, 4.25rem);
+  --text-display-lg: clamp(2.75rem, 6vw + 1.25rem, 5.5rem);
 
   --radius-xs: 0.25rem;
   --radius-sm: 0.375rem;
@@ -552,26 +552,29 @@ h3 {
   border: 1px solid var(--color-border);
 }
 
-/* Hero (2026-08-10 visual redesign): full-bleed section (no more centered
-   max-width column) so `.hero-block`'s diagonal clip-path can bleed across
-   the top edge — `.hero-content` re-applies the readable column width and
-   is pushed below the block's bottom edge (see --hero-block-h below), so
-   headline text never overlaps the accent fill and never needs its own
-   on-accent color handling. Text-align is centered (2026-08-11: stripped
-   to name+portrait+CTA, see `.hero-content` below). */
+/* Hero (2026-08-10 visual redesign; scaled up for impact 2026-08-11): the
+   site's "cover letter" — deliberately bigger/bolder than a typical compact
+   hero, per explicit user direction ("debe llamar la atención"). Full-bleed
+   section (no more centered max-width column) so `.hero-block`'s diagonal
+   clip-path can bleed across the top edge — `.hero-content` re-applies the
+   readable column width and is pushed below the block's bottom edge (see
+   --hero-block-h below), so headline text never overlaps the accent fill
+   and never needs its own on-accent color handling. Text-align is
+   centered. */
 .hero {
   position: relative;
   isolation: isolate;
-  padding: var(--space-lg) var(--space-md) var(--space-lg);
-  --hero-block-h: 8rem;
+  padding: var(--space-2xl) var(--space-md) var(--space-2xl);
+  --hero-block-h: 11rem;
 }
 
-/* Diagonal accent block — the site's structural motif. Steep ~52% cut is a
-   desktop flourish; mobile keeps a shallower ~78% cut so it stays a small
-   band, matching "never a large ambient background" — see the responsive
-   override below. Solid fill (not tinted): the design spec explicitly
-   calls out "the diagonal block fill" as one of the few places raw accent
-   saturation belongs. */
+/* Diagonal accent block — the site's structural motif, sized up (11rem/
+   17rem vs. the original 8rem/12rem) so it reads as a bold graphic band,
+   not a thin decorative strip. Steep ~52% cut is a desktop flourish;
+   mobile keeps a shallower ~78% cut so the cut still resolves cleanly at a
+   taller band height — see the responsive override below. Solid fill (not
+   tinted): the design spec explicitly calls out "the diagonal block fill"
+   as one of the few places raw accent saturation belongs. */
 .hero-block {
   position: absolute;
   inset: 0 0 auto 0;
@@ -583,7 +586,8 @@ h3 {
 
 @media (min-width: 64rem) {
   .hero {
-    --hero-block-h: 12rem;
+    padding: var(--space-3xl) var(--space-md) var(--space-3xl);
+    --hero-block-h: 17rem;
   }
 
   .hero-block {
@@ -595,11 +599,20 @@ h3 {
   position: relative;
   max-width: 56rem;
   margin-inline: auto;
-  margin-top: calc(var(--hero-block-h) + var(--space-lg));
-  /* Stripped to name + portrait + CTAs (2026-08-11) — centered as one
-     cohesive unit instead of the old left-aligned column, so the now much
-     shorter section still reads balanced rather than sparse/lopsided. */
+  margin-top: calc(var(--hero-block-h) + var(--space-xl));
+  /* Centered as one cohesive unit (eyebrow, name+portrait, CTAs) rather
+     than the original left-aligned column. */
   text-align: center;
+}
+
+.hero-eyebrow {
+  display: block;
+  margin-bottom: var(--space-xs);
+  color: var(--color-accent-ink);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
 .hero-title {
@@ -646,7 +659,7 @@ h3 {
 .hero-photo-frame {
   position: relative;
   flex-shrink: 0;
-  width: clamp(9rem, 24vw, 14rem);
+  width: clamp(11rem, 28vw, 19rem);
   aspect-ratio: 1;
   border-radius: 50%;
   overflow: hidden;
@@ -683,15 +696,68 @@ h3 {
 
 @media (max-width: 40rem) {
   .hero-photo-frame {
-    width: clamp(5.5rem, 30vw, 8rem);
+    width: clamp(7rem, 34vw, 10rem);
   }
 
   .hero-title {
-    font-size: clamp(1.5rem, 6vw, 2.25rem);
+    font-size: clamp(1.75rem, 7vw, 2.5rem);
   }
 
   .hero-identity {
     gap: var(--space-sm);
+  }
+}
+
+/* Marquee ribbon (restored 2026-08-11 — the user liked it, wanted it back
+   after an earlier compaction pass removed it): secondary kinetic element
+   below the CTAs, spanning the full `.hero` width edge-to-edge (it's a
+   sibling of `.hero-content`, not nested inside its 56rem column — same
+   full-bleed motif as `.hero-block`). CSS-only (no JS animation library).
+   prefers-reduced-motion is handled by the sitewide
+   `*, *::before, *::after { animation-duration: 0.01ms !important }`
+   guard further down this file — no separate rule needed here. */
+.hero-marquee {
+  margin-top: var(--space-2xl);
+  overflow: hidden;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  padding-block: var(--space-2xs);
+}
+
+.hero-marquee__track {
+  display: flex;
+  width: max-content;
+  gap: var(--space-lg);
+  animation: hero-marquee-scroll 32s linear infinite;
+}
+
+.hero-marquee__item {
+  flex-shrink: 0;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-ink-muted);
+  white-space: nowrap;
+}
+
+@keyframes hero-marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* The track is rendered twice (see Hero.astro) — translating by
+       exactly -50% of the doubled track loops seamlessly with no jump. */
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 40rem) {
+  .hero-marquee {
+    margin-top: var(--space-xl);
+    padding-block: var(--space-3xs);
+  }
+
+  .hero-marquee__item {
+    font-size: var(--text-xs);
   }
 }
 

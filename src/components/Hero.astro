@@ -1,33 +1,40 @@
 ---
-// Home hero (2026-08-10 visual redesign; stripped to essentials, real photo
+// Home hero (2026-08-10 visual redesign; real photo + final composition
 // 2026-08-11): full-bleed diagonal accent block bleeding from the top edge,
-// and a centered name+portrait+CTA block — the section's only content.
-// Eyebrow, location line, and the skills marquee were removed: the marquee
-// duplicated skill labels already shown in the TwoWorlds section further
-// down this same home page, and eyebrow/location added no CTA-adjacent
-// value once the tagline was already gone (proposal.md §4.1 follow-up).
-// Portrait: same astro:assets pattern as the About page's `.about-photo-frame`
-// (an ASCII-art rendering was tried and dropped in favor of the real photo).
+// an eyebrow role line, a name+circular-portrait row, the two CTAs, and the
+// skills marquee ribbon — this is the site's "cover letter", scaled up for
+// impact rather than compactness (user direction: bigger and bolder, meant
+// to grab attention). `.hero-location` and the old tagline paragraph stay
+// removed — those were the actual redundant content; eyebrow and marquee
+// were previously dropped for compactness but are wanted back. Portrait:
+// same astro:assets pattern as the About page's `.about-photo-frame` (an
+// ASCII-art rendering was tried and dropped in favor of the real photo).
 import { Image } from 'astro:assets';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import ContactModal from './ContactModal.astro';
 import { t, useLocale } from '../i18n';
+import { skills } from '../data/skills';
 import profilePhoto from '../assets/profile-photo.jpg';
 
 const locale = useLocale(Astro.currentLocale);
+// Marquee content: real, already-localized skill labels (data/skills.ts) —
+// no new i18n strings needed. Duplicated once so the CSS-only loop
+// (@keyframes translateX -50%) has no visible seam.
+const marqueeItems = [...skills.ai, ...skills.civil].map((skill) => t(locale, skill.labelKey));
 ---
 
 <section class="hero" data-reveal aria-labelledby="hero-title">
   <div class="hero-block" aria-hidden="true"></div>
   <div class="hero-content">
+    <p class="hero-eyebrow">{t(locale, 'hero.subtitle')}</p>
     <div class="hero-identity">
       <h1 id="hero-title" class="hero-title">{t(locale, 'hero.title')}</h1>
       <div class="hero-photo-frame">
         <Image
           src={profilePhoto}
           alt={t(locale, 'about.photoAlt')}
-          width={320}
-          height={320}
+          width={480}
+          height={480}
           loading="eager"
           fetchpriority="high"
         />
@@ -40,6 +47,12 @@ const locale = useLocale(Astro.currentLocale);
       <button type="button" class="btn btn-lg btn-outline" data-open-contact-modal>
         {t(locale, 'hero.ctaContact')}
       </button>
+    </div>
+  </div>
+  <div class="hero-marquee" aria-hidden="true">
+    <div class="hero-marquee__track">
+      {marqueeItems.map((item) => <span class="hero-marquee__item">{item}</span>)}
+      {marqueeItems.map((item) => <span class="hero-marquee__item">{item}</span>)}
     </div>
   </div>
 </section>
