@@ -53,9 +53,21 @@ const locale = Astro.currentLocale ?? 'es';
     -->
     <script is:inline>
       (function () {
+        // Local-time default (2026-08-10 visual redesign) replaces the old
+        // matchMedia('(prefers-color-scheme: dark)') fallback — 7:00-19:00
+        // local device time reads as light, otherwise dark.
+        // localStorage.theme (set by ThemeToggle.astro) still wins whenever
+        // present — only the *unset* default changed. No running interval:
+        // this only re-evaluates on page load / astro:after-swap, so a tab
+        // left open across the 7:00/19:00 boundary won't flip live —
+        // acceptable for a portfolio site.
+        function defaultThemeForLocalTime() {
+          var hour = new Date().getHours();
+          return hour >= 7 && hour < 19 ? 'light' : 'dark';
+        }
         function applyTheme() {
           var stored = localStorage.getItem('theme');
-          var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          var theme = stored || defaultThemeForLocalTime();
           document.documentElement.dataset.theme = theme;
         }
         applyTheme();
