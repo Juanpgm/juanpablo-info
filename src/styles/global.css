@@ -611,17 +611,25 @@ h3 {
 }
 
 .hero-title {
-  margin-block: var(--space-xs) var(--space-sm);
+  margin-block: 0;
   font-size: var(--text-display-lg);
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1.05;
 }
 
-.hero-tagline {
-  max-width: 42rem;
-  font-size: var(--text-display-sm);
-  color: var(--color-ink-muted);
+/* Identity row (2026-08-11 compaction): ASCII portrait + eyebrow/name as one
+   compact unit, so the CTAs right after it become the section's focal
+   point instead of trailing a long tagline paragraph (now removed — it
+   duplicated the About page's narrative prose). */
+.hero-identity {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.hero-namerow {
+  min-width: 0;
 }
 
 .hero-actions {
@@ -637,6 +645,75 @@ h3 {
   font-size: var(--text-sm);
 }
 
+/* ASCII portrait (2026-08-11): the profile photo, decoded at build time
+   (Hero.astro frontmatter, sharp) into a grid of monospace <span> cells.
+   Each cell's color is derived from its source luminance via color-mix so
+   the portrait re-themes with the site's ink/accent tokens automatically
+   instead of shipping fixed colors. `role="img"` + aria-label on the outer
+   wrapper carries the accessible name once; the inner grid is
+   aria-hidden so screen readers don't announce every character cell.
+   Positioned to bleed past `.hero-content`'s column edge into the
+   section's surrounding whitespace (no ancestor here clips overflow) —
+   sized/inset conservatively so it never forces horizontal scroll, and
+   shrunk further under the mobile breakpoint below. */
+.hero-ascii-portrait {
+  position: relative;
+  flex-shrink: 0;
+  width: clamp(5.5rem, 16vw, 9rem);
+  aspect-ratio: 44 / 26;
+}
+
+.hero-ascii-portrait__grid {
+  position: absolute;
+  inset: -18% -22% -10% -12%;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  line-height: 0.9;
+  font-size: clamp(0.32rem, 0.85vw, 0.5rem);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  pointer-events: none;
+}
+
+.hero-ascii-portrait__grid span {
+  display: block;
+  text-align: center;
+  color: color-mix(
+    in oklab,
+    var(--color-ink) calc((1 - var(--lum, 0.5)) * 100%),
+    var(--color-accent) calc(var(--lum, 0.5) * 100%)
+  );
+  animation: hero-ascii-shimmer 3.6s ease-in-out infinite;
+}
+
+/* Subtle shimmer, not a strobe: per-cell `animation-delay` (set inline,
+   Hero.astro) staggers the pulse across the grid. Neutralized by the
+   sitewide `*, *::before, *::after { animation-duration: 0.01ms !important }`
+   prefers-reduced-motion guard further down this file — no separate
+   override needed here. */
+@keyframes hero-ascii-shimmer {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 40rem) {
+  .hero-ascii-portrait {
+    width: clamp(4rem, 22vw, 5.5rem);
+  }
+
+  .hero-ascii-portrait__grid {
+    inset: -8% -8% -5% -5%;
+  }
+
+  .hero-title {
+    font-size: clamp(1.75rem, 7vw, 2.5rem);
+  }
+}
+
 /* Marquee ribbon: secondary kinetic element below the fold line, CSS-only
    (no JS animation library). It sits after the CTA row in both source
    order and visual position on every viewport, so the primary CTA always
@@ -645,7 +722,7 @@ h3 {
    sitewide `*, *::before, *::after { animation-duration: 0.01ms !important }`
    guard further down this file — no separate rule needed here. */
 .hero-marquee {
-  margin-top: var(--space-xl);
+  margin-top: var(--space-lg);
   overflow: hidden;
   border-top: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);

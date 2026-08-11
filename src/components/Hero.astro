@@ -1,11 +1,12 @@
 ---
-// Home hero (2026-08-10 visual redesign): full-bleed diagonal accent block
-// bleeding from the top edge, an oversized geometric-sans headline, a solid
-// accent CTA (`.btn`, already accent-filled via global.css's token
-// repoint), and a secondary CSS-only marquee of skill keywords below the
-// fold line. The "puentes entre..." tagline hook and the two CTAs are
-// unchanged content-wise (proposal.md §4.1) — only the visual treatment
-// changes.
+// Home hero (2026-08-10 visual redesign, compacted 2026-08-11): full-bleed
+// diagonal accent block bleeding from the top edge, a photo+name identity
+// row, the two CTAs promoted right after it, and a secondary CSS-only
+// marquee of skill keywords below the fold line. The narrative tagline
+// paragraph was dropped — it duplicated the About page's prose — so the
+// CTAs are the section's visual focus (proposal.md §4.1 follow-up).
+import path from 'node:path';
+import sharp from 'sharp';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import ContactModal from './ContactModal.astro';
 import { t, useLocale } from '../i18n';
@@ -16,14 +17,51 @@ const locale = useLocale(Astro.currentLocale);
 // no new i18n strings needed. Duplicated once so the CSS-only loop
 // (@keyframes translateX -50%) has no visible seam.
 const marqueeItems = [...skills.ai, ...skills.civil].map((skill) => t(locale, skill.labelKey));
+
+// Build-time ASCII portrait: decode the real photo with sharp (already a
+// dependency — see About page's astro:assets usage) and map each pixel's
+// luminance to a monospace character. Rendered as colored <span> cells
+// below, so the portrait re-themes with the site's palette instead of
+// shipping a fixed-color image. Runs once per locale route (5x) — cheap
+// enough at this grid size not to need caching.
+// Resolved from the project root, not `import.meta.url` — Astro's SSR build
+// bundles this frontmatter into a chunk elsewhere and doesn't copy the raw
+// asset alongside it, so a `new URL('../assets/...', import.meta.url)`
+// lookup 404s at build time even though it works fine in dev.
+const photoPath = path.join(process.cwd(), 'src/assets/profile-photo.jpg');
+const GRID_COLS = 44;
+const GRID_ROWS = 26; // photo is a 400x400 square; rows ≈ cols * 0.6 compensates for monospace cells being taller than wide.
+const RAMP = ' .:-=+*#%@'; // sparse-to-dense; bright pixels render as near-blank, dark pixels as heavy glyphs.
+
+const { data: asciiPixels } = await sharp(photoPath)
+  .resize(GRID_COLS, GRID_ROWS, { fit: 'cover' })
+  .grayscale()
+  .raw()
+  .toBuffer({ resolveWithObject: true });
+
+const asciiGrid = Array.from(asciiPixels, (lum) => {
+  const t = lum / 255;
+  const idx = Math.floor((1 - t) * (RAMP.length - 1));
+  return { char: RAMP[idx] || ' ', lum: t };
+});
 ---
 
 <section class="hero" data-reveal aria-labelledby="hero-title">
   <div class="hero-block" aria-hidden="true"></div>
   <div class="hero-content">
-    <p class="hero-eyebrow">{t(locale, 'hero.subtitle')}</p>
-    <h1 id="hero-title" class="hero-title">{t(locale, 'hero.title')}</h1>
-    <p class="hero-tagline">{t(locale, 'hero.tagline')}</p>
+    <div class="hero-identity">
+      <div class="hero-ascii-portrait" role="img" aria-label={t(locale, 'about.photoAlt')}>
+        <div class="hero-ascii-portrait__grid" style={`--cols:${GRID_COLS}`} aria-hidden="true">
+          {asciiGrid.map((cell, i) => (
+            <span style={`--lum:${cell.lum.toFixed(2)};animation-delay:${(i % 12) * 0.15}s`}>{cell.char}</span>
+          ))}
+        </div>
+      </div>
+      <div class="hero-namerow">
+        <p class="hero-eyebrow">{t(locale, 'hero.subtitle')}</p>
+        <h1 id="hero-title" class="hero-title">{t(locale, 'hero.title')}</h1>
+      </div>
+    </div>
     <div class="hero-actions">
       <a href={getRelativeLocaleUrl(locale, 'experience')} class="btn btn-lg">
         {t(locale, 'hero.ctaExperience')}
