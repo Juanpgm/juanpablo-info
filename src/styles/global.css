@@ -1,9 +1,11 @@
 @import 'tailwindcss';
 
-/* Self-hosted variable fonts (design directive) — no external Google Fonts
-   request, better CWV. wght.css/opsz.css are the smaller single-axis files
-   (skip italic/full/soft/wonk axes, not used here). */
-@import '@fontsource-variable/fraunces/opsz.css';
+/* Self-hosted variable font (design directive) — no external Google Fonts
+   request, better CWV. wght.css is the smaller single-axis file (skip
+   italic/full/soft/wonk axes, not used here). Fraunces was dropped in the
+   2026-08-10 visual redesign — nothing references --font-display's old
+   serif value anymore (grep-confirmed), so its import/package are gone too,
+   not just its @theme value. Body copy keeps Manrope unchanged. */
 @import '@fontsource-variable/manrope/wght.css';
 
 /* Dark mode driven by `data-theme="dark"` on <html> (see design §8),
@@ -17,11 +19,16 @@
  * to the `data-theme` attribute at runtime — Tailwind v4's documented
  * pattern for runtime-switchable themes.
  *
- * Palette: warm-tinted ink dark theme / cool-tinted off-white light theme
- * ("engineering blueprint" feel, not pure black/white). Two accents only:
- * technical teal (primary) + warm amber/copper (secondary, sparing use).
- * Exact WCAG AA audit is a later polish task (design R4, Phase 9.1) — these
- * pairings are chosen to already be close (teal-700/teal-400 class ratios).
+ * Palette (2026-08-10 visual redesign): near-black ink / near-white surface,
+ * single electric-cyan accent (--accent, IDENTICAL hex in both themes) used
+ * only for "shout" elements (fills, active states, dividers) — ink/surface
+ * carry ~90% of any view. Old teal (--primary)/amber (--secondary) VALUES
+ * are retired but the NAMES survive as aliases (--primary -> --accent,
+ * --secondary -> --ink-muted) so every existing --color-primary/
+ * --color-secondary consumer repaints for free. WCAG AA is verified with
+ * `node scripts/check-contrast.mjs`, not just eyeballed — --accent as TEXT
+ * needed a dedicated darker --accent-ink shade in light mode (raw --accent
+ * only hits ~1.7:1 on #fafafa, far below the 4.5:1 floor).
  *
  * --space-* / --text-* (design-standardization fast-follow, post-launch):
  * a tight modular spacing scale and a small type scale, added to collapse
@@ -40,7 +47,7 @@
  * icon-button/dot sizing above.
  */
 @theme {
-  --font-display: 'Fraunces Variable', ui-serif, Georgia, serif;
+  --font-display: system-ui, -apple-system, 'Inter', sans-serif;
   --font-body: 'Manrope Variable', ui-sans-serif, system-ui, sans-serif;
 
   --color-surface: var(--surface);
@@ -52,6 +59,10 @@
   --color-primary-hover: var(--primary-hover);
   --color-secondary: var(--secondary);
   --color-error: var(--error);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-ink: var(--accent-ink);
+  --color-on-accent: var(--on-accent);
 
   --space-3xs: 0.25rem; /* 4px */
   --space-2xs: 0.5rem; /* 8px */
@@ -81,15 +92,35 @@
 }
 
 :root {
-  --surface: #f7f8fa;
-  --surface-subtle: #eef0f3;
-  --ink: #1a2027;
+  --surface: #fafafa;
+  --surface-subtle: #ececec;
+  --ink: #0a0a0a;
   --ink-muted: #4b5563;
   --border: #dde1e6;
-  --primary: #0f766e;
-  --primary-hover: #115e59;
-  --secondary: #b45309;
   --error: #b91c1c;
+
+  /* --accent-hover: tactile hover-state shade for accent-filled buttons
+     (darker in light mode, lighter in dark — same convention the old
+     --primary-hover used). --accent-ink: AA-safe darker shade for TEXT set
+     directly in accent on a light surface (see scripts/check-contrast.mjs).
+     --on-accent: fixed dark text color for content painted ON an --accent
+     fill (buttons, active chips) — always dark because --accent itself is
+     always the same bright cyan in both themes. */
+  --accent: #22d3ee;
+  --accent-hover: #0891b2;
+  --accent-ink: #155e75;
+  --on-accent: #0a0a0a;
+
+  /* --primary/--secondary keep their old NAMES (avoids renaming 30+
+     --color-primary/--color-secondary consumers across every component)
+     but their teal/amber VALUES are retired: --primary aliases the new
+     accent, --secondary (no second accent color in the new one-accent
+     palette) aliases --ink-muted so its former consumers (badge-example,
+     .world-civil, --diagram-accent-2) render as a neutral tone instead of a
+     second brand color. */
+  --primary: var(--accent);
+  --primary-hover: var(--accent-hover);
+  --secondary: var(--ink-muted);
 
   /* Hero diagram palette (design.md "Theme palette as indirected CSS vars")
      — indirected through --color-* so inline SVGs (set:html, no external doc
@@ -103,15 +134,21 @@
 }
 
 [data-theme='dark'] {
-  --surface: #1b1815;
-  --surface-subtle: #242019;
-  --ink: #f2ede6;
+  --surface: #0a0a0a;
+  --surface-subtle: #181818;
+  --ink: #fafafa;
   --ink-muted: #b7ada0;
   --border: #332d25;
-  --primary: #2dd4bf;
-  --primary-hover: #5eead4;
-  --secondary: #f59e0b;
   --error: #f87171;
+
+  --accent: #22d3ee;
+  --accent-hover: #67e8f9;
+  --accent-ink: var(--accent);
+  --on-accent: #0a0a0a;
+
+  --primary: var(--accent);
+  --primary-hover: var(--accent-hover);
+  --secondary: var(--ink-muted);
 }
 
 body {
@@ -159,13 +196,18 @@ h3 {
    .section-header h2 (28px), clearly smaller than the hero h1 (40-68px). */
 .page-title {
   font-size: var(--text-3xl);
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: -0.03em;
   margin-bottom: var(--space-lg);
 }
 
-/* Accessible focus ring — never removed, never left to the browser default. */
+/* Accessible focus ring — never removed, never left to the browser default.
+   --color-accent-ink, not raw --color-accent: a focus ring is a WCAG 2.4.11
+   non-text-contrast target (3:1 minimum against its surroundings) — raw
+   --accent only hits ~1.7:1 on the light-theme surface, --accent-ink clears
+   ~6.9:1 (scripts/check-contrast.mjs). */
 :focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-accent-ink);
   outline-offset: 2px;
   border-radius: 2px;
 }
@@ -327,7 +369,13 @@ h3 {
 .btn {
   padding: var(--space-2xs) var(--space-sm);
   background-color: var(--color-primary);
-  color: var(--color-surface);
+  /* --color-on-accent, not --color-surface: --color-primary now aliases the
+     bright --accent cyan in BOTH themes, and --color-surface flips from
+     near-white (light) to near-black (dark) — the old pairing accidentally
+     still worked in dark mode but failed AA in light mode (~1.7:1, see
+     scripts/check-contrast.mjs). --on-accent is a fixed dark value that's
+     correct against --accent in either theme. */
+  color: var(--color-on-accent);
   text-decoration: none;
   font-weight: 600;
 }
@@ -451,7 +499,8 @@ h3 {
 
 .section-header h2 {
   font-size: var(--text-2xl);
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   /* .section-header itself owns the bottom spacing (margin-bottom below) —
      zero the h2's own margin so they don't stack. */
   margin-bottom: 0;
@@ -469,26 +518,25 @@ h3 {
 
 .badge-example {
   background-color: color-mix(in srgb, var(--color-secondary) 18%, transparent);
-  /* Light-theme --secondary (#b45309) on this 18%-tint background only hits
-     3.69:1 (Lighthouse-measured, Phase 9.1 R4 audit) — darkened for AA 4.5:1.
-     Dark-theme --secondary (#f59e0b) on its tint already clears ~5.9:1. */
-  color: #92400e;
-}
-
-[data-theme='dark'] .badge-example {
-  color: var(--color-secondary);
+  /* --secondary now aliases --ink-muted (2026-08-10 redesign, no second
+     accent color in the new palette) — a same-hue tint+text pairing is
+     inherently well-contrasted (~5.5:1 light, ~similar dark — verified by
+     scripts/check-contrast.mjs), so the old per-theme hardcoded override
+     hex is gone. */
+  color: var(--color-ink-muted);
 }
 
 .badge-current {
   background-color: color-mix(in srgb, var(--color-primary) 18%, transparent);
-  /* Light-theme --primary (#0f766e) on this 18%-tint background only hits
-     4.03:1 (Phase 9.1 R4 audit) — reuses the existing --primary-hover token
-     (already darker, already defined) for AA 4.5:1 instead of a new color. */
-  color: var(--color-primary-hover);
+  /* --primary now aliases --accent (bright cyan) — --accent-hover isn't
+     dark enough on this tint (~3.1:1, fails AA), --accent-ink is
+     (~6.2:1, scripts/check-contrast.mjs). */
+  color: var(--color-accent-ink);
 }
 
 [data-theme='dark'] .badge-current {
-  color: var(--color-primary);
+  /* --accent already clears ~8:1 on its own dark-theme tint. */
+  color: var(--color-accent);
 }
 
 .badge-stack,
@@ -1050,7 +1098,9 @@ h3 {
 .chip.is-active {
   background-color: var(--color-primary);
   border-color: var(--color-primary);
-  color: var(--color-surface);
+  /* Same fix as .btn above — text painted on an --accent fill needs the
+     fixed --on-accent dark value, not the theme-flipping --color-surface. */
+  color: var(--color-on-accent);
 }
 
 /* Table of contents */
