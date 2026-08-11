@@ -84,6 +84,7 @@
   "blog.readMore": "Читать далее",
   "blog.readingTimeSuffix": "мин чтения",
   "blog.filterAll": "Все",
+  "blog.noPostsMatch": "Нет публикаций с этим тегом.",
   "blog.tableOfContents": "Содержание",
   "blog.publishedOn": "Опубликовано",
   "blog.updatedOn": "Обновлено",

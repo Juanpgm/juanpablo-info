@@ -46,6 +46,7 @@ const TAGS = [
   if (container) {
     const chips = Array.from(container.querySelectorAll<HTMLElement>('.chip'));
     const cards = Array.from(document.querySelectorAll<HTMLElement>('.blog-card'));
+    const emptyState = document.querySelector<HTMLElement>('[data-tag-filter-empty]');
 
     container.addEventListener('click', (event) => {
       const chip = (event.target as HTMLElement | null)?.closest<HTMLElement>('.chip');
@@ -58,11 +59,15 @@ const TAGS = [
         c.setAttribute('aria-pressed', String(active));
       });
 
+      let visibleCount = 0;
       cards.forEach((card) => {
         const tags = (card.dataset.tags || '').split(' ');
         const visible = tag === 'all' || tags.includes(tag ?? '');
         card.classList.toggle('hidden', !visible);
+        if (visible) visibleCount += 1;
       });
+
+      if (emptyState) emptyState.hidden = visibleCount > 0;
     });
   }
 </script>

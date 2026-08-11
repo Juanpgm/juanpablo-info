@@ -84,6 +84,7 @@
   "blog.readMore": "Leer más",
   "blog.readingTimeSuffix": "min de lectura",
   "blog.filterAll": "Todos",
+  "blog.noPostsMatch": "No hay publicaciones con esta etiqueta.",
   "blog.tableOfContents": "Contenido",
   "blog.publishedOn": "Publicado el",
   "blog.updatedOn": "Actualizado el",

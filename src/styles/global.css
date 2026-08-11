@@ -367,6 +367,11 @@ h3 {
   width: 100%;
 }
 
+.footer-location {
+  color: var(--color-ink-muted);
+  font-size: var(--text-sm);
+}
+
 /* PostLayout shell (task 2.6) */
 .post-body {
   display: grid;
@@ -692,6 +697,18 @@ h3 {
   background-color: var(--color-primary);
 }
 
+.world-ai {
+  border-top: 3px solid var(--color-primary);
+}
+
+.world-civil {
+  border-top: 3px solid var(--color-secondary);
+}
+
+.world-civil li::before {
+  background-color: var(--color-secondary);
+}
+
 .world-connector {
   display: none;
 }
@@ -794,6 +811,11 @@ h3 {
   font-size: var(--text-sm);
 }
 
+.early-experience__role {
+  color: var(--color-ink-muted);
+  font-size: var(--text-sm);
+}
+
 .timeline-card__body {
   padding-bottom: var(--space-sm);
   display: grid;
@@ -870,6 +892,12 @@ h3 {
   gap: var(--space-md);
 }
 
+.blog-empty-state {
+  color: var(--color-ink-muted);
+  text-align: center;
+  padding: var(--space-xl) 0;
+}
+
 .project-card,
 .blog-card {
   display: grid;
@@ -915,6 +943,12 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2xs);
+}
+
+.project-card__description,
+.blog-card__description {
+  color: var(--color-ink-muted);
+  font-size: var(--text-sm);
 }
 
 .project-card__meta {

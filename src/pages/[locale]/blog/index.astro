@@ -31,5 +31,6 @@ const posts = entries
     <div class="blog-grid">
       {posts.map((post) => <BlogCard entry={post} locale={locale} headingLevel="h2" />)}
     </div>
+    <p class="blog-empty-state" data-tag-filter-empty hidden>{t(locale, 'blog.noPostsMatch')}</p>
   </section>
 </BaseLayout>

@@ -84,6 +84,7 @@
   "blog.readMore": "Lire la suite",
   "blog.readingTimeSuffix": "min de lecture",
   "blog.filterAll": "Tous",
+  "blog.noPostsMatch": "Aucun article ne correspond à cette étiquette.",
   "blog.tableOfContents": "Sommaire",
   "blog.publishedOn": "Publié le",
   "blog.updatedOn": "Mis à jour le",
