@@ -20,7 +20,7 @@ const { entries, locale, headingLevel = 'h3' } = Astro.props;
   {
     entries.map((entry, index) => (
       <li>
-        <TimelineCard entry={entry} locale={locale} open={index === 0} headingLevel={headingLevel} />
+        <TimelineCard entry={entry} locale={locale} open={index === 0} headingLevel={headingLevel} index={index} />
       </li>
     ))
   }

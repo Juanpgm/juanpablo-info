@@ -26,12 +26,15 @@ const durationWords = {
   <summary class="early-experience__summary">{t(locale, 'experience.earlyLabel')}</summary>
   <ul class="early-experience__list">
     {
-      entries.map((entry) => {
+      entries.map((entry, index) => {
         const { startDate, endDate, current } = entry.data;
         const endLabel = current || !endDate ? t(locale, 'experience.present') : formatCalendarDate(endDate, locale, { year: 'numeric' });
         const duration = formatCalendarDuration(getCalendarDuration(startDate, endDate ?? new Date()), durationWords);
         return (
           <li class="early-experience__item">
+            <span class="listing-numeral listing-numeral--xs" aria-hidden="true">
+              <span class="listing-numeral__index">{String(index + 1).padStart(2, '0')}</span>
+            </span>
             <span class="early-experience__year">
               {formatCalendarDate(startDate, locale, { year: 'numeric' })}–{endLabel} · {duration}
             </span>

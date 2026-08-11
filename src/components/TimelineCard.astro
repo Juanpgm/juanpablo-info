@@ -17,9 +17,13 @@ interface Props {
    * /experience/, h3 when nested under an h2 section heading like the home
    * page's "featured experience"). */
   headingLevel?: 'h2' | 'h3';
+  /** 0-based position in the timeline — drives the small index numeral
+   * (2026-08-10 visual redesign). Must match the array index the caller
+   * maps over. */
+  index: number;
 }
 
-const { entry, locale, open = false, headingLevel = 'h3' } = Astro.props;
+const { entry, locale, open = false, headingLevel = 'h3', index } = Astro.props;
 const Heading = headingLevel;
 const { company, role, location, startDate, endDate, current, highlights, stack } = entry.data;
 
@@ -38,6 +42,10 @@ const duration = formatCalendarDuration(getCalendarDuration(startDate, endDate ?
 
 <details class="timeline-card" open={open}>
   <summary class="timeline-card__summary">
+    <div class="listing-numeral listing-numeral--sm" aria-hidden="true">
+      <span class="listing-numeral__ghost">{String(index + 2).padStart(2, '0')}</span>
+      <span class="listing-numeral__index">{String(index + 1).padStart(2, '0')}</span>
+    </div>
     <Heading class="timeline-card__heading">
       <strong>{company}</strong>
       <span class="timeline-card__role">{role}</span>
