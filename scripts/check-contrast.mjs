@@ -37,6 +37,7 @@ const pairs = [
   ['light: .badge-current text (--accent-ink) on 18% --accent tint', '#155e75', '#d3f3f8', 4.5],
   ['dark: .badge-current text (--accent) on 18% --accent tint', '#22d3ee', '#0e2e33', 4.5],
   ['light: .badge-example text (--ink-muted) on 18% --ink-muted tint', '#4b5563', '#dbdcdf', 4.5],
+  ['light: .post-content a:hover (--accent-ink) vs --surface', '#155e75', '#fafafa', 4.5],
 ];
 
 let failed = false;

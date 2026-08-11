@@ -1779,7 +1779,8 @@ dialog#contact-modal[open]::backdrop {
 }
 
 .post-content a:hover {
-  color: var(--color-primary-hover);
+  /* --color-accent-ink, not --color-primary-hover (now --accent-hover, fails AA as text): real text on --color-surface needs the AA-safe shade, see global.css's palette comment. */
+  color: var(--color-accent-ink);
 }
 
 .post-content img {
