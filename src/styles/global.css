@@ -491,7 +491,7 @@ h3 {
 .section-header {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: var(--space-sm);
   margin-bottom: var(--space-lg);
@@ -704,10 +704,9 @@ h3 {
   background-color: var(--color-surface-subtle);
 }
 
-/* Experience counter (post-launch fast-follow): compact stat card, NOT a
-   hero-style block — a supporting detail atop the featured-experience
-   section. Reuses .project-card's visual weight (border/radius/surface) at
-   a smaller footprint. */
+/* Experience counter: compact inline chip within the featured-experience
+   section header, next to the title. Renders as a small vertical stack
+   (number above label), center-aligned with the h2. */
 .experience-counter {
   display: flex;
   flex-direction: column;
