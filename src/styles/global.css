@@ -31,6 +31,13 @@
  * Every padding/margin/gap/font-size below should reference one of these —
  * a handful of raw values remain where they're genuinely one-off element
  * dimensions (icon-button size, decorative dot size), not spacing/type.
+ *
+ * --radius-* (same fast-follow): a small border-radius scale collapsing the
+ * ad-hoc 0.25rem/0.375rem/0.5rem/0.75rem/1rem/999px values that had drifted
+ * across cards, buttons, chips, and form fields. Every border-radius below
+ * should reference one of these — `50%` (circle shape primitives) and the
+ * `:focus-visible` outline's `2px` stay raw, same precedent as the untokenized
+ * icon-button/dot sizing above.
  */
 @theme {
   --font-display: 'Fraunces Variable', ui-serif, Georgia, serif;
@@ -44,6 +51,7 @@
   --color-primary: var(--primary);
   --color-primary-hover: var(--primary-hover);
   --color-secondary: var(--secondary);
+  --color-error: var(--error);
 
   --space-3xs: 0.25rem; /* 4px */
   --space-2xs: 0.5rem; /* 8px */
@@ -64,6 +72,12 @@
   --text-3xl: 2.25rem; /* page-level h1 tier (About/Experience/Projects/Blog) */
   --text-display-sm: clamp(1.1rem, 1vw + 1rem, 1.375rem);
   --text-display-lg: clamp(2.5rem, 5vw + 1rem, 4.25rem);
+
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-full: 999px;
 }
 
 :root {
@@ -75,6 +89,7 @@
   --primary: #0f766e;
   --primary-hover: #115e59;
   --secondary: #b45309;
+  --error: #b91c1c;
 
   /* Hero diagram palette (design.md "Theme palette as indirected CSS vars")
      — indirected through --color-* so inline SVGs (set:html, no external doc
@@ -96,6 +111,7 @@
   --primary: #2dd4bf;
   --primary-hover: #5eead4;
   --secondary: #f59e0b;
+  --error: #f87171;
 }
 
 body {
@@ -164,7 +180,7 @@ h3 {
   background-color: var(--color-surface);
   color: var(--color-ink);
   border: 1px solid var(--color-border);
-  border-radius: 0.375rem;
+  border-radius: var(--radius-sm);
   transition: top 0.2s ease;
 }
 
@@ -297,7 +313,7 @@ h3 {
   align-items: center;
   justify-content: center;
   gap: var(--space-2xs);
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md);
   transition:
     transform 0.15s ease,
     box-shadow 0.15s ease,
@@ -441,15 +457,11 @@ h3 {
   margin-bottom: 0;
 }
 
-.hidden {
-  display: none;
-}
-
 .badge {
   display: inline-flex;
   align-items: center;
   padding: var(--space-3xs) var(--space-2xs);
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   font-size: var(--text-xs);
   font-weight: 600;
   line-height: 1.6;
@@ -552,7 +564,7 @@ h3 {
   margin-bottom: var(--space-lg);
   padding: var(--space-md) var(--space-lg);
   border: 1px solid var(--color-border);
-  border-radius: 0.75rem;
+  border-radius: var(--radius-lg);
   background-color: var(--color-surface);
 }
 
@@ -604,7 +616,7 @@ h3 {
  * PLACEHOLDER photo — see src/assets/about-photo-placeholder.svg. */
 .about-photo-frame {
   position: relative;
-  border-radius: 0.75rem;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--color-border);
   isolation: isolate;
@@ -642,7 +654,7 @@ h3 {
 .world {
   padding: var(--space-lg);
   border: 1px solid var(--color-border);
-  border-radius: 1rem;
+  border-radius: var(--radius-lg);
   background-color: var(--color-surface-subtle);
 }
 
@@ -764,7 +776,7 @@ h3 {
 
 .timeline-card {
   border: 1px solid var(--color-border);
-  border-radius: 0.75rem;
+  border-radius: var(--radius-lg);
   background-color: var(--color-surface);
   padding: var(--space-3xs) var(--space-sm);
 }
@@ -850,7 +862,7 @@ h3 {
 .early-experience {
   margin-top: var(--space-lg);
   border: 1px solid var(--color-border);
-  border-radius: 0.75rem;
+  border-radius: var(--radius-lg);
   padding: var(--space-3xs) var(--space-sm);
 }
 
@@ -905,7 +917,7 @@ h3 {
   align-content: start;
   padding: var(--space-md);
   border: 1px solid var(--color-border);
-  border-radius: 0.75rem;
+  border-radius: var(--radius-lg);
   background-color: var(--color-surface);
   transition:
     transform 0.15s ease,
@@ -968,7 +980,7 @@ h3 {
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  border-radius: 0.75rem;
+  border-radius: var(--radius-lg);
   background-color: var(--color-surface-subtle);
   border: 1px solid var(--color-border);
 }
@@ -992,7 +1004,7 @@ h3 {
 
 .chip {
   padding: var(--space-2xs) var(--space-sm);
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   border: 1px solid var(--color-border);
   background-color: transparent;
   color: var(--color-ink-muted);
@@ -1012,113 +1024,6 @@ h3 {
   background-color: var(--color-primary);
   border-color: var(--color-primary);
   color: var(--color-surface);
-}
-
-/* Code carousel (About page "Código, no solo discurso") */
-.code-carousel__label {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2xs);
-  padding: 0 0 var(--space-xs);
-  color: var(--color-ink-muted);
-  font-size: var(--text-sm);
-}
-
-.code-carousel__panels {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
-}
-
-/* Pre-JS / no-JS: every panel stays visible (progressive enhancement). Once
-   the carousel script runs it flips `hidden` off the nav and drives which
-   panel is `.is-active` — see the [data-carousel-ready] rule below. */
-.code-carousel__panel {
-  border: 1px solid var(--color-border);
-  border-radius: 0.75rem;
-  overflow: hidden;
-}
-
-.code-carousel[data-carousel-ready] .code-carousel__panel {
-  display: none;
-}
-
-.code-carousel[data-carousel-ready] .code-carousel__panel.is-active {
-  display: block;
-}
-
-.code-carousel__panel-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-2xs);
-  padding: var(--space-xs) var(--space-sm) 0;
-}
-
-.code-carousel__project-name {
-  font-size: var(--text-base);
-  margin: 0;
-}
-
-.code-carousel__caption {
-  padding: var(--space-3xs) var(--space-sm) var(--space-xs);
-  color: var(--color-ink-muted);
-  font-size: var(--text-sm);
-}
-
-.code-carousel__nav {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-sm);
-  margin-top: var(--space-sm);
-}
-
-.code-carousel__arrow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  background-color: var(--color-surface);
-  color: var(--color-ink);
-  font-size: var(--text-xl);
-  line-height: 1;
-  cursor: pointer;
-}
-
-.code-carousel__arrow:hover {
-  background-color: var(--color-surface-subtle);
-}
-
-.code-carousel__tablist {
-  display: flex;
-  gap: var(--space-2xs);
-}
-
-.code-carousel__tab {
-  width: 0.6rem;
-  height: 0.6rem;
-  padding: 0;
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  background-color: var(--color-surface-subtle);
-  cursor: pointer;
-}
-
-.code-carousel__tab[aria-selected='true'] {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
-}
-
-.code-snippet pre {
-  margin: 0;
-  padding: var(--space-md);
-  overflow-x: auto;
-  font-size: var(--text-sm);
 }
 
 /* Table of contents */
@@ -1190,7 +1095,7 @@ h3 {
   background-color: var(--color-surface);
   color: var(--color-ink);
   border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md);
   font-family: inherit;
   font-size: var(--text-base);
 }
@@ -1225,11 +1130,7 @@ h3 {
 }
 
 .contact-form__status--error {
-  color: #b91c1c;
-}
-
-[data-theme='dark'] .contact-form__status--error {
-  color: #f87171;
+  color: var(--color-error);
 }
 
 /* Success state — replaces the form (not a subtle inline line) so the user
@@ -1292,7 +1193,7 @@ dialog#contact-modal {
   margin: auto;
   padding: var(--space-lg);
   border: 1px solid var(--color-border);
-  border-radius: 1rem;
+  border-radius: var(--radius-lg);
   background-color: var(--color-surface);
   color: var(--color-ink);
   box-shadow: 0 24px 48px -12px rgb(0 0 0 / 0.35);
@@ -1407,7 +1308,7 @@ dialog#contact-modal[open]::backdrop {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 0.75rem;
+  border-radius: var(--radius-lg);
   background-color: var(--color-surface-subtle);
   border: 1px solid var(--color-border);
 }
@@ -1488,13 +1389,13 @@ dialog#contact-modal[open]::backdrop {
   background-color: var(--color-surface-subtle);
   color: var(--color-ink-muted);
   font-style: italic;
-  border-radius: 0 0.375rem 0.375rem 0;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
 .post-content code {
   padding: 0.1em 0.4em;
   background-color: var(--color-surface-subtle);
-  border-radius: 0.25rem;
+  border-radius: var(--radius-xs);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.9em;
 }
@@ -1524,7 +1425,7 @@ dialog#contact-modal[open]::backdrop {
   max-width: 100%;
   height: auto;
   margin-inline: auto;
-  border-radius: 0.75rem;
+  border-radius: var(--radius-lg);
 }
 
 /* Education / certifications / languages lists (About page) */
@@ -1537,7 +1438,7 @@ dialog#contact-modal[open]::backdrop {
 .definition-list__item {
   padding: var(--space-sm);
   border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md);
 }
 
 .definition-list__meta {
