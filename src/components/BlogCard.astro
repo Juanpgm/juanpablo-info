@@ -3,9 +3,8 @@ import { getRelativeLocaleUrl } from 'astro:i18n';
 import type { CollectionEntry } from 'astro:content';
 import { t } from '../i18n';
 import type { Locale, UIKey } from '../i18n';
-import { readingTimeMinutes } from '../lib/reading-time';
 import { formatCalendarDate } from '../lib/format-date';
-import { resolveHeroDiagramKey } from '../lib/hero-diagram';
+import type { BlogPostView } from '../lib/blog-view';
 
 interface Props {
   entry: CollectionEntry<'blog'>;
@@ -18,22 +17,14 @@ interface Props {
    * (2026-08-10 visual redesign). Must match the array index the caller
    * maps over. */
   index: number;
+  /** Slug/reading-time/hero-SVG, resolved once by the caller via
+   * lib/blog-view.ts (not re-derived per card). */
+  view: BlogPostView;
 }
 
-const { entry, locale, headingLevel = 'h3', index } = Astro.props;
-// entry.id is "{locale}/{slug}" (design.md §4) — the route only needs slug.
-const slug = entry.id.slice(entry.id.indexOf('/') + 1);
-const href = getRelativeLocaleUrl(locale, `blog/${slug}`);
-const minutes = readingTimeMinutes(entry.body ?? '');
+const { entry, locale, headingLevel = 'h3', index, view } = Astro.props;
+const href = getRelativeLocaleUrl(locale, `blog/${view.slug}`);
 const Heading = headingLevel;
-
-// Inline SVG hero diagram — same pattern as PostLayout.astro (design.md
-// "Inline SVG via ?raw glob + set:html").
-const heroDiagrams = import.meta.glob('/src/assets/blog/*.svg', { query: '?raw', import: 'default', eager: true }) as Record<
-  string,
-  string
->;
-const heroDiagram = entry.data.heroImage ? heroDiagrams[resolveHeroDiagramKey(entry.id, slug)] : undefined;
 ---
 
 <article class="blog-card" data-reveal data-tags={entry.data.tags.join(' ')}>
@@ -42,13 +33,13 @@ const heroDiagram = entry.data.heroImage ? heroDiagrams[resolveHeroDiagramKey(en
     <span class="listing-numeral__index">{String(index + 1).padStart(2, '0')}</span>
   </div>
   <div class="listing-content">
-    {heroDiagram && (
-      <div class="blog-card__image" role="img" aria-label={entry.data.heroImageAlt} set:html={heroDiagram} />
+    {view.heroSvg && (
+      <div class="blog-card__image" role="img" aria-label={entry.data.heroImageAlt} set:html={view.heroSvg} />
     )}
     <p class="blog-card__meta">
       <time datetime={entry.data.pubDate.toISOString()}>{formatCalendarDate(entry.data.pubDate, locale, { year: 'numeric', month: 'long' })}</time>
       <span aria-hidden="true"> · </span>
-      {minutes} {t(locale, 'blog.readingTimeSuffix')}
+      {view.minutes} {t(locale, 'blog.readingTimeSuffix')}
     </p>
     <Heading class="blog-card__title">
       <a href={href}>{entry.data.title}</a>

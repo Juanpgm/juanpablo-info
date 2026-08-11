@@ -14,6 +14,22 @@ export function initScrollReveal(root: ParentNode = document): void {
     return;
   }
 
+  // Reveal anything already on-screen at load synchronously — the
+  // IntersectionObserver callback is async and paid even by elements that
+  // never needed to animate in, which reads as a blank-page stall on pages
+  // with many targets (e.g. the blog index's 25 BlogCards).
+  const toObserve: HTMLElement[] = [];
+  targets.forEach((el) => {
+    const rect = el.getBoundingClientRect();
+    const inViewport = rect.top < window.innerHeight && rect.bottom > 0 && rect.left < window.innerWidth && rect.right > 0;
+    if (inViewport) {
+      el.classList.add('is-visible');
+    } else {
+      toObserve.push(el);
+    }
+  });
+  if (toObserve.length === 0) return;
+
   const observer = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
@@ -26,5 +42,5 @@ export function initScrollReveal(root: ParentNode = document): void {
     { threshold: 0.15, rootMargin: '0px 0px -10% 0px' },
   );
 
-  targets.forEach((el) => observer.observe(el));
+  toObserve.forEach((el) => observer.observe(el));
 }

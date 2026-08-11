@@ -6,7 +6,6 @@
 import type { ImageMetadata } from 'astro';
 import BaseLayout from './BaseLayout.astro';
 import AuthorByline from '../components/AuthorByline.astro';
-import { resolveHeroDiagramKey } from '../lib/hero-diagram';
 
 interface Props {
   title: string;
@@ -15,15 +14,15 @@ interface Props {
   readingTime?: string;
   tags?: string[];
   // Kept for BaseLayout/SeoHead's JSON-LD `image` (heroImageUrl) — the
-  // *rendered* hero below is resolved independently, off entryId/slug, not
-  // off this field's actual asset (design.md: "a missed repoint still
-  // renders correctly").
+  // *rendered* hero below is resolved independently (heroSvg), not off this
+  // field's actual asset (design.md: "a missed repoint still renders
+  // correctly").
   heroImage?: ImageMetadata;
   heroImageAlt?: string;
   heroImageCaption?: string;
-  // entry.id ("{locale}/{slug}") — needed to pick the ES/EN diagram variant.
-  entryId?: string;
-  slug?: string;
+  // Precomputed inline SVG markup (lib/blog-view.ts, resolved by the caller
+  // once per post — design.md "Inline SVG via ?raw glob + set:html").
+  heroSvg?: string;
   // Per-post/per-locale OG image, computed by the blog post page (it already
   // holds the route's `locale` + slug) — forwarded to BaseLayout/SeoHead
   // as-is. NOT derived from `entryId`'s own locale prefix here: a de/fr/ru
@@ -50,8 +49,7 @@ const {
   heroImage,
   heroImageAlt,
   heroImageCaption,
-  entryId,
-  slug,
+  heroSvg,
   ogImage,
   prev = null,
   next = null,
@@ -61,15 +59,6 @@ const {
   pubDate,
   updatedDate,
 } = Astro.props;
-
-// Inline SVG hero diagram (design.md "Inline SVG via ?raw glob + set:html" —
-// the only way var(--diagram-*) resolves against the page cascade so the
-// diagram flips with data-theme; an external <Image> doc can't do that).
-const heroDiagrams = import.meta.glob('/src/assets/blog/*.svg', { query: '?raw', import: 'default', eager: true }) as Record<
-  string,
-  string
->;
-const heroDiagram = heroImage && entryId && slug ? heroDiagrams[resolveHeroDiagramKey(entryId, slug)] : undefined;
 ---
 
 <BaseLayout
@@ -105,9 +94,9 @@ const heroDiagram = heroImage && entryId && slug ? heroDiagrams[resolveHeroDiagr
       <AuthorByline />
     </header>
 
-    {heroDiagram && (
+    {heroSvg && (
       <figure class="post-hero">
-        <div class="post-hero-image" role="img" aria-label={heroImageAlt} set:html={heroDiagram} />
+        <div class="post-hero-image" role="img" aria-label={heroImageAlt} set:html={heroSvg} />
         {heroImageCaption && <figcaption>{heroImageCaption}</figcaption>}
       </figure>
     )}

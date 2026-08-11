@@ -6,6 +6,7 @@ import BlogCard from '../../../components/BlogCard.astro';
 import TagFilter from '../../../components/TagFilter.astro';
 import { t, useLocale } from '../../../i18n';
 import { getLocalizedEntries } from '../../../lib/content-fallback';
+import { toBlogPostView } from '../../../lib/blog-view';
 
 export function getStaticPaths() {
   return [
@@ -29,7 +30,7 @@ const posts = entries
     <h1 id="blog-heading" class="page-title">{t(locale, 'blog.heading')}</h1>
     <TagFilter locale={locale} />
     <div class="blog-grid">
-      {posts.map((post, index) => <BlogCard entry={post} locale={locale} index={index} headingLevel="h2" />)}
+      {posts.map((post, index) => <BlogCard entry={post} locale={locale} index={index} headingLevel="h2" view={toBlogPostView(post)} />)}
     </div>
     <p class="blog-empty-state" data-tag-filter-empty hidden>{t(locale, 'blog.noPostsMatch')}</p>
   </section>

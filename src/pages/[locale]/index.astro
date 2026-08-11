@@ -14,6 +14,7 @@ import ProjectCard from '../../components/ProjectCard.astro';
 import BlogCard from '../../components/BlogCard.astro';
 import { t, useLocale } from '../../i18n';
 import { getLocalizedEntries } from '../../lib/content-fallback';
+import { toBlogPostView } from '../../lib/blog-view';
 import { projects as projectSeeds } from '../../data/projects';
 import { mergeProjects } from '../../lib/github';
 
@@ -76,7 +77,7 @@ const latestPosts = posts
       <a href={getRelativeLocaleUrl(locale, 'blog')} class="nav-link">{t(locale, 'blog.viewAll')} →</a>
     </div>
     <div class="blog-grid">
-      {latestPosts.map((post, index) => <BlogCard entry={post} locale={locale} index={index} />)}
+      {latestPosts.map((post, index) => <BlogCard entry={post} locale={locale} index={index} view={toBlogPostView(post)} />)}
     </div>
   </section>
 </BaseLayout>
