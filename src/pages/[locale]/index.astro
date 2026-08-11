@@ -1,17 +1,13 @@
 ---
 // Home (proposal §4.1, site-structure spec "Home Section Order"): Hero ->
-// About summary -> Skills two-worlds -> Featured experience -> Featured
-// projects -> Latest posts. `data-reveal` on every major section
-// (lib/scroll-reveal.ts already wired in BaseLayout). Contact is no longer a
-// dedicated bottom section (post-launch fast-follow) — it's now the
-// ContactModal opened from Hero's "Contactar" CTA.
+// Skills two-worlds -> Featured experience -> Featured projects -> Latest
+// posts. `data-reveal` on every major section (lib/scroll-reveal.ts already
+// wired in BaseLayout). Contact is no longer a dedicated bottom section
+// (post-launch fast-follow) — it's now the ContactModal opened from Hero's
+// "Contactar" CTA.
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
-// Real profile photo — same source as the dedicated About page.
-import profilePhoto from '../../assets/profile-photo.jpg';
-import ExperienceCounter from '../../components/ExperienceCounter.astro';
 import TwoWorlds from '../../components/TwoWorlds.astro';
 import Timeline from '../../components/Timeline.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
@@ -54,30 +50,11 @@ const latestPosts = posts
 <BaseLayout title={t(locale, 'hero.title')} description={t(locale, 'hero.tagline')} jsonLd="person">
   <Hero />
 
-  <section class="section" data-reveal aria-labelledby="about-summary-heading">
-    <div class="section-header">
-      <h2 id="about-summary-heading">{t(locale, 'about.heading')}</h2>
-      <a href={getRelativeLocaleUrl(locale, 'about')} class="nav-link">{t(locale, 'about.readMore')} →</a>
-    </div>
-    <div class="about-intro-grid">
-      <div class="prose">
-        <p>{t(locale, 'about.summaryP1')}</p>
-        <p>{t(locale, 'about.summaryP2')}</p>
-      </div>
-      <figure class="about-photo-frame">
-        <Image src={profilePhoto} alt={t(locale, 'about.photoAlt')} width={480} height={480} />
-      </figure>
-    </div>
-  </section>
-
   <TwoWorlds />
 
   <section class="section" data-reveal aria-labelledby="featured-experience-heading">
     <div class="section-header">
-      <div class="section-header__title-group">
-        <h2 id="featured-experience-heading">{t(locale, 'experience.featuredHeading')}</h2>
-        <ExperienceCounter />
-      </div>
+      <h2 id="featured-experience-heading">{t(locale, 'experience.featuredHeading')}</h2>
       <a href={getRelativeLocaleUrl(locale, 'experience')} class="nav-link">{t(locale, 'experience.viewAll')} →</a>
     </div>
     <Timeline entries={featuredExperience} locale={locale} />

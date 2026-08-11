@@ -5,6 +5,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Timeline from '../../components/Timeline.astro';
 import EarlyExperience from '../../components/EarlyExperience.astro';
+import ExperienceCounter from '../../components/ExperienceCounter.astro';
 import { t, useLocale } from '../../i18n';
 import { getLocalizedEntries } from '../../lib/content-fallback';
 
@@ -30,7 +31,10 @@ const early = entries.filter((entry) => entry.data.group === 'early').sort(sortB
 
 <BaseLayout title={t(locale, 'experience.heading')} description={t(locale, 'experience.metaDescription')} path="experience">
   <section class="section" data-reveal aria-labelledby="experience-heading">
-    <h1 id="experience-heading" class="page-title">{t(locale, 'experience.heading')}</h1>
+    <div class="page-title-group">
+      <h1 id="experience-heading" class="page-title">{t(locale, 'experience.heading')}</h1>
+      <ExperienceCounter />
+    </div>
     <Timeline entries={recent} locale={locale} headingLevel="h2" />
     {early.length > 0 && <EarlyExperience entries={early} locale={locale} />}
   </section>

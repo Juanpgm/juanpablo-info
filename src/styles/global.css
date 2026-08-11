@@ -201,6 +201,22 @@ h3 {
   margin-bottom: var(--space-lg);
 }
 
+/* Compact-chip pairing for a page-title h1 (mirrors .section-header__title-group
+   for .section-header h2) — page-title owns the bottom spacing normally, so
+   the group takes it over and zeroes the h1's own margin to keep the row
+   vertically centered. */
+.page-title-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.page-title-group .page-title {
+  margin-bottom: 0;
+}
+
 /* Accessible focus ring — never removed, never left to the browser default.
    --color-accent-ink, not raw --color-accent: a focus ring is a WCAG 2.4.11
    non-text-contrast target (3:1 minimum against its surroundings) — raw
