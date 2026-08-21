@@ -4,6 +4,7 @@
 // as-is with its `isExample` badge; the optional `stars`/`primaryLanguage`/
 // `lastUpdated`/`stale` props are accepted now so Phase 5 only has to pass
 // data, not touch this template.
+import { Image } from 'astro:assets';
 import { t } from '../i18n';
 import type { Locale } from '../i18n';
 import type { ProjectSeed } from '../data/projects';
@@ -46,6 +47,17 @@ const Heading = headingLevel;
     <span class="listing-numeral__index">{String(index + 1).padStart(2, '0')}</span>
   </div>
   <div class="listing-content">
+    {
+      project.image && (
+        <Image
+          src={project.image}
+          alt={`${project.name} – ${t(locale, 'projects.screenshotAlt')}`}
+          width={640}
+          class="project-card__image"
+          loading="lazy"
+        />
+      )
+    }
     <header class="project-card__header">
       <Heading class="project-card__title">{project.name}</Heading>
       {project.isExample && <span class="badge badge-example">{t(locale, 'projects.exampleBadge')}</span>}
@@ -68,21 +80,26 @@ const Heading = headingLevel;
       )
     }
 
-    <p class="project-card__links">
-      {
-        detailHref && (
-          <a href={detailHref} class="nav-link">
-            {t(locale, 'projects.viewDetails')}
-          </a>
-        )
-      }
-      {
-        project.repoUrl && (
-          <a href={project.repoUrl} class="nav-link" target="_blank" rel="noreferrer noopener">
-            {t(locale, 'projects.viewRepo')}
-          </a>
-        )
-      }
-    </p>
+    {
+      (detailHref || project.repoUrl || project.liveUrl) && (
+        <p class="project-card__links">
+          {detailHref && (
+            <a href={detailHref} class="nav-link">
+              {t(locale, 'projects.viewDetails')}
+            </a>
+          )}
+          {project.repoUrl && (
+            <a href={project.repoUrl} class="nav-link" target="_blank" rel="noreferrer noopener">
+              {t(locale, 'projects.viewRepo')}
+            </a>
+          )}
+          {project.liveUrl && (
+            <a href={project.liveUrl} class="nav-link" target="_blank" rel="noreferrer noopener">
+              {t(locale, 'projects.viewLive')}
+            </a>
+          )}
+        </p>
+      )
+    }
   </div>
 </article>

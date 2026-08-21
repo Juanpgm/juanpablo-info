@@ -78,6 +78,8 @@
   "projects.viewRepo": "View repository",
   "projects.viewDetails": "View details",
   "projects.backToIndex": "Back to projects",
+  "projects.viewLive": "View live demo",
+  "projects.screenshotAlt": "screenshot",
 
   "blog.heading": "Blog",
   "blog.metaDescription": "Articles on artificial intelligence, data engineering, BIM, and the transition from civil engineering to data science.",

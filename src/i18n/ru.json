@@ -78,6 +78,8 @@
   "projects.viewRepo": "Открыть репозиторий",
   "projects.viewDetails": "Подробнее",
   "projects.backToIndex": "Назад к проектам",
+  "projects.viewLive": "Открыть демо",
+  "projects.screenshotAlt": "снимок экрана",
 
   "blog.heading": "Блог",
   "blog.metaDescription": "Статьи об искусственном интеллекте, инженерии данных, BIM и переходе от гражданского строительства к науке о данных.",

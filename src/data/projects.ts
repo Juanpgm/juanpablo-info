@@ -4,7 +4,12 @@
 // call per repo, falling back to `stale: true` on the seed if that fetch
 // fails (network error, rate limit, 404 — design.md §6 contract). None of
 // these are placeholders.
+import type { ImageMetadata } from 'astro';
 import type { Locale } from '../i18n';
+import sismoCaliDashboardShot from '../assets/projects/sismo-cali-dashboard.png';
+import cashinFrontendShot from '../assets/projects/cashin-frontend.png';
+import dagma360CaptureShot from '../assets/projects/dagma-360-capture.png';
+import taskTrackerGobopsShot from '../assets/projects/task-tracker-gobops.png';
 
 type Localized = Record<Locale, string>;
 
@@ -16,6 +21,10 @@ export interface ProjectSeed {
   repoUrl?: string;
   isExample: boolean;
   featured?: boolean;
+  /** Screenshot thumbnail rendered by ProjectCard when present. */
+  image?: ImageMetadata;
+  /** Live deployment URL — only set when the deployment actually responds. */
+  liveUrl?: string;
 }
 
 export const projects: ProjectSeed[] = [
@@ -168,6 +177,8 @@ export const projects: ProjectSeed[] = [
     repoUrl: 'https://github.com/Juanpgm/dagma-360-capture',
     isExample: false,
     featured: false,
+    image: dagma360CaptureShot,
+    liveUrl: 'https://dagma-360-capture-frontend.vercel.app',
   },
   {
     id: 'task-tracker-gobops',
@@ -183,5 +194,235 @@ export const projects: ProjectSeed[] = [
     repoUrl: 'https://github.com/Juanpgm/task-tracker-gobops',
     isExample: false,
     featured: false,
+    image: taskTrackerGobopsShot,
+    liveUrl: 'https://task-tracker-beta-pied.vercel.app',
+  },
+  {
+    id: 'sismo-cali-dashboard',
+    name: 'Sismo Cali Dashboard',
+    description: {
+      es: 'Dashboard de emergencia para las inspecciones de habitabilidad de edificaciones tras el sismo de agosto de 2026 en Cali: frontend estático con mapas Leaflet, alimentado por un pipeline en Python que limpia y publica los datos de campo cada hora.',
+      en: 'Emergency dashboard for building-habitability inspections after the August 2026 earthquake in Cali: a static Leaflet-map frontend fed by a Python pipeline that cleans and publishes the field data hourly.',
+      de: 'Notfall-Dashboard für die Bewohnbarkeitsinspektionen von Gebäuden nach dem Erdbeben vom August 2026 in Cali: ein statisches Leaflet-Karten-Frontend, gespeist von einer Python-Pipeline, die die Felddaten stündlich bereinigt und veröffentlicht.',
+      fr: "Tableau de bord d'urgence pour les inspections d'habitabilité des bâtiments après le séisme d'août 2026 à Cali : un frontend statique avec cartes Leaflet, alimenté par un pipeline Python qui nettoie et publie les données de terrain chaque heure.",
+      ru: 'Аварийный дашборд для инспекций пригодности зданий после землетрясения в августе 2026 года в Кали: статический фронтенд с картами Leaflet, питаемый Python-конвейером, который ежечасно очищает и публикует полевые данные.',
+    },
+    stack: ['Python', 'Leaflet', 'GeoJSON', 'Vercel'],
+    repoUrl: 'https://github.com/Juanpgm/sismo-cali-dashboard',
+    isExample: false,
+    image: sismoCaliDashboardShot,
+    liveUrl: 'https://sismo-cali-dashboard.vercel.app',
+  },
+  {
+    id: 'normalizador-sismo-cali',
+    name: 'Normalizador Sismo Cali',
+    description: {
+      es: 'Integración de dos fuentes de la emergencia sísmica de Cali (evaluaciones de daños EDAN y visitas de campo) en una tabla normalizada publicada cada hora en Google Sheets, cruzando registros sin llave común mediante una cascada de evidencia con TF-IDF, fuzzy matching y embeddings.',
+      en: 'Integration of two sources from the Cali seismic emergency (EDAN damage assessments and field visits) into one normalized table published hourly to Google Sheets, matching keyless records through an evidence cascade with TF-IDF, fuzzy matching, and embeddings.',
+      de: 'Integration zweier Quellen des Erdbebennotfalls in Cali (EDAN-Schadensbewertungen und Feldbesuche) in eine normalisierte Tabelle, die stündlich in Google Sheets veröffentlicht wird, mit Abgleich schlüsselloser Datensätze über eine Evidenzkaskade mit TF-IDF, Fuzzy Matching und Embeddings.',
+      fr: "Intégration de deux sources de l'urgence sismique de Cali (évaluations de dommages EDAN et visites de terrain) en une table normalisée publiée chaque heure dans Google Sheets, en appariant des enregistrements sans clé commune via une cascade de preuves avec TF-IDF, fuzzy matching et embeddings.",
+      ru: 'Интеграция двух источников данных о сейсмической чрезвычайной ситуации в Кали (оценки ущерба EDAN и полевые визиты) в единую нормализованную таблицу, ежечасно публикуемую в Google Sheets, с сопоставлением записей без общего ключа через каскад признаков с TF-IDF, нечётким сопоставлением и эмбеддингами.',
+    },
+    stack: ['Python', 'Pandas', 'Google Sheets API'],
+    repoUrl: 'https://github.com/Juanpgm/normalizador_data_sismo_cali',
+    isExample: false,
+  },
+  {
+    id: 'cashin-backend',
+    name: 'CashIn Backend',
+    description: {
+      es: 'Backend "AI-agent-first" para automatizar cuentas de cobro de contratistas en Colombia: FastAPI con un motor de agentes propio sobre LiteLLM, PostgreSQL con pgvector, generación de documentos PDF/DOCX, OCR e integración con SECOP II.',
+      en: 'AI-agent-first backend for automating Colombian contractor billing (cuentas de cobro): FastAPI with a custom agent engine on LiteLLM, PostgreSQL with pgvector, PDF/DOCX document generation, OCR, and SECOP II integration.',
+      de: 'AI-Agent-first-Backend zur Automatisierung der Abrechnungen kolumbianischer Auftragnehmer (cuentas de cobro): FastAPI mit einer eigenen Agent-Engine auf LiteLLM, PostgreSQL mit pgvector, PDF/DOCX-Dokumentenerzeugung, OCR und SECOP-II-Integration.',
+      fr: "Backend « AI-agent-first » pour automatiser la facturation des prestataires colombiens (cuentas de cobro) : FastAPI avec un moteur d'agents maison sur LiteLLM, PostgreSQL avec pgvector, génération de documents PDF/DOCX, OCR et intégration SECOP II.",
+      ru: 'Бэкенд с приоритетом ИИ-агентов для автоматизации счетов подрядчиков в Колумбии (cuentas de cobro): FastAPI с собственным агентным движком на LiteLLM, PostgreSQL с pgvector, генерация документов PDF/DOCX, OCR и интеграция с SECOP II.',
+    },
+    stack: ['Python', 'FastAPI', 'PostgreSQL', 'LiteLLM'],
+    repoUrl: 'https://github.com/Juanpgm/cashing_backend',
+    isExample: false,
+  },
+  {
+    id: 'cashin-frontend',
+    name: 'CashIn Frontend',
+    description: {
+      es: 'Frontend de CashIn, plataforma de gestión de cuentas de cobro para contratistas: interfaz en TypeScript para crear, revisar y hacer seguimiento de las cuentas de cobro generadas por el backend de agentes.',
+      en: 'Frontend for CashIn, a billing-account (cuentas de cobro) management platform for contractors: a TypeScript interface for creating, reviewing, and tracking the billing documents generated by the agent backend.',
+      de: 'Frontend für CashIn, eine Plattform zur Verwaltung von Abrechnungen (cuentas de cobro) für Auftragnehmer: eine TypeScript-Oberfläche zum Erstellen, Prüfen und Nachverfolgen der vom Agenten-Backend erzeugten Abrechnungsdokumente.',
+      fr: "Frontend de CashIn, plateforme de gestion des comptes de facturation (cuentas de cobro) pour prestataires : une interface TypeScript pour créer, réviser et suivre les documents de facturation générés par le backend d'agents.",
+      ru: 'Фронтенд CashIn — платформы управления счетами на оплату (cuentas de cobro) для подрядчиков: интерфейс на TypeScript для создания, проверки и отслеживания счетов, формируемых агентным бэкендом.',
+    },
+    stack: ['TypeScript', 'Vercel'],
+    repoUrl: 'https://github.com/Juanpgm/cashin-frontend',
+    isExample: false,
+    image: cashinFrontendShot,
+    liveUrl: 'https://cashin-frontend.vercel.app',
+  },
+  {
+    id: 'api-catatrack',
+    name: 'API CataTrack',
+    description: {
+      es: 'API en FastAPI para el artefacto de captura CataTrack del DAGMA: Firestore en tiempo real, fotos de reconocimiento en Amazon S3, captura de coordenadas GPS y métricas expuestas vía Prometheus.',
+      en: "FastAPI backend for DAGMA's CataTrack capture artifact: real-time Firestore, reconnaissance photos in Amazon S3, GPS coordinate capture, and metrics exposed via Prometheus.",
+      de: 'FastAPI-Backend für das CataTrack-Erfassungsartefakt des DAGMA: Echtzeit-Firestore, Erkundungsfotos in Amazon S3, GPS-Koordinatenerfassung und über Prometheus bereitgestellte Metriken.',
+      fr: "Backend FastAPI pour l'artefact de capture CataTrack du DAGMA : Firestore en temps réel, photos de reconnaissance sur Amazon S3, capture de coordonnées GPS et métriques exposées via Prometheus.",
+      ru: 'Бэкенд на FastAPI для инструмента сбора данных CataTrack DAGMA: Firestore в реальном времени, фотографии разведки в Amazon S3, захват GPS-координат и метрики через Prometheus.',
+    },
+    stack: ['Python', 'FastAPI', 'Firebase', 'AWS S3'],
+    repoUrl: 'https://github.com/Juanpgm/api-catatrack',
+    isExample: false,
+  },
+  {
+    id: 'ssjdwh-frontend',
+    name: 'SSJDWH Frontend',
+    description: {
+      es: 'Frontend de la plataforma de analítica SyJDWH (Secretaría de Seguridad y Justicia de Cali): aplicación en React con TypeScript y Vite para explorar los indicadores del data warehouse de seguridad.',
+      en: "Frontend for the SyJDWH analytics platform (Cali's Secretariat of Security and Justice): a React application with TypeScript and Vite for exploring the security data warehouse's indicators.",
+      de: 'Frontend der Analyseplattform SyJDWH (Sekretariat für Sicherheit und Justiz von Cali): eine React-Anwendung mit TypeScript und Vite zur Auswertung der Indikatoren des Sicherheits-Data-Warehouse.',
+      fr: "Frontend de la plateforme d'analyse SyJDWH (Secrétariat à la Sécurité et à la Justice de Cali) : une application React avec TypeScript et Vite pour explorer les indicateurs du data warehouse de sécurité.",
+      ru: 'Фронтенд аналитической платформы SyJDWH (Секретариат безопасности и юстиции Кали): приложение на React с TypeScript и Vite для работы с показателями хранилища данных по безопасности.',
+    },
+    stack: ['TypeScript', 'React', 'Vite'],
+    repoUrl: 'https://github.com/Juanpgm/SSJDWH-frontend',
+    isExample: false,
+  },
+  {
+    id: 'voice2text-reporter',
+    name: 'Voice2Text Reporter',
+    description: {
+      es: 'Módulo plug-and-play de FastAPI para reportes por nota de voz: graba, transcribe localmente con faster-whisper (sin API de pago), almacena el audio en S3 o disco y devuelve el reporte como JSON estructurado.',
+      en: 'Plug-and-play FastAPI module for voice-note reports: records, transcribes locally with faster-whisper (no paid API), stores the audio in S3 or on disk, and returns the report as structured JSON.',
+      de: 'Plug-and-play-FastAPI-Modul für Sprachnotiz-Berichte: nimmt auf, transkribiert lokal mit faster-whisper (ohne kostenpflichtige API), speichert das Audio in S3 oder auf der Festplatte und liefert den Bericht als strukturiertes JSON.',
+      fr: "Module FastAPI plug-and-play pour les rapports par note vocale : enregistre, transcrit localement avec faster-whisper (sans API payante), stocke l'audio sur S3 ou sur disque et renvoie le rapport en JSON structuré.",
+      ru: 'Готовый к подключению модуль FastAPI для отчётов по голосовым заметкам: записывает, расшифровывает локально с faster-whisper (без платного API), сохраняет аудио в S3 или на диске и возвращает отчёт в виде структурированного JSON.',
+    },
+    stack: ['Python', 'FastAPI', 'Whisper'],
+    repoUrl: 'https://github.com/Juanpgm/voice2textReporter',
+    isExample: false,
+  },
+  {
+    id: 'mcp-productivity-tools',
+    name: 'MCP Productivity Tools',
+    description: {
+      es: 'Servidor MCP (Model Context Protocol) con herramientas de productividad personales, para conectar asistentes de IA como Claude con utilidades del día a día.',
+      en: 'MCP (Model Context Protocol) server with personal productivity tools, connecting AI assistants like Claude to everyday utilities.',
+      de: 'MCP-Server (Model Context Protocol) mit persönlichen Produktivitätswerkzeugen, der KI-Assistenten wie Claude mit Alltagswerkzeugen verbindet.',
+      fr: "Serveur MCP (Model Context Protocol) avec des outils de productivité personnels, connectant des assistants IA comme Claude à des utilitaires du quotidien.",
+      ru: 'Сервер MCP (Model Context Protocol) с личными инструментами продуктивности, соединяющий ИИ-ассистентов вроде Claude с повседневными утилитами.',
+    },
+    stack: ['MCP', 'AI Agents'],
+    repoUrl: 'https://github.com/Juanpgm/MCP-Server-ProductivityTools',
+    isExample: false,
+  },
+  {
+    id: 'datos-secop-colombia',
+    name: 'Datos SECOP Colombia',
+    description: {
+      es: 'MVP de extracción de datos abiertos del SECOP (contratación pública colombiana) vía la API de Socrata, con ingesta separada por dominios de procesos y contratos hacia PostgreSQL con PostGIS y cargas idempotentes tipo upsert.',
+      en: 'MVP for extracting SECOP open data (Colombian public procurement) via the Socrata API, with domain-separated ingestion of processes and contracts into PostgreSQL with PostGIS and idempotent upsert loads.',
+      de: 'MVP zur Extraktion offener SECOP-Daten (kolumbianisches öffentliches Beschaffungswesen) über die Socrata-API, mit domänengetrennter Ingestion von Prozessen und Verträgen nach PostgreSQL mit PostGIS und idempotenten Upsert-Ladevorgängen.',
+      fr: "MVP d'extraction des données ouvertes du SECOP (marchés publics colombiens) via l'API Socrata, avec une ingestion séparée par domaines des processus et des contrats vers PostgreSQL avec PostGIS et des chargements upsert idempotents.",
+      ru: 'MVP для извлечения открытых данных SECOP (государственные закупки Колумбии) через API Socrata, с раздельной по доменам загрузкой процессов и контрактов в PostgreSQL с PostGIS и идемпотентными upsert-загрузками.',
+    },
+    stack: ['Python', 'PostgreSQL', 'PostGIS', 'Socrata API'],
+    repoUrl: 'https://github.com/Juanpgm/datos_secop_colombia',
+    isExample: false,
+  },
+  {
+    id: 'proyectos-cali-etl',
+    name: 'Proyectos Cali ETL',
+    description: {
+      es: 'Pipeline ETL para los datos de proyectos de inversión de la Alcaldía de Santiago de Cali: carga y verificación de datos hacia Firestore, con autenticación segura mediante Workload Identity Federation de Google Cloud.',
+      en: 'ETL pipeline for the Santiago de Cali city government investment-project data: data loading and verification into Firestore, with secure authentication via Google Cloud Workload Identity Federation.',
+      de: 'ETL-Pipeline für die Investitionsprojektdaten der Stadtverwaltung von Santiago de Cali: Laden und Verifizieren von Daten nach Firestore, mit sicherer Authentifizierung über Google Cloud Workload Identity Federation.',
+      fr: "Pipeline ETL pour les données des projets d'investissement de la municipalité de Santiago de Cali : chargement et vérification des données vers Firestore, avec authentification sécurisée via Workload Identity Federation de Google Cloud.",
+      ru: 'ETL-конвейер для данных инвестиционных проектов администрации Сантьяго-де-Кали: загрузка и проверка данных в Firestore с безопасной аутентификацией через Workload Identity Federation в Google Cloud.',
+    },
+    stack: ['Python', 'Jupyter', 'Firebase', 'Google Cloud'],
+    repoUrl: 'https://github.com/Juanpgm/proyectos_cali_alcaldia_etl',
+    isExample: false,
+  },
+  {
+    id: 'dagma-strategic-dashboard',
+    name: 'DAGMA Strategic Dashboard',
+    description: {
+      es: 'Dashboard estratégico en Svelte para el DAGMA: visualización del estado de las intervenciones y jornadas de gestión ambiental capturadas en campo por los artefactos DAGMA-360.',
+      en: 'Strategic Svelte dashboard for DAGMA: visualization of the status of environmental-management interventions and field days captured in the field by the DAGMA-360 artifacts.',
+      de: 'Strategisches Svelte-Dashboard für das DAGMA: Visualisierung des Status der Umweltmanagement-Maßnahmen und Einsätze, die von den DAGMA-360-Artefakten im Feld erfasst werden.',
+      fr: "Tableau de bord stratégique en Svelte pour le DAGMA : visualisation de l'état des interventions et des journées de gestion environnementale capturées sur le terrain par les artefacts DAGMA-360.",
+      ru: 'Стратегический дашборд на Svelte для DAGMA: визуализация статуса природоохранных мероприятий и выездов, зафиксированных в поле инструментами DAGMA-360.',
+    },
+    stack: ['Svelte', 'TypeScript', 'Python'],
+    repoUrl: 'https://github.com/Juanpgm/dagma_strategic_dashboard',
+    isExample: false,
+  },
+  {
+    id: 'gestor-proyectos-app-web',
+    name: 'Gestor de Proyectos App Web',
+    description: {
+      es: 'Herramienta de visualización y gestión de datos de proyectos para la Alcaldía de Santiago de Cali: aplicación web para consultar el estado y los indicadores de los proyectos de inversión.',
+      en: 'Project-data visualization and management tool for the Santiago de Cali city government: a web application for consulting the status and indicators of investment projects.',
+      de: 'Werkzeug zur Visualisierung und Verwaltung von Projektdaten für die Stadtverwaltung von Santiago de Cali: eine Webanwendung zur Abfrage des Status und der Kennzahlen von Investitionsprojekten.',
+      fr: "Outil de visualisation et de gestion des données de projets pour la municipalité de Santiago de Cali : une application web pour consulter l'état et les indicateurs des projets d'investissement.",
+      ru: 'Инструмент визуализации и управления данными проектов для администрации Сантьяго-де-Кали: веб-приложение для просмотра статуса и показателей инвестиционных проектов.',
+    },
+    stack: ['Web', 'Data Visualization'],
+    repoUrl: 'https://github.com/Juanpgm/gestor_proyectos_app_web',
+    isExample: false,
+  },
+  {
+    id: 'api-dashboard-cali',
+    name: 'API Dashboard Cali',
+    description: {
+      es: 'API del data warehouse de la Alcaldía de Santiago de Cali: gestión de datos presupuestales, contratos SECOP y seguimiento de proyectos sobre FastAPI y PostgreSQL, con transformación automatizada de archivos Excel a formatos estandarizados.',
+      en: "API for the Santiago de Cali city government's data warehouse: budget data, SECOP contracts, and project tracking on FastAPI and PostgreSQL, with automated transformation of Excel files into standardized formats.",
+      de: 'API für das Data Warehouse der Stadtverwaltung von Santiago de Cali: Haushaltsdaten, SECOP-Verträge und Projektverfolgung auf FastAPI und PostgreSQL, mit automatisierter Transformation von Excel-Dateien in standardisierte Formate.',
+      fr: "API du data warehouse de la municipalité de Santiago de Cali : données budgétaires, contrats SECOP et suivi de projets sur FastAPI et PostgreSQL, avec transformation automatisée de fichiers Excel en formats standardisés.",
+      ru: 'API хранилища данных администрации Сантьяго-де-Кали: бюджетные данные, контракты SECOP и отслеживание проектов на FastAPI и PostgreSQL, с автоматизированным преобразованием файлов Excel в стандартизированные форматы.',
+    },
+    stack: ['Python', 'FastAPI', 'PostgreSQL', 'SQLAlchemy'],
+    repoUrl: 'https://github.com/Juanpgm/api_dashboard_cali',
+    isExample: false,
+  },
+  {
+    id: 'captura-reportes-emprestito',
+    name: 'Captura Reportes Empréstito',
+    description: {
+      es: 'Herramienta para la captura semanal de los datos de ejecución del empréstito de la Alcaldía de Santiago de Cali, estandarizando el reporte periódico de avance financiero de los proyectos.',
+      en: 'Tool for the weekly capture of loan-execution (empréstito) data for the Santiago de Cali city government, standardizing the periodic financial-progress reporting of projects.',
+      de: 'Werkzeug zur wöchentlichen Erfassung der Kreditausführungsdaten (empréstito) der Stadtverwaltung von Santiago de Cali, das die periodische Berichterstattung über den finanziellen Projektfortschritt standardisiert.',
+      fr: "Outil de capture hebdomadaire des données d'exécution de l'emprunt (empréstito) de la municipalité de Santiago de Cali, standardisant le rapport périodique d'avancement financier des projets.",
+      ru: 'Инструмент еженедельного сбора данных об исполнении займа (empréstito) администрации Сантьяго-де-Кали, стандартизирующий периодическую отчётность о финансовом ходе проектов.',
+    },
+    stack: ['Data Capture', 'Reporting'],
+    repoUrl: 'https://github.com/Juanpgm/captura_reportes_emprestito',
+    isExample: false,
+  },
+  {
+    id: 'unidad-cumplimiento',
+    name: 'Unidad de Cumplimiento',
+    description: {
+      es: 'Aplicación en Flutter para el seguimiento y la gestión de información de los proyectos críticos de la Alcaldía Distrital de Santiago de Cali, desde dispositivos móviles y escritorio.',
+      en: 'Flutter application for tracking and managing information on the critical projects of the Santiago de Cali District government, from mobile and desktop devices.',
+      de: 'Flutter-Anwendung zur Nachverfolgung und Verwaltung von Informationen zu den kritischen Projekten der Distriktverwaltung von Santiago de Cali, von Mobilgeräten und Desktop aus.',
+      fr: "Application Flutter pour le suivi et la gestion de l'information des projets critiques de la mairie du district de Santiago de Cali, depuis mobile et ordinateur.",
+      ru: 'Приложение на Flutter для отслеживания и управления информацией о критически важных проектах окружной администрации Сантьяго-де-Кали с мобильных устройств и настольных компьютеров.',
+    },
+    stack: ['Dart', 'Flutter'],
+    repoUrl: 'https://github.com/Juanpgm/unidad_cumplimiento',
+    isExample: false,
+  },
+  {
+    id: 'gestor-educativo',
+    name: 'Gestor Educativo',
+    description: {
+      es: 'Backend para la gestión de expedientes educativos (notas, diplomas y certificados): FastAPI con PostgreSQL asíncrono, autenticación JWT, cifrado de datos personales y generación de documentos con OCR.',
+      en: 'Backend for managing educational records (grades, diplomas, and certificates): FastAPI with async PostgreSQL, JWT authentication, PII encryption, and document generation with OCR.',
+      de: 'Backend für die Verwaltung von Bildungsakten (Noten, Diplome und Zertifikate): FastAPI mit asynchronem PostgreSQL, JWT-Authentifizierung, Verschlüsselung personenbezogener Daten und Dokumentenerzeugung mit OCR.',
+      fr: "Backend pour la gestion des dossiers éducatifs (notes, diplômes et certificats) : FastAPI avec PostgreSQL asynchrone, authentification JWT, chiffrement des données personnelles et génération de documents avec OCR.",
+      ru: 'Бэкенд для управления образовательными досье (оценки, дипломы и сертификаты): FastAPI с асинхронным PostgreSQL, аутентификацией JWT, шифрованием персональных данных и генерацией документов с OCR.',
+    },
+    stack: ['Python', 'FastAPI', 'PostgreSQL', 'Docker'],
+    repoUrl: 'https://github.com/Juanpgm/gestor_educativo',
+    isExample: false,
   },
 ];

@@ -1376,6 +1376,21 @@ h3 {
   font-size: var(--text-sm);
 }
 
+/* Screenshot thumbnail: same framed-media treatment as .blog-card__image
+   (1280x800 sources — 16/10). max-width keeps it a preview strip, not a
+   full-bleed hero, inside the listing column. */
+.project-card__image {
+  display: block;
+  width: 100%;
+  max-width: 32rem;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+}
+
 .project-card__links {
   display: flex;
   flex-wrap: wrap;

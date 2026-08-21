@@ -78,6 +78,8 @@
   "projects.viewRepo": "Repository ansehen",
   "projects.viewDetails": "Details ansehen",
   "projects.backToIndex": "Zurück zu Projekten",
+  "projects.viewLive": "Live-Demo ansehen",
+  "projects.screenshotAlt": "Bildschirmfoto",
 
   "blog.heading": "Blog",
   "blog.metaDescription": "Artikel über künstliche Intelligenz, Data Engineering, BIM und den Übergang vom Bauingenieurwesen zur Data Science.",
