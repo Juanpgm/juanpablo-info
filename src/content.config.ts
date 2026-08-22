@@ -56,6 +56,16 @@ const projects = defineCollection({
   }),
 });
 
+// Raw repo READMEs, shown collapsed on `/projects/{slug}/` under the DeepWiki
+// doc. One entry per project (`id` === ProjectSeed.id === projectId). No
+// frontmatter — entries are the verbatim README markdown, synced via
+// `scripts/sync-readmes.sh`. Empty/missing READMEs simply have no entry, so the
+// detail page omits the disclosure.
+const readmes = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/readmes' }),
+  schema: z.object({}),
+});
+
 const experience = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/experience' }),
   schema: z.object({
@@ -74,4 +84,4 @@ const experience = defineCollection({
   }),
 });
 
-export const collections = { blog, experience, projects };
+export const collections = { blog, experience, projects, readmes };

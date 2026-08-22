@@ -77,6 +77,7 @@
   "projects.exampleBadge": "Exemple",
   "projects.viewRepo": "Voir le dépôt",
   "projects.viewDetails": "Voir le détail",
+  "projects.readmeToggle": "Voir le README original du dépôt",
   "projects.backToIndex": "Retour aux projets",
   "projects.viewLive": "Voir la démo",
   "projects.screenshotAlt": "capture d'écran",

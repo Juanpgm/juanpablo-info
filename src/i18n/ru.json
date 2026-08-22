@@ -77,6 +77,7 @@
   "projects.exampleBadge": "Пример",
   "projects.viewRepo": "Открыть репозиторий",
   "projects.viewDetails": "Подробнее",
+  "projects.readmeToggle": "Показать оригинальный README репозитория",
   "projects.backToIndex": "Назад к проектам",
   "projects.viewLive": "Открыть демо",
   "projects.screenshotAlt": "снимок экрана",
