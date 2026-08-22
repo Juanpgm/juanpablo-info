@@ -6,7 +6,7 @@
 // static path generation so a real page exists at every /{locale}/projects/{slug}/
 // even when the content is the ES fallback (no `en` doc yet).
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { render, type CollectionEntry } from 'astro:content';
 import PostLayout from '../../../layouts/PostLayout.astro';
 import TableOfContents from '../../../components/TableOfContents.astro';
 import { t, useLocale, type Locale } from '../../../i18n';
@@ -40,12 +40,6 @@ const { Content, headings } = await render(entry);
 const slug = entry.id.slice(entry.id.indexOf('/') + 1);
 const seed = projectSeeds.find((p) => p.id === entry.data.projectId);
 const minutes = readingTimeMinutes(entry.body ?? '');
-
-// Raw repo README, shown collapsed under the DeepWiki doc. Not locale-specific
-// (one entry per projectId); absent when the repo has no/empty README, in which
-// case the disclosure is omitted entirely.
-const readmeEntry = (await getCollection('readmes')).find((r) => r.id === entry.data.projectId);
-const ReadmeContent = readmeEntry ? (await render(readmeEntry)).Content : null;
 const dateOptions: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
 ---
 
@@ -84,38 +78,4 @@ const dateOptions: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long'
     }
   </Fragment>
   <Content />
-  {
-    ReadmeContent && (
-      <details class="readme-disclosure">
-        <summary>{t(locale, 'projects.readmeToggle')}</summary>
-        <div class="readme-disclosure__body">
-          <ReadmeContent />
-        </div>
-      </details>
-    )
-  }
 </PostLayout>
-
-<style>
-  .readme-disclosure {
-    margin-top: 3rem;
-    border-top: 1px solid var(--border);
-    padding-top: 1.5rem;
-  }
-  .readme-disclosure > summary {
-    cursor: pointer;
-    font-weight: 600;
-    color: var(--accent-ink);
-    list-style-position: inside;
-  }
-  .readme-disclosure > summary:hover {
-    color: var(--accent-hover);
-  }
-  .readme-disclosure__body {
-    margin-top: 1.5rem;
-    padding: 1.25rem 1.5rem;
-    background: var(--surface-subtle);
-    border-radius: 0.5rem;
-    overflow-x: auto;
-  }
-</style>

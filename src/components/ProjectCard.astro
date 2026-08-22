@@ -5,6 +5,7 @@
 // `lastUpdated`/`stale` props are accepted now so Phase 5 only has to pass
 // data, not touch this template.
 import { Image } from 'astro:assets';
+import { render, type CollectionEntry } from 'astro:content';
 import { t } from '../i18n';
 import type { Locale } from '../i18n';
 import type { ProjectSeed } from '../data/projects';
@@ -34,11 +35,16 @@ interface Props {
    * for this project + locale (content/projects/** is opt-in per project —
    * most seeds won't have a doc yet). Omitted entirely otherwise. */
   detailHref?: string;
+  /** Raw repo README entry (`readmes` collection). When present, the card
+   * renders a collapsed disclosure so the README can be read inline on the
+   * listing page — no navigation. Omitted (e.g. home page) ⇒ no disclosure. */
+  readmeEntry?: CollectionEntry<'readmes'>;
 }
 
-const { project, locale, headingLevel = 'h3', index, detailHref } = Astro.props;
+const { project, locale, headingLevel = 'h3', index, detailHref, readmeEntry } = Astro.props;
 const hasLiveMeta = project.primaryLanguage != null || project.lastUpdated != null;
 const Heading = headingLevel;
+const ReadmeContent = readmeEntry ? (await render(readmeEntry)).Content : null;
 ---
 
 <article class="project-card" data-reveal>
@@ -101,5 +107,40 @@ const Heading = headingLevel;
         </p>
       )
     }
+
+    {
+      ReadmeContent && (
+        <details class="project-card__readme">
+          <summary>{t(locale, 'projects.readmeToggle')}</summary>
+          <div class="post-content project-card__readme-body">
+            <ReadmeContent />
+          </div>
+        </details>
+      )
+    }
   </div>
 </article>
+
+<style>
+  .project-card__readme {
+    margin-top: 1.25rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+  }
+  .project-card__readme > summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent-ink);
+    list-style-position: inside;
+  }
+  .project-card__readme > summary:hover {
+    color: var(--accent-hover);
+  }
+  .project-card__readme-body {
+    margin-top: 1rem;
+    padding: 1rem 1.25rem;
+    background: var(--surface-subtle);
+    border-radius: 0.5rem;
+    overflow-x: auto;
+  }
+</style>

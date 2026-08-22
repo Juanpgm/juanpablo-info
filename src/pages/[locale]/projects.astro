@@ -8,6 +8,7 @@ import { t, useLocale } from '../../i18n';
 import { projects as projectSeeds } from '../../data/projects';
 import { mergeProjects } from '../../lib/github';
 import { getLocalizedEntries } from '../../lib/content-fallback';
+import { getCollection } from 'astro:content';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 
 export function getStaticPaths() {
@@ -31,6 +32,11 @@ const detailEntries = await getLocalizedEntries('projects', locale);
 const detailSlugByProjectId = new Map(
   detailEntries.map((entry) => [entry.data.projectId, entry.id.slice(entry.id.indexOf('/') + 1)]),
 );
+
+// Raw repo READMEs (not locale-specific: one entry per projectId), so each card
+// can render its README collapsed and readable inline on this page. Absent for
+// repos with an empty README ⇒ that card simply has no disclosure.
+const readmeByProjectId = new Map((await getCollection('readmes')).map((entry) => [entry.id, entry]));
 ---
 
 <BaseLayout title={t(locale, 'projects.heading')} description={t(locale, 'projects.metaDescription')} path="projects">
@@ -41,7 +47,16 @@ const detailSlugByProjectId = new Map(
         projects.map((project, index) => {
           const detailSlug = detailSlugByProjectId.get(project.id);
           const detailHref = detailSlug ? getRelativeLocaleUrl(locale, `projects/${detailSlug}`) : undefined;
-          return <ProjectCard project={project} locale={locale} index={index} headingLevel="h2" detailHref={detailHref} />;
+          return (
+            <ProjectCard
+              project={project}
+              locale={locale}
+              index={index}
+              headingLevel="h2"
+              detailHref={detailHref}
+              readmeEntry={readmeByProjectId.get(project.id)}
+            />
+          );
         })
       }
     </div>
