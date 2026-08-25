@@ -10,7 +10,10 @@ export default defineConfig({
   // regenerates hreflang/sitemap/OG/JSON-LD absolute URLs everywhere.
   site: 'https://juanpablo.info',
   output: 'static',
-  adapter: vercel({ webAnalytics: { enabled: false } }),
+  // Web Analytics is on so /admin has real visit data to show (see
+  // src/pages/admin.astro) — the tracking script is injected automatically,
+  // no @vercel/analytics package needed.
+  adapter: vercel({ webAnalytics: { enabled: true } }),
   i18n: {
     defaultLocale: 'es',
     locales: ['es', 'en', 'de', 'fr', 'ru'],

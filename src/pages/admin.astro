@@ -1,0 +1,211 @@
+---
+// Private metrics view — Vercel Web Analytics behind HTTP Basic Auth. No
+// session/cookie logic: the browser's native basic-auth prompt IS the login
+// form, and re-checks credentials on every request (ADMIN_USER/ADMIN_PASSWORD
+// env vars). Not under [locale] on purpose — this is a tool for the site
+// owner, not public content, so it doesn't need i18n routing.
+export const prerender = false;
+
+import { createHash, timingSafeEqual } from 'node:crypto';
+
+function safeEqual(a: string, b: string): boolean {
+  // Hash both sides to a fixed-length digest first so a length mismatch
+  // can't short-circuit timingSafeEqual (which throws on unequal lengths)
+  // and doesn't leak length via timing either.
+  const ha = createHash('sha256').update(a).digest();
+  const hb = createHash('sha256').update(b).digest();
+  return timingSafeEqual(ha, hb);
+}
+
+function isAuthorized(request: Request): boolean {
+  const expectedUser = process.env.ADMIN_USER;
+  const expectedPassword = process.env.ADMIN_PASSWORD;
+  if (!expectedUser || !expectedPassword) return false;
+
+  const header = request.headers.get('authorization') ?? '';
+  const [scheme, encoded] = header.split(' ');
+  if (scheme !== 'Basic' || !encoded) return false;
+
+  const decoded = Buffer.from(encoded, 'base64').toString('utf-8');
+  const sepIndex = decoded.indexOf(':');
+  if (sepIndex === -1) return false;
+  const user = decoded.slice(0, sepIndex);
+  const password = decoded.slice(sepIndex + 1);
+
+  return safeEqual(user, expectedUser) && safeEqual(password, expectedPassword);
+}
+
+const authorized = isAuthorized(Astro.request);
+if (!authorized) {
+  Astro.response.status = 401;
+  Astro.response.headers.set('WWW-Authenticate', 'Basic realm="Admin"');
+}
+
+// Project/team IDs aren't secret (they're already committed in
+// .vercel/project.json) — only the access token is, so it's the only
+// required env var beyond the admin credentials.
+const PROJECT_ID = process.env.VERCEL_PROJECT_ID ?? 'prj_4NkCROVegmGYERGATxsRW4Ut6Ujp';
+const TEAM_ID = process.env.VERCEL_TEAM_ID ?? 'team_SzZM9UUotBq10Z80gIsZpAzv';
+const VERCEL_TOKEN = process.env.VERCEL_API_TOKEN;
+
+interface CountResult {
+  data?: { total?: number; visitors?: number };
+}
+interface AggregateRow {
+  [key: string]: string | number;
+}
+interface AggregateResult {
+  data?: AggregateRow[];
+}
+
+async function queryAnalytics<T>(path: string, params: Record<string, string>): Promise<T> {
+  const url = new URL(`https://api.vercel.com/v1/query/web-analytics/${path}`);
+  url.searchParams.set('teamId', TEAM_ID);
+  url.searchParams.set('projectId', PROJECT_ID);
+  for (const [key, value] of Object.entries(params)) url.searchParams.set(key, value);
+
+  const res = await fetch(url, { headers: { Authorization: `Bearer ${VERCEL_TOKEN}` } });
+  if (!res.ok) throw new Error(`${path} → ${res.status} ${await res.text()}`);
+  return res.json();
+}
+
+let totals: CountResult['data'] | null = null;
+let topPages: AggregateRow[] | null = null;
+let topReferrers: AggregateRow[] | null = null;
+let topCountries: AggregateRow[] | null = null;
+let fetchError: string | null = null;
+
+if (authorized) {
+  if (!VERCEL_TOKEN) {
+    fetchError = 'Falta VERCEL_API_TOKEN en las variables de entorno.';
+  } else {
+    const now = Date.now();
+    const since = String(now - 30 * 24 * 60 * 60 * 1000);
+    const until = String(now);
+
+    const [totalsRes, pagesRes, referrersRes, countriesRes] = await Promise.allSettled([
+      queryAnalytics<CountResult>('visits/count', {}),
+      queryAnalytics<AggregateResult>('visits/aggregate', { since, until, by: 'requestPath', limit: '10' }),
+      queryAnalytics<AggregateResult>('visits/aggregate', { since, until, by: 'referrerHostname', limit: '10' }),
+      queryAnalytics<AggregateResult>('visits/aggregate', { since, until, by: 'country', limit: '10' }),
+    ]);
+
+    if (totalsRes.status === 'fulfilled') totals = totalsRes.value.data;
+    if (pagesRes.status === 'fulfilled') topPages = pagesRes.value.data ?? [];
+    if (referrersRes.status === 'fulfilled') topReferrers = referrersRes.value.data ?? [];
+    if (countriesRes.status === 'fulfilled') topCountries = countriesRes.value.data ?? [];
+
+    const failed = [totalsRes, pagesRes, referrersRes, countriesRes].find((r) => r.status === 'rejected');
+    if (failed && failed.status === 'rejected') {
+      fetchError = `Vercel Analytics API falló: ${failed.reason?.message ?? failed.reason}`;
+    }
+  }
+}
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Admin — Métricas</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 2rem 1.5rem 4rem;
+        font-family: system-ui, sans-serif;
+        background: #0f1115;
+        color: #e6e6e6;
+      }
+      main { max-width: 960px; margin: 0 auto; }
+      h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+      .subtitle { color: #9a9a9a; margin-bottom: 2rem; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+      .card { background: #1a1d24; border: 1px solid #2a2e38; border-radius: 10px; padding: 1.25rem; }
+      .card .value { font-size: 2rem; font-weight: 700; }
+      .card .label { color: #9a9a9a; font-size: 0.85rem; }
+      table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; }
+      th, td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid #2a2e38; }
+      th { color: #9a9a9a; font-weight: 500; font-size: 0.85rem; }
+      section h2 { font-size: 1.1rem; margin-bottom: 0.75rem; }
+      .error { color: #ff8080; background: #2a1616; border: 1px solid #4a2424; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; }
+      .empty { color: #6a6a6a; font-style: italic; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Métricas del sitio</h1>
+      <p class="subtitle">Últimos 30 días — Vercel Web Analytics</p>
+
+      {fetchError && <p class="error">{fetchError}</p>}
+
+      {totals && (
+        <div class="grid">
+          <div class="card">
+            <div class="value">{totals.total ?? '—'}</div>
+            <div class="label">Pageviews</div>
+          </div>
+          <div class="card">
+            <div class="value">{totals.visitors ?? '—'}</div>
+            <div class="label">Visitantes únicos</div>
+          </div>
+        </div>
+      )}
+
+      {topPages && (
+        <section>
+          <h2>Páginas más visitadas</h2>
+          {topPages.length === 0 ? (
+            <p class="empty">Sin datos todavía.</p>
+          ) : (
+            <table>
+              <thead><tr><th>Ruta</th><th>Visitas</th></tr></thead>
+              <tbody>
+                {topPages.map((row) => (
+                  <tr><td>{row.requestPath}</td><td>{row.visitors ?? row.total ?? row.count}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </section>
+      )}
+
+      {topReferrers && (
+        <section>
+          <h2>Referrers</h2>
+          {topReferrers.length === 0 ? (
+            <p class="empty">Sin datos todavía.</p>
+          ) : (
+            <table>
+              <thead><tr><th>Origen</th><th>Visitas</th></tr></thead>
+              <tbody>
+                {topReferrers.map((row) => (
+                  <tr><td>{row.referrerHostname || '(directo)'}</td><td>{row.visitors ?? row.total ?? row.count}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </section>
+      )}
+
+      {topCountries && (
+        <section>
+          <h2>Países</h2>
+          {topCountries.length === 0 ? (
+            <p class="empty">Sin datos todavía.</p>
+          ) : (
+            <table>
+              <thead><tr><th>País</th><th>Visitas</th></tr></thead>
+              <tbody>
+                {topCountries.map((row) => (
+                  <tr><td>{row.country}</td><td>{row.visitors ?? row.total ?? row.count}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </section>
+      )}
+    </main>
+  </body>
+</html>
