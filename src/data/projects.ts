@@ -425,4 +425,18 @@ export const projects: ProjectSeed[] = [
     repoUrl: 'https://github.com/Juanpgm/gestor_educativo',
     isExample: false,
   },
+  {
+    id: 'auto-planos-curadurias',
+    name: 'AutoPlanosCuradurias',
+    description: {
+      es: 'Extensión de pyRevit que genera, desde un modelo de Revit, un juego de planos de entrega para curaduría urbana (plantas, alzados, cortes, cubierta, localización y cuadro de áreas) con arquitectura hexagonal, dejando cada plano marcado como borrador pendiente de revisión profesional.',
+      en: 'A pyRevit extension that generates a draft construction-permit ("curaduría") drawing set — floor plans, elevations, sections, roof plan, site plan, and area schedule — directly from a Revit model, using a hexagonal architecture and labeling every sheet as pending professional review.',
+      de: 'Eine pyRevit-Erweiterung, die aus einem Revit-Modell einen Entwurfs-Planungssatz für die Baugenehmigung ("curaduría") erzeugt – Grundrisse, Ansichten, Schnitte, Dachplan, Lageplan und Flächenübersicht – mit hexagonaler Architektur und dem Hinweis "Entwurf, ausstehende fachliche Prüfung" auf jedem Blatt.',
+      fr: "Une extension pyRevit qui génère, à partir d'une maquette Revit, un jeu de plans de permis de construire (« curaduría ») — plans, élévations, coupes, plan de toiture, plan de masse et tableau des surfaces — avec une architecture hexagonale, chaque planche étant marquée comme brouillon en attente de révision professionnelle.",
+      ru: 'Расширение pyRevit, которое генерирует из модели Revit черновой комплект чертежей для получения разрешения на строительство ("curaduría") — планы этажей, фасады, разрезы, план кровли, генплан и ведомость площадей — на основе гексагональной архитектуры, с пометкой каждого листа как черновика, ожидающего профессиональной проверки.',
+    },
+    stack: ['Python', 'pyRevit', 'Revit API', 'Hexagonal Architecture'],
+    repoUrl: 'https://github.com/Juanpgm/AutoPlanosCuradurias',
+    isExample: false,
+  },
 ];
