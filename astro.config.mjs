@@ -17,8 +17,14 @@ export default defineConfig({
   i18n: {
     defaultLocale: 'es',
     locales: ['es', 'en', 'de', 'fr', 'ru'],
-    routing: { prefixDefaultLocale: true, fallbackType: 'rewrite' },
-    fallback: { de: 'en', fr: 'en', ru: 'en' },
+    // 'manual' — locale routing is handled entirely by our own `[locale]`
+    // dynamic segment (see below), not Astro's folder convention. This
+    // config block exists only so helpers like getRelativeLocaleUrl work;
+    // the automatic strategy (prefixDefaultLocale: true) also auto-injects
+    // Astro's own i18n middleware, which 404s any on-demand-rendered route
+    // that isn't locale-prefixed — broke /admin (prerender = false) even
+    // though it's a real registered route. 'manual' drops that middleware.
+    routing: 'manual',
   },
   // Pages live under the custom `[locale]` dynamic segment (getStaticPaths),
   // not Astro's own folder-based i18n routing — so Astro's automatic

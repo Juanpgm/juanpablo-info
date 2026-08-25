@@ -2,10 +2,12 @@ import { getCollection, type CollectionEntry, type CollectionKey } from 'astro:c
 import type { Locale } from '../i18n';
 
 /**
- * Astro's i18n `fallback: { de: 'en' }` (astro.config.mjs) only covers
- * automatic page-routing 404s — a URL Astro itself renders. It does NOT apply
- * to manual `getCollection()` queries against content collections (`blog`,
- * `experience`), which are plain data lookups, not routed pages.
+ * astro.config.mjs uses `routing: 'manual'` — Astro's own automatic i18n
+ * fallback/redirect middleware is disabled project-wide (it 404s on-demand
+ * routes like /admin that aren't locale-prefixed), so there's no built-in
+ * fallback to lean on here either way. This helper is the only fallback
+ * mechanism for `getCollection()` queries against content collections
+ * (`blog`, `experience`), which are plain data lookups, not routed pages.
  *
  * Translation coverage is intentionally incomplete at launch: `experience` is
  * ES-only for every locale; `blog` EN covers half the posts; `blog` DE is
@@ -17,8 +19,7 @@ import type { Locale } from '../i18n';
  * here.
  *
  * Fallback chain: `es` -> [es]; `en` -> [en, es]; `de` -> [de, en, es];
- * `fr` -> [fr, en, es]; `ru` -> [ru, en, es] (mirrors astro.config.mjs's
- * `fallback: { de: 'en', fr: 'en', ru: 'en' }`). Entries are merged
+ * `fr` -> [fr, en, es]; `ru` -> [ru, en, es]. Entries are merged
  * by slug (the filename, e.g. "dagma", "rag-normativa-tecnica" — see
  * design.md §4/§5.4): once a slug is found in a more-preferred locale, the
  * same slug from a less-preferred fallback locale is skipped, so a
