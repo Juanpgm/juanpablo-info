@@ -9,7 +9,7 @@
 // scheme bypasses that). This guarantees a real static page exists at
 // every /{locale}/blog/{slug}/ even when the underlying content is the
 // EN/ES fallback (design §5.2 hreflang rationale: "no 404").
-import { getRelativeLocaleUrl } from 'astro:i18n';
+import { localePath } from '../../../lib/locale-path';
 import { render, type CollectionEntry } from 'astro:content';
 import PostLayout from '../../../layouts/PostLayout.astro';
 import TableOfContents from '../../../components/TableOfContents.astro';
@@ -80,9 +80,9 @@ function slugOf(e: CollectionEntry<'blog'>) {
   jsonLd="article"
   pubDate={entry.data.pubDate}
   updatedDate={entry.data.updatedDate}
-  prev={prevEntry ? { href: getRelativeLocaleUrl(locale, `blog/${slugOf(prevEntry)}`), label: prevEntry.data.title } : null}
-  next={nextEntry ? { href: getRelativeLocaleUrl(locale, `blog/${slugOf(nextEntry)}`), label: nextEntry.data.title } : null}
-  backHref={getRelativeLocaleUrl(locale, 'blog')}
+  prev={prevEntry ? { href: localePath(locale, `blog/${slugOf(prevEntry)}`), label: prevEntry.data.title } : null}
+  next={nextEntry ? { href: localePath(locale, `blog/${slugOf(nextEntry)}`), label: nextEntry.data.title } : null}
+  backHref={localePath(locale, 'blog')}
   backLabel={t(locale, 'blog.backToIndex')}
 >
   <TableOfContents slot="toc" headings={headings} label={t(locale, 'blog.tableOfContents')} />

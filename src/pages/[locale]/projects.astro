@@ -9,7 +9,7 @@ import { projects as projectSeeds } from '../../data/projects';
 import { mergeProjects } from '../../lib/github';
 import { getLocalizedEntries } from '../../lib/content-fallback';
 import { getCollection } from 'astro:content';
-import { getRelativeLocaleUrl } from 'astro:i18n';
+import { localePath } from '../../lib/locale-path';
 
 export function getStaticPaths() {
   return [
@@ -46,7 +46,7 @@ const readmeByProjectId = new Map((await getCollection('readmes')).map((entry) =
       {
         projects.map((project, index) => {
           const detailSlug = detailSlugByProjectId.get(project.id);
-          const detailHref = detailSlug ? getRelativeLocaleUrl(locale, `projects/${detailSlug}`) : undefined;
+          const detailHref = detailSlug ? localePath(locale, `projects/${detailSlug}`) : undefined;
           return (
             <ProjectCard
               project={project}

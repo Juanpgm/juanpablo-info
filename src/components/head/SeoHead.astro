@@ -1,7 +1,8 @@
 ---
-import { getAbsoluteLocaleUrl } from 'astro:i18n';
 import Hreflang from './Hreflang.astro';
 import { site } from '../../data/site';
+import { useLocale } from '../../i18n';
+import { localeUrlAbsolute } from '../../lib/locale-path';
 
 interface Props {
   title: string;
@@ -28,8 +29,8 @@ interface Props {
 // this component no longer reads it directly.
 const { title, description, path = '', jsonLd = 'webpage', ogImage = '/og/default.png', pubDate, updatedDate } =
   Astro.props;
-const locale = Astro.currentLocale ?? 'es';
-const canonical = getAbsoluteLocaleUrl(locale, path);
+const locale = useLocale(Astro.currentLocale);
+const canonical = localeUrlAbsolute(Astro.site, locale, path);
 const absoluteOgImage = new URL(ogImage, Astro.site).toString();
 
 const personJsonLd = {

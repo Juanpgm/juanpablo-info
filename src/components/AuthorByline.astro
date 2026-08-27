@@ -5,13 +5,13 @@
 // data across every post (YAGNI; add a frontmatter override only if a guest
 // author ever appears).
 import { Image } from 'astro:assets';
-import { getRelativeLocaleUrl } from 'astro:i18n';
+import { localePath } from '../lib/locale-path';
 import profilePhoto from '../assets/profile-photo.jpg';
 import { site } from '../data/site';
 import { t, useLocale } from '../i18n';
 
 const locale = useLocale(Astro.currentLocale);
-const homeHref = getRelativeLocaleUrl(locale, '');
+const homeHref = localePath(locale);
 ---
 
 <div class="author-byline">

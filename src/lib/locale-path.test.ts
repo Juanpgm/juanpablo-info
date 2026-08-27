@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { switchLocalePath } from './locale-path';
+import { localeUrlAbsolute, switchLocalePath } from './locale-path';
 
 // design.md §5.3: pure prefix swap, no slug-translation map — route segments
 // are stable English strings across locales.
@@ -25,5 +25,20 @@ describe('switchLocalePath', () => {
     const target = switchLocalePath('/es/about/', 'de');
     expect(target).toContain('/about/');
     expect(target.startsWith('/de/')).toBe(true);
+  });
+});
+
+// design.md open item: getAbsoluteLocaleUrl shares localePath's `es`-prefix
+// defect, since it builds on getLocaleRelativeUrl internally. Confirmed
+// broken; localeUrlAbsolute is the fix (used by SeoHead/Hreflang canonical +
+// hreflang tags).
+describe('localeUrlAbsolute', () => {
+  it('prefixes the default locale (es) same as any other', () => {
+    expect(localeUrlAbsolute('https://juanpablo.info', 'es', 'about')).toBe('https://juanpablo.info/es/about/');
+    expect(localeUrlAbsolute('https://juanpablo.info', 'en', 'about')).toBe('https://juanpablo.info/en/about/');
+  });
+
+  it('handles the empty path (home)', () => {
+    expect(localeUrlAbsolute('https://juanpablo.info', 'es')).toBe('https://juanpablo.info/es/');
   });
 });

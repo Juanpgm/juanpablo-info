@@ -10,7 +10,7 @@
 // same astro:assets pattern as the About page's `.about-photo-frame` (an
 // ASCII-art rendering was tried and dropped in favor of the real photo).
 import { Image } from 'astro:assets';
-import { getRelativeLocaleUrl } from 'astro:i18n';
+import { localePath } from '../lib/locale-path';
 import ContactModal from './ContactModal.astro';
 import { t, useLocale } from '../i18n';
 import { skills } from '../data/skills';
@@ -41,7 +41,7 @@ const marqueeItems = [...skills.ai, ...skills.civil].map((skill) => t(locale, sk
       </div>
     </div>
     <div class="hero-actions">
-      <a href={getRelativeLocaleUrl(locale, 'experience')} class="btn btn-lg">
+      <a href={localePath(locale, 'experience')} class="btn btn-lg">
         {t(locale, 'hero.ctaExperience')}
       </a>
       <button type="button" class="btn btn-lg btn-outline" data-open-contact-modal>

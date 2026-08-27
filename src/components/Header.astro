@@ -1,5 +1,5 @@
 ---
-import { getRelativeLocaleUrl } from 'astro:i18n';
+import { localePath } from '../lib/locale-path';
 import LanguageSelector from './LanguageSelector.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import { t, useLocale } from '../i18n';
@@ -10,14 +10,14 @@ const locale = useLocale(Astro.currentLocale);
 const currentPath = Astro.url.pathname;
 
 const navItems = nav.map((item) => ({
-  href: getRelativeLocaleUrl(locale, item.route),
+  href: localePath(locale, item.route),
   label: t(locale, item.labelKey),
 }));
 ---
 
 <header class="site-header" id="site-header" data-scrolled="false">
   <div class="site-header__inner">
-    <a href={getRelativeLocaleUrl(locale, '')} class="brand">JPGM</a>
+    <a href={localePath(locale)} class="brand">JPGM</a>
 
     <nav aria-label={t(locale, 'header.primaryNavLabel')} class="primary-nav">
       <ul>

@@ -1,5 +1,5 @@
 ---
-import { getRelativeLocaleUrl } from 'astro:i18n';
+import { localePath } from '../lib/locale-path';
 import type { CollectionEntry } from 'astro:content';
 import { t } from '../i18n';
 import type { Locale, UIKey } from '../i18n';
@@ -23,7 +23,7 @@ interface Props {
 }
 
 const { entry, locale, headingLevel = 'h3', index, view } = Astro.props;
-const href = getRelativeLocaleUrl(locale, `blog/${view.slug}`);
+const href = localePath(locale, `blog/${view.slug}`);
 const Heading = headingLevel;
 ---
 

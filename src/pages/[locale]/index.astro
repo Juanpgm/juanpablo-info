@@ -5,7 +5,7 @@
 // wired in BaseLayout). Contact is no longer a dedicated bottom section
 // (post-launch fast-follow) — it's now the ContactModal opened from Hero's
 // "Contactar" CTA.
-import { getRelativeLocaleUrl } from 'astro:i18n';
+import { localePath } from '../../lib/locale-path';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
 import TwoWorlds from '../../components/TwoWorlds.astro';
@@ -61,7 +61,7 @@ const latestPosts = posts
   <section class="section" data-reveal aria-labelledby="featured-experience-heading">
     <div class="section-header">
       <h2 id="featured-experience-heading">{t(locale, 'experience.featuredHeading')}</h2>
-      <a href={getRelativeLocaleUrl(locale, 'experience')} class="nav-link">{t(locale, 'experience.viewAll')} →</a>
+      <a href={localePath(locale, 'experience')} class="nav-link">{t(locale, 'experience.viewAll')} →</a>
     </div>
     <Timeline entries={featuredExperience} locale={locale} />
   </section>
@@ -69,13 +69,13 @@ const latestPosts = posts
   <section class="section" data-reveal aria-labelledby="featured-projects-heading">
     <div class="section-header">
       <h2 id="featured-projects-heading">{t(locale, 'projects.heading')}</h2>
-      <a href={getRelativeLocaleUrl(locale, 'projects')} class="nav-link">{t(locale, 'projects.viewAll')} →</a>
+      <a href={localePath(locale, 'projects')} class="nav-link">{t(locale, 'projects.viewAll')} →</a>
     </div>
     <div class="project-grid">
       {
         featuredProjects.map((project, index) => {
           const detailSlug = detailSlugByProjectId.get(project.id);
-          const detailHref = detailSlug ? getRelativeLocaleUrl(locale, `projects/${detailSlug}`) : undefined;
+          const detailHref = detailSlug ? localePath(locale, `projects/${detailSlug}`) : undefined;
           return <ProjectCard project={project} locale={locale} index={index} detailHref={detailHref} />;
         })
       }
@@ -85,7 +85,7 @@ const latestPosts = posts
   <section class="section" data-reveal aria-labelledby="latest-posts-heading">
     <div class="section-header">
       <h2 id="latest-posts-heading">{t(locale, 'blog.latestHeading')}</h2>
-      <a href={getRelativeLocaleUrl(locale, 'blog')} class="nav-link">{t(locale, 'blog.viewAll')} →</a>
+      <a href={localePath(locale, 'blog')} class="nav-link">{t(locale, 'blog.viewAll')} →</a>
     </div>
     <div class="blog-grid">
       {latestPosts.map((post, index) => <BlogCard entry={post} locale={locale} index={index} view={toBlogPostView(post)} />)}
