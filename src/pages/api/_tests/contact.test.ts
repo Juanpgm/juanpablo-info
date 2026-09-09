@@ -12,7 +12,7 @@ import type { APIContext } from 'astro';
 import { site } from '../../../data/site';
 
 const h = vi.hoisted(() => ({
-  sql: vi.fn(async (_s: TemplateStringsArray, ..._v: unknown[]) => []),
+  sql: vi.fn(async (_s: TemplateStringsArray, ..._v: unknown[]) => [{ id: 42 }]),
   // Typed with an explicit param + a data|error union (rather than the
   // plan's exact zero-arg, always-success signature) so `astro check` can
   // type mockResolvedValueOnce({ data: null, error: {...} }) calls and
@@ -268,5 +268,14 @@ describe('POST /api/contact', () => {
     expect(ownerCall.to).toBe(site.email);
     expect(ownerCall.replyTo).toBe(VALID_FIELDS.email);
     expect(ownerCall.subject.startsWith('[Lead · EN]')).toBe(true);
+  });
+
+  it('inserts the submission with a RETURNING id clause so the real row id is available', async () => {
+    errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    stubHappyPathEnv();
+    const res = await post(makeFormData());
+    expect(res.status).toBe(200);
+    const queryStrings = h.sql.mock.calls[0][0] as TemplateStringsArray;
+    expect(queryStrings.join('')).toContain('RETURNING id');
   });
 });

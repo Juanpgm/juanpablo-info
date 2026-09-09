@@ -138,11 +138,14 @@ export const POST: APIRoute = async ({ request }) => {
   const attachmentUrls = uploaded.map((u) => u.url);
 
   let dbOk = false;
+  let leadId: number | undefined;
   try {
-    await sql`
+    const [inserted] = await sql`
       INSERT INTO contact_submissions (name, email, message, locale, attachment_urls)
       VALUES (${name}, ${email}, ${message}, ${locale}, ${attachmentUrls})
+      RETURNING id
     `;
+    leadId = inserted.id;
     dbOk = true;
   } catch (error) {
     console.error('[contact] DB insert failed:', error);
