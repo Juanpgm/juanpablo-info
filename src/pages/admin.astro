@@ -7,6 +7,7 @@
 export const prerender = false;
 
 import { createHash, timingSafeEqual } from 'node:crypto';
+import { neon } from '@neondatabase/serverless';
 
 function safeEqual(a: string, b: string): boolean {
   // Hash both sides to a fixed-length digest first so a length mismatch
@@ -101,6 +102,49 @@ if (authorized) {
     }
   }
 }
+
+interface LeadRow {
+  id: string;
+  name: string;
+  email: string;
+  message: string;
+  locale: string;
+  attachment_urls: string[] | null;
+  created_at: string;
+}
+interface LeadCountRow {
+  count: number;
+}
+
+let leads: LeadRow[] | null = null;
+let leadsCount30d: number | null = null;
+let leadsError: string | null = null;
+
+// Per-request instantiation (never module top-level), same reasoning as
+// pages/api/contact.ts: a missing DATABASE_URL must never crash prerendering
+// of any other static page at build time.
+if (authorized) {
+  if (!process.env.DATABASE_URL) {
+    leadsError = 'DATABASE_URL is not set — leads cannot be loaded.';
+  } else {
+    const sql = neon(process.env.DATABASE_URL);
+    const [leadsRes, countRes] = await Promise.allSettled([
+      sql`SELECT id, name, email, message, locale, attachment_urls, created_at FROM contact_submissions ORDER BY created_at DESC LIMIT 50`,
+      sql`SELECT count(*)::int AS count FROM contact_submissions WHERE created_at >= now() - interval '30 days'`,
+    ]);
+
+    if (leadsRes.status === 'fulfilled') leads = leadsRes.value as unknown as LeadRow[];
+    if (countRes.status === 'fulfilled') {
+      const rows = countRes.value as unknown as LeadCountRow[];
+      leadsCount30d = rows[0]?.count ?? 0;
+    }
+
+    const failedLeadsQuery = [leadsRes, countRes].find((r) => r.status === 'rejected');
+    if (failedLeadsQuery && failedLeadsQuery.status === 'rejected') {
+      leadsError = `Leads query failed: ${failedLeadsQuery.reason?.message ?? failedLeadsQuery.reason}`;
+    }
+  }
+}
 ---
 
 <!doctype html>
@@ -140,16 +184,26 @@ if (authorized) {
 
       {fetchError && <p class="error">{fetchError}</p>}
 
-      {totals && (
+      {(totals || leadsCount30d !== null) && (
         <div class="grid">
-          <div class="card">
-            <div class="value">{totals.total ?? '—'}</div>
-            <div class="label">Pageviews</div>
-          </div>
-          <div class="card">
-            <div class="value">{totals.visitors ?? '—'}</div>
-            <div class="label">Visitantes únicos</div>
-          </div>
+          {totals && (
+            <>
+              <div class="card">
+                <div class="value">{totals.total ?? '—'}</div>
+                <div class="label">Pageviews</div>
+              </div>
+              <div class="card">
+                <div class="value">{totals.visitors ?? '—'}</div>
+                <div class="label">Visitantes únicos</div>
+              </div>
+            </>
+          )}
+          {leadsCount30d !== null && (
+            <div class="card">
+              <div class="value">{leadsCount30d}</div>
+              <div class="label">Leads (30d)</div>
+            </div>
+          )}
         </div>
       )}
 
@@ -206,6 +260,56 @@ if (authorized) {
           )}
         </section>
       )}
+
+      {leadsError && <p class="error">{leadsError}</p>}
+
+      <section id="leads">
+        <h2>Leads</h2>
+        {leads === null ? (
+          !leadsError && <p class="empty">Unable to load leads.</p>
+        ) : leads.length === 0 ? (
+          <p class="empty">No leads yet.</p>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Locale</th>
+                <th>Message</th>
+                <th>Attachments</th>
+              </tr>
+            </thead>
+            <tbody>
+              {leads.map((lead) => {
+                const createdAtIso = new Date(lead.created_at).toISOString();
+                const preview = lead.message.slice(0, 120);
+                const isTruncated = lead.message.length > 120;
+                const attachmentCount = lead.attachment_urls?.length ?? 0;
+                const mailtoHref = `mailto:${lead.email}?subject=${encodeURIComponent('Re: your message via juanpablo.info')}`;
+                return (
+                  <tr>
+                    <td><time datetime={createdAtIso}>{createdAtIso}</time></td>
+                    <td>{lead.name}</td>
+                    <td><a href={mailtoHref}>{lead.email}</a></td>
+                    <td>{lead.locale}</td>
+                    <td>
+                      {preview}
+                      {isTruncated ? '…' : ''}
+                      <details>
+                        <summary>Full message</summary>
+                        <p>{lead.message}</p>
+                      </details>
+                    </td>
+                    <td>{attachmentCount}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
+      </section>
     </main>
   </body>
 </html>

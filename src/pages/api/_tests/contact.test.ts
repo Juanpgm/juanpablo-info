@@ -1,6 +1,15 @@
+// Lives under an underscore-prefixed directory (not directly in
+// src/pages/api/) so Astro's file-based router ignores it. Astro treats
+// EVERY .ts file directly under src/pages as a page/endpoint regardless of
+// its exports (verified against astro/dist/core/util.js's isPublicRoute),
+// so a co-located `contact.test.ts` was built as a bogus `/api/contact.test`
+// route and crashed `astro build` (vi.mock/vi.hoisted only work inside
+// vitest's own runtime). The `_` prefix is Astro's one documented exclusion
+// mechanism for path segments under src/pages; vitest's default test glob
+// still matches this file by its `.test.ts` suffix.
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { APIContext } from 'astro';
-import { site } from '../../data/site';
+import { site } from '../../../data/site';
 
 const h = vi.hoisted(() => ({
   sql: vi.fn(async (_s: TemplateStringsArray, ..._v: unknown[]) => []),
@@ -35,7 +44,7 @@ vi.mock('resend', () => ({
 }));
 vi.mock('@vercel/blob', () => ({ put: h.put }));
 
-import { POST } from './contact';
+import { POST } from '../contact';
 
 const VALID_FIELDS = {
   name: 'Ada Lovelace',
