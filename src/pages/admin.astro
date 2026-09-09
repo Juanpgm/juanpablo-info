@@ -6,9 +6,11 @@
 // owner, not public content, so it doesn't need i18n routing.
 export const prerender = false;
 
+import type { APIRoute } from 'astro';
 import { createHash, timingSafeEqual } from 'node:crypto';
 import { neon } from '@neondatabase/serverless';
 import { REPLY_SUBJECT } from '../lib/contact-email';
+import { parseLeadId, resolveContactedAction } from '../lib/admin-leads';
 
 function safeEqual(a: string, b: string): boolean {
   // Hash both sides to a fixed-length digest first so a length mismatch
@@ -36,6 +38,43 @@ function isAuthorized(request: Request): boolean {
 
   return safeEqual(user, expectedUser) && safeEqual(password, expectedPassword);
 }
+
+// POST handler for the lead follow-up toggle (see leads table below). A
+// separate code path from the GET/component render below, so it performs
+// its own independent Basic Auth check rather than relying on the
+// page-level `authorized` const declared further down.
+export const POST: APIRoute = async (context) => {
+  if (!isAuthorized(context.request)) {
+    return new Response('Unauthorized', {
+      status: 401,
+      headers: { 'WWW-Authenticate': 'Basic realm="Admin"' },
+    });
+  }
+
+  const formData = await context.request.formData();
+  const leadId = parseLeadId(formData.get('leadId'));
+  const action = resolveContactedAction(formData.get('action'));
+  if (leadId === null || action === null) {
+    return new Response('Invalid request', { status: 400 });
+  }
+
+  if (!process.env.DATABASE_URL) {
+    return new Response('Server misconfiguration', { status: 500 });
+  }
+
+  // Per-request instantiation (never module top-level), same reasoning as
+  // pages/api/contact.ts: a missing DATABASE_URL must never crash
+  // prerendering of any other static page at build time.
+  const sql = neon(process.env.DATABASE_URL);
+
+  if (action === 'mark') {
+    await sql`UPDATE contact_submissions SET contacted_at = now() WHERE id = ${leadId}`;
+  } else {
+    await sql`UPDATE contact_submissions SET contacted_at = NULL WHERE id = ${leadId}`;
+  }
+
+  return context.redirect('/admin#leads', 303);
+};
 
 const authorized = isAuthorized(Astro.request);
 if (!authorized) {
@@ -105,12 +144,14 @@ if (authorized) {
 }
 
 interface LeadRow {
+  id: number;
   name: string;
   email: string;
   message: string;
   locale: string;
   attachment_urls: string[] | null;
   created_at: string;
+  contacted_at: string | null;
 }
 interface LeadCountRow {
   count: number;
@@ -118,6 +159,7 @@ interface LeadCountRow {
 
 let leads: LeadRow[] | null = null;
 let leadsCount30d: number | null = null;
+let unattendedCount: number | null = null;
 let leadsError: string | null = null;
 
 // Per-request instantiation (never module top-level), same reasoning as
@@ -128,9 +170,10 @@ if (authorized) {
     leadsError = 'DATABASE_URL is not set — leads cannot be loaded.';
   } else {
     const sql = neon(process.env.DATABASE_URL);
-    const [leadsRes, countRes] = await Promise.allSettled([
-      sql`SELECT name, email, message, locale, attachment_urls, created_at FROM contact_submissions ORDER BY created_at DESC LIMIT 50`,
+    const [leadsRes, countRes, unattendedRes] = await Promise.allSettled([
+      sql`SELECT id, name, email, message, locale, attachment_urls, created_at, contacted_at FROM contact_submissions ORDER BY created_at DESC LIMIT 50`,
       sql`SELECT count(*)::int AS count FROM contact_submissions WHERE created_at >= now() - interval '30 days'`,
+      sql`SELECT count(*)::int AS count FROM contact_submissions WHERE contacted_at IS NULL`,
     ]);
 
     if (leadsRes.status === 'fulfilled') leads = leadsRes.value as unknown as LeadRow[];
@@ -138,8 +181,12 @@ if (authorized) {
       const rows = countRes.value as unknown as LeadCountRow[];
       leadsCount30d = rows[0]?.count ?? 0;
     }
+    if (unattendedRes.status === 'fulfilled') {
+      const rows = unattendedRes.value as unknown as LeadCountRow[];
+      unattendedCount = rows[0]?.count ?? 0;
+    }
 
-    const failedLeadsQuery = [leadsRes, countRes].find((r) => r.status === 'rejected');
+    const failedLeadsQuery = [leadsRes, countRes, unattendedRes].find((r) => r.status === 'rejected');
     if (failedLeadsQuery && failedLeadsQuery.status === 'rejected') {
       leadsError = `Leads query failed: ${failedLeadsQuery.reason?.message ?? failedLeadsQuery.reason}`;
     }
@@ -175,6 +222,21 @@ if (authorized) {
       section h2 { font-size: 1.1rem; margin-bottom: 0.75rem; }
       .error { color: #ff8080; background: #2a1616; border: 1px solid #4a2424; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; }
       .empty { color: #6a6a6a; font-style: italic; }
+      .badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 999px; font-size: 0.8rem; }
+      .badge--new { color: #ffb84d; background: #2a2116; border: 1px solid #4a3a24; }
+      .badge--contacted { color: #7fd68a; background: #16261a; border: 1px solid #244a2c; }
+      .status-form { margin-top: 0.35rem; }
+      .status-form button {
+        font: inherit;
+        font-size: 0.8rem;
+        color: #e6e6e6;
+        background: #24272f;
+        border: 1px solid #3a3e48;
+        border-radius: 6px;
+        padding: 0.2rem 0.5rem;
+        cursor: pointer;
+      }
+      .status-form button:hover { background: #2a2e38; }
     </style>
   </head>
   <body>
@@ -184,7 +246,7 @@ if (authorized) {
 
       {fetchError && <p class="error">{fetchError}</p>}
 
-      {(totals || leadsCount30d !== null) && (
+      {(totals || leadsCount30d !== null || unattendedCount !== null) && (
         <div class="grid">
           {totals && (
             <>
@@ -202,6 +264,12 @@ if (authorized) {
             <div class="card">
               <div class="value">{leadsCount30d}</div>
               <div class="label">Leads (30d)</div>
+            </div>
+          )}
+          {unattendedCount !== null && (
+            <div class="card">
+              <div class="value">{unattendedCount}</div>
+              <div class="label">Unattended</div>
             </div>
           )}
         </div>
@@ -277,6 +345,7 @@ if (authorized) {
                 <th>Name</th>
                 <th>Email</th>
                 <th>Locale</th>
+                <th>Status</th>
                 <th>Message</th>
                 <th>Attachments</th>
               </tr>
@@ -288,12 +357,29 @@ if (authorized) {
                 const isTruncated = lead.message.length > 120;
                 const attachmentCount = lead.attachment_urls?.length ?? 0;
                 const mailtoHref = `mailto:${lead.email}?subject=${encodeURIComponent(REPLY_SUBJECT)}`;
+                const isContacted = lead.contacted_at !== null;
+                const nextAction = isContacted ? 'unmark' : 'mark';
+                const toggleLabel = isContacted ? 'Unmark' : 'Mark contacted';
                 return (
                   <tr>
                     <td><time datetime={createdAtIso}>{createdAtIso}</time></td>
                     <td>{lead.name}</td>
                     <td><a href={mailtoHref}>{lead.email}</a></td>
                     <td>{lead.locale}</td>
+                    <td>
+                      {isContacted ? (
+                        <span class="badge badge--contacted">
+                          Contacted {new Date(lead.contacted_at!).toISOString().slice(0, 10)}
+                        </span>
+                      ) : (
+                        <span class="badge badge--new">New</span>
+                      )}
+                      <form class="status-form" method="POST">
+                        <input type="hidden" name="leadId" value={lead.id} />
+                        <input type="hidden" name="action" value={nextAction} />
+                        <button type="submit">{toggleLabel}</button>
+                      </form>
+                    </td>
                     <td>
                       {preview}
                       {isTruncated ? '…' : ''}
