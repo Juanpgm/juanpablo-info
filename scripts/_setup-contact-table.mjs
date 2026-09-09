@@ -33,4 +33,15 @@ await sql`
   ADD COLUMN IF NOT EXISTS attachment_urls TEXT[]
 `;
 
+// Fast-follow: lead follow-up tracking for /admin. Nullable timestamptz —
+// NULL means "not yet contacted", a real timestamp records when the site
+// owner marked the lead as followed up. This column was added directly to
+// production Neon already; this statement exists only to keep this script
+// idempotent/replay-safe for anyone re-running it or setting up a fresh
+// database.
+await sql`
+  ALTER TABLE contact_submissions
+  ADD COLUMN IF NOT EXISTS contacted_at TIMESTAMPTZ
+`;
+
 console.log('Table ready.');
