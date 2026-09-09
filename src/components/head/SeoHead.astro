@@ -3,6 +3,7 @@ import Hreflang from './Hreflang.astro';
 import { site } from '../../data/site';
 import { useLocale } from '../../i18n';
 import { localeUrlAbsolute } from '../../lib/locale-path';
+import { feedMeta } from '../../lib/rss-feed';
 
 interface Props {
   title: string;
@@ -101,5 +102,20 @@ const jsonLdPayload = jsonLd === 'person' ? personJsonLd : jsonLd === 'article' 
 <meta name="twitter:image" content={absoluteOgImage} />
 
 <Hreflang path={path} />
+{/*
+  Not `localeUrlAbsolute(Astro.site, locale, 'rss.xml')` — `localePath`
+  (which it wraps) always appends a trailing slash for its directory-style
+  routes, but `[locale]/rss.xml.ts` is a flat file route (built as
+  `/{locale}/rss.xml`, no trailing slash — verified in `dist/client`), so
+  that call would emit `/{locale}/rss.xml/`, a 404. `localeUrlAbsolute`
+  with an empty path gives the correctly-slashed locale root to append the
+  filename to instead.
+*/}
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  title={feedMeta(locale).title}
+  href={`${localeUrlAbsolute(Astro.site, locale)}rss.xml`}
+/>
 
 <script type="application/ld+json" set:html={JSON.stringify(jsonLdPayload)} />

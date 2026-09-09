@@ -3,6 +3,7 @@ import LanguageSelector from './LanguageSelector.astro';
 import { site } from '../data/site';
 import { getWhatsAppHref } from '../lib/whatsapp';
 import { t, useLocale } from '../i18n';
+import { localePath } from '../lib/locale-path';
 
 const locale = useLocale(Astro.currentLocale);
 const year = new Date().getFullYear();
@@ -45,6 +46,16 @@ const whatsappHref = getWhatsAppHref(site.whatsapp.number, site.whatsapp.message
           </svg>
         </a>
       )}
+      {/* Not `localePath(locale, 'rss.xml')` — same trailing-slash mismatch
+          explained in SeoHead.astro: rss.xml is a flat file route, not a
+          directory-style page. */}
+      <a href={`${localePath(locale)}rss.xml`} class="btn-icon" aria-label={t(locale, 'footer.rssLabel')}>
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="5" cy="19" r="1.5" fill="currentColor" stroke="none" />
+          <path d="M4 11a9 9 0 0 1 9 9" />
+          <path d="M4 4a16 16 0 0 1 16 16" />
+        </svg>
+      </a>
       <span class="footer-location">{t(locale, 'footer.location')}</span>
     </div>
 
