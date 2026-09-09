@@ -207,7 +207,10 @@ export const POST: APIRoute = async ({ request }) => {
   // submitter from it would just fail.
   if (dbOk && emailOk && isVerifiedSender(FROM_EMAIL) && resend) {
     try {
-      const ack = buildSenderAcknowledgement({ name, locale, siteUrl: SITE_URL });
+      // Non-null assertion is safe here: this call only happens inside the
+      // `if (dbOk && ...)` gate above, and `dbOk` is only ever set `true`
+      // after `leadId` was assigned from the INSERT's returned row.
+      const ack = buildSenderAcknowledgement({ name, locale, siteUrl: SITE_URL, leadId: leadId!, receivedAt: new Date() });
       const { error } = await resend.emails.send({
         from: FROM_EMAIL,
         to: email,

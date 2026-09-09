@@ -278,4 +278,16 @@ describe('POST /api/contact', () => {
     const queryStrings = h.sql.mock.calls[0][0] as TemplateStringsArray;
     expect(queryStrings.join('')).toContain('RETURNING id');
   });
+
+  it('threads the inserted row id into the acknowledgement as a REF- code', async () => {
+    errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    stubHappyPathEnv();
+    vi.stubEnv('CONTACT_FROM_EMAIL', 'Juan Pablo <contacto@juanpablo.info>');
+    h.sql.mockResolvedValueOnce([{ id: 777 }]);
+    const res = await post(makeFormData());
+    expect(res.status).toBe(200);
+    expect(h.send).toHaveBeenCalledTimes(2);
+    const ackCall = h.send.mock.calls[1][0] as { html: string };
+    expect(ackCall.html).toContain('REF-000777');
+  });
 });
