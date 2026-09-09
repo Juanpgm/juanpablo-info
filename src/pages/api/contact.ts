@@ -6,11 +6,11 @@ import { validateContactSubmission, validateAttachments } from '../../lib/contac
 import { buildOwnerNotification, buildSenderAcknowledgement, isVerifiedSender } from '../../lib/contact-email';
 import { site } from '../../data/site';
 
-// This is the site's ONE server-rendered route (design ADR A1 keeps the rest
-// static). `prerender = false` opts only this file out, so the Vercel
-// adapter emits it as a serverless function while every other page stays a
-// prerendered static HTML file — verified in the build output, see
-// apply-progress.
+// One of a small set of server-rendered routes (design ADR A1 keeps the rest
+// static; `admin.astro` is the other). `prerender = false` opts only this
+// file out, so the Vercel adapter emits it as a serverless function while
+// every other page stays a prerendered static HTML file — verified in the
+// build output, see apply-progress.
 export const prerender = false;
 
 const NOTIFY_EMAIL = site.email;
@@ -23,9 +23,11 @@ function json(body: unknown, status: number): Response {
   });
 }
 
-// Filenames land straight in a Blob pathname (and, indirectly, the notified
-// email subject/body) — collapse anything outside a conservative safe set so
-// a hostile filename can't inject path segments or odd bytes into storage.
+// Filenames land in the Blob pathname and, from there, in the owner
+// notification's email body and attachment name — never in the subject
+// (which is built solely from name/locale/message preview) — so collapse
+// anything outside a conservative safe set so a hostile filename can't
+// inject path segments or odd bytes into storage or the email.
 function sanitizeFilename(name: string): string {
   return name.replace(/[^a-zA-Z0-9.\-]/g, '_').slice(-100);
 }
@@ -46,14 +48,15 @@ async function uploadAttachments(files: File[]): Promise<UploadedAttachment[]> {
   for (const [index, file] of files.entries()) {
     try {
       const buffer = Buffer.from(await file.arrayBuffer());
-      const pathname = `contact-uploads/${Date.now()}-${index}-${sanitizeFilename(file.name)}`;
+      const safeFilename = sanitizeFilename(file.name);
+      const pathname = `contact-uploads/${Date.now()}-${index}-${safeFilename}`;
       const blob = await put(pathname, buffer, {
         access: 'private',
         contentType: file.type || undefined,
       });
       uploaded.push({
         url: blob.url,
-        filename: file.name,
+        filename: safeFilename,
         buffer,
         contentType: file.type || 'application/octet-stream',
       });
@@ -121,6 +124,11 @@ export const POST: APIRoute = async ({ request }) => {
   // other static page at build time.
   const sql = neon(process.env.DATABASE_URL);
 
+  // Same reasoning as `sql` above, plus: one client is reused for both the
+  // owner notification and the sender acknowledgement below instead of
+  // constructing a new Resend instance per email.
+  const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+
   // Blob store (private access) is populated before the DB write so the
   // stored `attachment_urls` reflects exactly what actually made it to
   // storage — a file that fails to upload is silently dropped (see
@@ -145,9 +153,8 @@ export const POST: APIRoute = async ({ request }) => {
   // total silence. Sending the notification regardless gives the owner a
   // chance to follow up manually while the DB issue gets fixed.
   let emailOk = false;
-  if (process.env.RESEND_API_KEY) {
+  if (resend) {
     try {
-      const resend = new Resend(process.env.RESEND_API_KEY);
       const notification = buildOwnerNotification({
         name,
         email,
@@ -194,9 +201,8 @@ export const POST: APIRoute = async ({ request }) => {
   // yet; and (3) FROM_EMAIL is a real verified sender: Resend's sandbox
   // sender can only deliver to the account owner, so sending to an arbitrary
   // submitter from it would just fail.
-  if (dbOk && emailOk && isVerifiedSender(FROM_EMAIL) && process.env.RESEND_API_KEY) {
+  if (dbOk && emailOk && isVerifiedSender(FROM_EMAIL) && resend) {
     try {
-      const resend = new Resend(process.env.RESEND_API_KEY);
       const ack = buildSenderAcknowledgement({ name, locale });
       const { error } = await resend.emails.send({
         from: FROM_EMAIL,

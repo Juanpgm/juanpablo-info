@@ -8,6 +8,7 @@ export const prerender = false;
 
 import { createHash, timingSafeEqual } from 'node:crypto';
 import { neon } from '@neondatabase/serverless';
+import { REPLY_SUBJECT } from '../lib/contact-email';
 
 function safeEqual(a: string, b: string): boolean {
   // Hash both sides to a fixed-length digest first so a length mismatch
@@ -104,7 +105,6 @@ if (authorized) {
 }
 
 interface LeadRow {
-  id: string;
   name: string;
   email: string;
   message: string;
@@ -129,7 +129,7 @@ if (authorized) {
   } else {
     const sql = neon(process.env.DATABASE_URL);
     const [leadsRes, countRes] = await Promise.allSettled([
-      sql`SELECT id, name, email, message, locale, attachment_urls, created_at FROM contact_submissions ORDER BY created_at DESC LIMIT 50`,
+      sql`SELECT name, email, message, locale, attachment_urls, created_at FROM contact_submissions ORDER BY created_at DESC LIMIT 50`,
       sql`SELECT count(*)::int AS count FROM contact_submissions WHERE created_at >= now() - interval '30 days'`,
     ]);
 
@@ -287,7 +287,7 @@ if (authorized) {
                 const preview = lead.message.slice(0, 120);
                 const isTruncated = lead.message.length > 120;
                 const attachmentCount = lead.attachment_urls?.length ?? 0;
-                const mailtoHref = `mailto:${lead.email}?subject=${encodeURIComponent('Re: your message via juanpablo.info')}`;
+                const mailtoHref = `mailto:${lead.email}?subject=${encodeURIComponent(REPLY_SUBJECT)}`;
                 return (
                   <tr>
                     <td><time datetime={createdAtIso}>{createdAtIso}</time></td>

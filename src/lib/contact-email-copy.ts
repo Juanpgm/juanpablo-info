@@ -32,9 +32,9 @@ export const ackCopy: Partial<Record<Locale, AckCopy>> = {
     signoff: `Best regards,\n${SIGNOFF_NAME}`,
   },
   de: {
-    subject: 'Ich habe deine Nachricht erhalten',
-    greeting: (name: string) => `Hallo ${name},`,
-    body: 'Ich habe deine Nachricht über das Formular auf juanpablo.info erhalten und werde innerhalb von 48 Stunden antworten. In der Zwischenzeit findest du mich auf LinkedIn.',
+    subject: 'Ich habe Ihre Nachricht erhalten',
+    greeting: (name: string) => `Guten Tag ${name},`,
+    body: 'Ich habe Ihre Nachricht über das Formular auf juanpablo.info erhalten und werde Ihnen innerhalb von 48 Stunden antworten. In der Zwischenzeit finden Sie mich auf LinkedIn.',
     signoff: `Viele Grüße,\n${SIGNOFF_NAME}`,
   },
   fr: {
@@ -51,7 +51,11 @@ export const ackCopy: Partial<Record<Locale, AckCopy>> = {
   },
 };
 
-/** Fallback chain: locale → en → es (mirrors `src/i18n/index.ts#t`). */
+/**
+ * Fallback chain: locale → en (mirrors `src/i18n/index.ts#t`). `en` is a
+ * literal entry in `ackCopy` above, so it is always present — there is no
+ * further "as es" fallback to reach for.
+ */
 export function resolveAckCopy(locale: string): AckCopy {
-  return ackCopy[locale as Locale] ?? ackCopy.en ?? (ackCopy.es as AckCopy);
+  return ackCopy[locale as Locale] ?? ackCopy.en!;
 }

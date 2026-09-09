@@ -7,6 +7,11 @@ import { resolveAckCopy } from './contact-email-copy';
 
 const SUBJECT_PREVIEW_LENGTH = 60;
 
+// Shared literal for the mailto "Reply" link built here and the identical
+// mailto link in admin.astro's leads table — one source of truth instead of
+// two copies drifting apart.
+export const REPLY_SUBJECT = 'Re: your message via juanpablo.info';
+
 export function escapeHtml(value: string): string {
   return value
     .replace(/&/g, '&amp;')
@@ -81,7 +86,7 @@ export function buildOwnerNotification(params: OwnerNotificationParams): Compose
   // Reply mailto link: URI-encode the subject first, THEN HTML-escape the
   // whole href — reversing this order would let a raw `&` from encoding slip
   // past the escaper and break the attribute.
-  const replySubject = encodeURIComponent('Re: your message via juanpablo.info');
+  const replySubject = encodeURIComponent(REPLY_SUBJECT);
   const mailtoHref = escapeHtml(`mailto:${email}?subject=${replySubject}`);
   const adminHref = escapeHtml(adminUrl);
 

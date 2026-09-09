@@ -156,7 +156,7 @@ describe('buildSenderAcknowledgement', () => {
     expect(unknown.subject).toBe(en.subject);
   });
 
-  it('falls back to es as the last resort when called directly with es', () => {
+  it('produces content when called directly with es', () => {
     const result = buildSenderAcknowledgement({ name: 'Ada', locale: 'es' });
     expect(result.subject.length).toBeGreaterThan(0);
     expect(result.text.length).toBeGreaterThan(0);
