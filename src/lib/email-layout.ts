@@ -30,19 +30,31 @@ export interface EmailLayoutParams {
    * the owner's own lead notification is not that, so this defaults to
    * `true` but can be turned off entirely (row omitted, not just blanked). */
   includeFooterNote?: boolean;
+  /** Short identity line rendered above the card, on the page background
+   * (not inside the white card) — a real content param, not optional: both
+   * call sites (owner notification, sender acknowledgement) always supply
+   * one. Plain text, gets escaped. */
+  letterhead: string;
 }
 
-const COLORS = {
+export const COLORS = {
   background: '#fafafa',
   card: '#ffffff',
   border: '#dde1e6',
   ink: '#0a0a0a',
   inkMuted: '#4b5563',
   accent: '#22d3ee',
+  accentDeep: '#0891b2',
   onAccent: '#0a0a0a',
 } as const;
 
-const FONT_STACK = "'Manrope', Arial, sans-serif";
+export const FONT_STACK = "'Manrope', Arial, sans-serif";
+
+/** Second, utility-face typeface role for technical labels (memo header,
+ * stamp, eyebrow). Email clients can't reliably load webfonts, so this is a
+ * real second typeface distinct in cadence/texture from `FONT_STACK`, not a
+ * webfont import. */
+export const MONO_FONT_STACK = "ui-monospace, 'SF Mono', 'Roboto Mono', 'Courier New', monospace";
 
 const footerNoteByLocale: Record<string, string> = {
   es: 'Recibiste este mensaje porque contactaste a juanpablo.info a través de su formulario de contacto.',
@@ -60,7 +72,7 @@ function footerNote(locale: string): string {
 function renderCta(cta: EmailCta): string {
   const label = escapeHtml(cta.label);
   const href = escapeHtml(cta.href);
-  return `<table role="presentation" cellpadding="0" cellspacing="0" style="display:inline-block; margin:0 8px 8px 0;"><tr><td style="border-radius:6px; background-color:${COLORS.accent};"><a href="${href}" style="display:inline-block; padding:10px 20px; font-family:${FONT_STACK}; font-size:14px; font-weight:700; color:${COLORS.onAccent}; text-decoration:none; border-radius:6px;">${label}</a></td></tr></table>`;
+  return `<table role="presentation" cellpadding="0" cellspacing="0" style="display:inline-block; margin:0 8px 8px 0;"><tr><td style="border:1px solid ${COLORS.ink}; border-radius:4px; background-color:${COLORS.accent};"><a href="${href}" style="display:inline-block; padding:10px 20px; font-family:${FONT_STACK}; font-size:14px; font-weight:700; color:${COLORS.onAccent}; text-decoration:none; border-radius:4px;">${label}</a></td></tr></table>`;
 }
 
 function renderCtaRow(ctas: EmailCta[]): string {
@@ -78,8 +90,9 @@ function renderFooterNoteRow(locale: string, includeFooterNote: boolean): string
 }
 
 export function renderEmailLayout(params: EmailLayoutParams): string {
-  const { locale, preheader, bodyHtml, ctas, includeFooterNote = true } = params;
+  const { locale, preheader, bodyHtml, ctas, includeFooterNote = true, letterhead } = params;
   const safePreheader = escapeHtml(preheader);
+  const safeLetterhead = escapeHtml(letterhead);
 
   return `<!doctype html>
 <html lang="${escapeHtml(locale)}">
@@ -88,7 +101,8 @@ export function renderEmailLayout(params: EmailLayoutParams): string {
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${COLORS.background};">
       <tr>
         <td align="center" style="padding:32px 16px;">
-          <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%; background-color:${COLORS.card}; border:1px solid ${COLORS.border}; border-radius:12px;">
+          <p style="margin:0 0 12px; text-align:center; font-family:${MONO_FONT_STACK}; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:${COLORS.inkMuted};">${safeLetterhead}</p>
+          <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%; background-color:${COLORS.card}; border:1px solid ${COLORS.border}; border-top:3px solid ${COLORS.accent}; border-radius:12px;">
             <tr>
               <td style="padding:32px; font-family:${FONT_STACK}; font-size:15px; line-height:1.6; color:${COLORS.ink};">
                 ${bodyHtml}

@@ -7,6 +7,7 @@ function baseParams(overrides: Partial<Parameters<typeof renderEmailLayout>[0]> 
     preheader: 'Preview text',
     bodyHtml: '<p>Hello there.</p>',
     ctas: [] as { label: string; href: string }[],
+    letterhead: 'Test Letterhead',
     ...overrides,
   };
 }
@@ -81,5 +82,34 @@ describe('renderEmailLayout', () => {
     expect(html).toMatch(/display:\s*none/i);
     expect(html).toMatch(/font-size:\s*1px/i);
     expect(html).toContain('A short preview');
+  });
+
+  it('escapes a script tag injected via letterhead', () => {
+    const html = renderEmailLayout(baseParams({ letterhead: '<script>alert(1)</script>' }));
+    expect(html).not.toContain('<script>alert(1)</script>');
+    expect(html).toContain('&lt;script&gt;alert(1)&lt;/script&gt;');
+  });
+
+  it('renders the letterhead once, above the card (outside its padded content region)', () => {
+    const html = renderEmailLayout(baseParams({ letterhead: 'A Distinctive Letterhead Value' }));
+    const letterheadIndex = html.indexOf('A Distinctive Letterhead Value');
+    const cardContentIndex = html.indexOf('padding:32px; font-family');
+    expect(letterheadIndex).toBeGreaterThan(-1);
+    expect(cardContentIndex).toBeGreaterThan(-1);
+    expect(letterheadIndex).toBeLessThan(cardContentIndex);
+    expect(html.match(/A Distinctive Letterhead Value/g)?.length).toBe(1);
+  });
+
+  it('gives the card an accent top edge over a 1px border on the other sides', () => {
+    const html = renderEmailLayout(baseParams());
+    expect(html).toContain('border-top:3px solid #22d3ee');
+  });
+
+  it('gives CTA buttons a crisper 4px radius with a defining ink border', () => {
+    const html = renderEmailLayout(
+      baseParams({ ctas: [{ label: 'See my projects', href: 'https://juanpablo.info/en/projects/' }] }),
+    );
+    expect(html).toContain('border:1px solid #0a0a0a');
+    expect(html).toContain('border-radius:4px');
   });
 });

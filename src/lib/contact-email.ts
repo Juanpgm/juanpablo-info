@@ -70,6 +70,11 @@ export interface ComposedEmail {
   html: string;
 }
 
+// Fixed English constant — the owner's own lead notification always renders
+// in English regardless of the submitter's locale (see the comment above the
+// `renderEmailLayout` call below), so this letterhead is not locale-dependent.
+const OWNER_LETTERHEAD = 'JUAN PABLO GUZMÁN MARTÍNEZ · LEAD NOTIFICATION';
+
 export function buildOwnerNotification(params: OwnerNotificationParams): ComposedEmail {
   const { name, email, message, locale, attachments, adminUrl } = params;
 
@@ -133,6 +138,7 @@ export function buildOwnerNotification(params: OwnerNotificationParams): Compose
     bodyHtml,
     ctas: [],
     includeFooterNote: false,
+    letterhead: OWNER_LETTERHEAD,
   });
 
   return { subject, text, html };
@@ -149,6 +155,12 @@ export interface SenderAcknowledgementParams {
 // submitted message or attachments — only a fixed, localized courtesy note
 // plus three fixed marketing CTAs (projects/blog/RSS), never anything
 // derived from the submission itself.
+// Interim value until `AckCopy` gains a locale-aware `letterhead` field
+// (memo-header redesign, tracked separately) — matches the eventual English
+// copy so it reads correctly for the site's default English audience in the
+// meantime.
+const INTERIM_ACK_LETTERHEAD = 'JUAN PABLO GUZMÁN MARTÍNEZ · PORTFOLIO';
+
 export function buildSenderAcknowledgement(params: SenderAcknowledgementParams): ComposedEmail {
   const { name, siteUrl } = params;
   // Normalize once, up front: this is a public pure function that another
@@ -176,7 +188,15 @@ export function buildSenderAcknowledgement(params: SenderAcknowledgementParams):
     href: resolveCtaHref(siteUrl, locale, entry.hrefPath),
   }));
 
-  const html = renderEmailLayout({ locale, preheader: copy.body, bodyHtml, ctas });
+  // Interim value: replaced with the locale-aware `copy.letterhead` once
+  // `AckCopy` gains that field (memo-header redesign, tracked separately).
+  const html = renderEmailLayout({
+    locale,
+    preheader: copy.body,
+    bodyHtml,
+    ctas,
+    letterhead: INTERIM_ACK_LETTERHEAD,
+  });
 
   const text = [
     copy.greeting(safeName),
