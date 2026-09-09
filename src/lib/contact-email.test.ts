@@ -7,6 +7,7 @@ import {
 } from './contact-email';
 
 const ADMIN_URL = 'https://juanpablo.info/admin#leads';
+const SITE_URL = 'https://juanpablo.info';
 
 function baseOwnerParams(overrides: Partial<Parameters<typeof buildOwnerNotification>[0]> = {}) {
   return {
@@ -133,11 +134,22 @@ describe('buildOwnerNotification', () => {
     expect(result.subject).not.toContain('\r');
     expect(result.subject).not.toContain('\n');
   });
+
+  it('wraps the body in the branded email layout with no marketing CTAs', () => {
+    const result = buildOwnerNotification(baseOwnerParams());
+    expect(result.html).toContain('<!doctype html>');
+    expect(result.html.toLowerCase()).not.toContain('<style');
+    // ctas: [] for the owner's own lead notification — Reply/Open admin stay
+    // as plain links inside bodyHtml, no marketing buttons are added.
+    expect(result.html).not.toContain('See my projects');
+    expect(result.html).not.toContain('Read the blog');
+    expect(result.html).not.toContain('Subscribe via RSS');
+  });
 });
 
 describe('buildSenderAcknowledgement', () => {
   it('does not mention attachments', () => {
-    const result = buildSenderAcknowledgement({ name: 'Ada', locale: 'en' });
+    const result = buildSenderAcknowledgement({ name: 'Ada', locale: 'en', siteUrl: SITE_URL });
     // There is no message/attachments parameter on this function at all —
     // nothing beyond name + fixed copy should ever appear.
     expect(result.text).not.toMatch(/attachment/i);
@@ -145,28 +157,66 @@ describe('buildSenderAcknowledgement', () => {
   });
 
   it('produces content in the requested locale', () => {
-    const es = buildSenderAcknowledgement({ name: 'Ada', locale: 'es' });
-    const en = buildSenderAcknowledgement({ name: 'Ada', locale: 'en' });
+    const es = buildSenderAcknowledgement({ name: 'Ada', locale: 'es', siteUrl: SITE_URL });
+    const en = buildSenderAcknowledgement({ name: 'Ada', locale: 'en', siteUrl: SITE_URL });
     expect(es.subject).not.toBe(en.subject);
   });
 
   it('falls back to en for an unknown locale', () => {
-    const en = buildSenderAcknowledgement({ name: 'Ada', locale: 'en' });
-    const unknown = buildSenderAcknowledgement({ name: 'Ada', locale: 'xx' });
+    const en = buildSenderAcknowledgement({ name: 'Ada', locale: 'en', siteUrl: SITE_URL });
+    const unknown = buildSenderAcknowledgement({ name: 'Ada', locale: 'xx', siteUrl: SITE_URL });
     expect(unknown.subject).toBe(en.subject);
   });
 
   it('produces content when called directly with es', () => {
-    const result = buildSenderAcknowledgement({ name: 'Ada', locale: 'es' });
+    const result = buildSenderAcknowledgement({ name: 'Ada', locale: 'es', siteUrl: SITE_URL });
     expect(result.subject.length).toBeGreaterThan(0);
     expect(result.text.length).toBeGreaterThan(0);
   });
 
   it('escapes the name in html and strips CR/LF from the greeting', () => {
-    const result = buildSenderAcknowledgement({ name: '<script>x\r\n</script>', locale: 'en' });
+    const result = buildSenderAcknowledgement({
+      name: '<script>x\r\n</script>',
+      locale: 'en',
+      siteUrl: SITE_URL,
+    });
     expect(result.html).not.toContain('<script>x');
     expect(result.html).toContain('&lt;script&gt;x');
     expect(result.html).not.toContain('\r');
+  });
+
+  it('wraps the body in the branded email layout', () => {
+    const result = buildSenderAcknowledgement({ name: 'Ada', locale: 'en', siteUrl: SITE_URL });
+    expect(result.html).toContain('<!doctype html>');
+    expect(result.html.toLowerCase()).not.toContain('<style');
+  });
+
+  it('includes all three localized CTA links, resolved against siteUrl and locale', () => {
+    const result = buildSenderAcknowledgement({ name: 'Ada', locale: 'en', siteUrl: SITE_URL });
+    expect(result.html).toContain('https://juanpablo.info/en/projects/');
+    expect(result.html).toContain('https://juanpablo.info/en/blog/');
+    expect(result.html).toContain('https://juanpablo.info/en/rss.xml');
+    // Plain-text mirror of the same three links, appended at the end of `text`.
+    expect(result.text).toContain('https://juanpablo.info/en/projects/');
+    expect(result.text).toContain('https://juanpablo.info/en/blog/');
+    expect(result.text).toContain('https://juanpablo.info/en/rss.xml');
+  });
+
+  it('resolves CTA links for the requested locale, not a hardcoded one', () => {
+    const result = buildSenderAcknowledgement({ name: 'Ada', locale: 'es', siteUrl: SITE_URL });
+    expect(result.html).toContain('https://juanpablo.info/es/projects/');
+    expect(result.html).toContain('https://juanpablo.info/es/blog/');
+    expect(result.html).toContain('https://juanpablo.info/es/rss.xml');
+  });
+
+  it('never contains submitted message or attachment content (anti-backscatter)', () => {
+    // This function still has no message/attachments parameter — adding the
+    // CTA layout must not change that. Guards against a future signature
+    // change accidentally leaking submitted content into a reply-to-nobody
+    // acknowledgement email.
+    const result = buildSenderAcknowledgement({ name: 'Ada', locale: 'en', siteUrl: SITE_URL });
+    expect(result.html).not.toMatch(/attachment/i);
+    expect(result.text).not.toMatch(/attachment/i);
   });
 });
 

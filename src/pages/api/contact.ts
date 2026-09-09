@@ -15,6 +15,7 @@ export const prerender = false;
 
 const NOTIFY_EMAIL = site.email;
 const ADMIN_LEADS_URL = 'https://juanpablo.info/admin#leads';
+const SITE_URL = 'https://juanpablo.info';
 
 function json(body: unknown, status: number): Response {
   return new Response(JSON.stringify(body), {
@@ -203,7 +204,7 @@ export const POST: APIRoute = async ({ request }) => {
   // submitter from it would just fail.
   if (dbOk && emailOk && isVerifiedSender(FROM_EMAIL) && resend) {
     try {
-      const ack = buildSenderAcknowledgement({ name, locale });
+      const ack = buildSenderAcknowledgement({ name, locale, siteUrl: SITE_URL });
       const { error } = await resend.emails.send({
         from: FROM_EMAIL,
         to: email,

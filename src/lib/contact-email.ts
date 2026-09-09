@@ -4,6 +4,10 @@
  * fully unit-testable and safe to import from the serverless route).
  */
 import { resolveAckCopy } from './contact-email-copy';
+import { resolveEmailCtaCopy } from './email-cta-copy';
+import { renderEmailLayout, type EmailCta } from './email-layout';
+import { localePath } from './locale-path';
+import type { Locale } from '../i18n';
 
 const SUBJECT_PREVIEW_LENGTH = 60;
 
@@ -36,6 +40,18 @@ function buildSubjectPreview(message: string): string {
 
 function toHtmlParagraph(escaped: string): string {
   return escaped.replace(/\r\n|\r|\n/g, '<br>');
+}
+
+// `localePath` always appends a trailing slash for its directory-style
+// routes (about, projects, blog, ...) — correct for those, but `rss.xml` is
+// a flat file route built as `/{locale}/rss.xml` (see
+// `src/pages/[locale]/rss.xml.ts`). Treating it like a directory route would
+// produce a 404ing `/{locale}/rss.xml/` link, same bug already fixed in
+// `SeoHead.astro`/`Footer.astro` — detect a file extension in `hrefPath` and
+// skip the trailing slash for it.
+function resolveCtaHref(siteUrl: string, locale: string, hrefPath: string): string {
+  const loc = locale as Locale;
+  return hrefPath.includes('.') ? `${siteUrl}${localePath(loc)}${hrefPath}` : `${siteUrl}${localePath(loc, hrefPath)}`;
 }
 
 export interface OwnerNotificationParams {
@@ -90,7 +106,7 @@ export function buildOwnerNotification(params: OwnerNotificationParams): Compose
   const mailtoHref = escapeHtml(`mailto:${email}?subject=${replySubject}`);
   const adminHref = escapeHtml(adminUrl);
 
-  const html = [
+  const bodyHtml = [
     `<p><strong>Name:</strong> ${escapeHtml(name)}</p>`,
     `<p><strong>Email:</strong> ${escapeHtml(email)}</p>`,
     `<p><strong>Locale:</strong> ${escapeHtml(locale)}</p>`,
@@ -101,28 +117,61 @@ export function buildOwnerNotification(params: OwnerNotificationParams): Compose
     `<p><a href="${adminHref}">Open admin</a></p>`,
   ].join('\n');
 
+  // This notification is always English content for the site owner
+  // regardless of the submitter's locale (see the static "Name:"/"Email:"
+  // labels above), so the layout itself (footer note, `lang` attribute) is
+  // rendered in English too, not `locale` — `ctas: []`: Reply/Open-admin
+  // stay as plain links inside bodyHtml, no marketing buttons on the
+  // owner's own lead notification (that would be noise).
+  const html = renderEmailLayout({
+    locale: 'en',
+    preheader: `New contact form message from ${safeName || 'a visitor'}`,
+    bodyHtml,
+    ctas: [],
+  });
+
   return { subject, text, html };
 }
 
 export interface SenderAcknowledgementParams {
   name: string;
   locale: string;
+  siteUrl: string;
 }
 
 // Anti-backscatter: the submitter's `email` is unverified (a spammer could
 // put a victim's address there), so this intentionally does NOT accept the
-// submitted message or attachments — only a fixed, localized courtesy note.
+// submitted message or attachments — only a fixed, localized courtesy note
+// plus three fixed marketing CTAs (projects/blog/RSS), never anything
+// derived from the submission itself.
 export function buildSenderAcknowledgement(params: SenderAcknowledgementParams): ComposedEmail {
-  const { name, locale } = params;
+  const { name, locale, siteUrl } = params;
   const copy = resolveAckCopy(locale);
   const safeName = toSingleLine(name);
   const escapedName = escapeHtml(safeName);
 
-  const text = [copy.greeting(safeName), '', copy.body, '', copy.signoff].join('\n');
-  const html = [
+  const bodyHtml = [
     `<p>${copy.greeting(escapedName)}</p>`,
     `<p>${toHtmlParagraph(copy.body)}</p>`,
     `<p>${toHtmlParagraph(copy.signoff)}</p>`,
+  ].join('\n');
+
+  const ctaCopy = resolveEmailCtaCopy(locale);
+  const ctas: EmailCta[] = [ctaCopy.projects, ctaCopy.blog, ctaCopy.rss].map((entry) => ({
+    label: entry.label,
+    href: resolveCtaHref(siteUrl, locale, entry.hrefPath),
+  }));
+
+  const html = renderEmailLayout({ locale, preheader: copy.body, bodyHtml, ctas });
+
+  const text = [
+    copy.greeting(safeName),
+    '',
+    copy.body,
+    '',
+    copy.signoff,
+    '',
+    ...ctas.map((cta) => `${cta.label}: ${cta.href}`),
   ].join('\n');
 
   return { subject: copy.subject, text, html };
