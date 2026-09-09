@@ -1667,6 +1667,11 @@ dialog#contact-modal {
   margin: auto;
   padding: var(--space-lg);
   border: 1px solid var(--color-border);
+  /* Accent top edge, same treatment as the confirmation email's card
+     (email-layout.ts) — a quiet visual thread from "you open this modal" to
+     "you get this email", without importing the email's mono/memo styling
+     into the live UI (that personality is email-specific by design). */
+  border-top: 3px solid var(--color-accent);
   border-radius: var(--radius-lg);
   background-color: var(--color-surface);
   color: var(--color-ink);
@@ -1723,6 +1728,24 @@ dialog#contact-modal[open]::backdrop {
   font-size: var(--text-2xl);
   font-weight: 700;
   margin: 0;
+}
+
+/* Close button: quieter than the base .btn-icon (which keeps its permanent
+   border everywhere else it's used — footer social links, etc.). A bold
+   2xl heading right next to a permanently bordered square read as two
+   competing focal points; borderless-by-default, with the border/tint
+   appearing only on hover/focus, keeps the heading as the one visual
+   anchor while the button stays clearly interactive on hover and via
+   :focus-visible for keyboard users. */
+.contact-modal__header .btn-icon {
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.contact-modal__header .btn-icon:hover,
+.contact-modal__header .btn-icon:focus-visible {
+  border-color: var(--color-border);
+  background-color: var(--color-surface-subtle);
 }
 
 /* `article.post` never had the site's standard content-width treatment
