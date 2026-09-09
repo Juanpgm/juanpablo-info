@@ -4,7 +4,20 @@ import { site } from '../../data/site';
 
 const h = vi.hoisted(() => ({
   sql: vi.fn(async (_s: TemplateStringsArray, ..._v: unknown[]) => []),
-  send: vi.fn(async () => ({ data: { id: 'x' }, error: null })),
+  // Typed with an explicit param + a data|error union (rather than the
+  // plan's exact zero-arg, always-success signature) so `astro check` can
+  // type mockResolvedValueOnce({ data: null, error: {...} }) calls and
+  // mock.calls[i][0] payload inspection below — the plan's literal
+  // `vi.fn(async () => ({ data: { id: 'x' }, error: null }))` infers a
+  // zero-parameter, single-shape mock that both of those need.
+  send: vi.fn(
+    async (
+      _payload: Record<string, unknown>
+    ): Promise<{ data: { id: string } | null; error: { message: string } | null }> => ({
+      data: { id: 'x' },
+      error: null,
+    })
+  ),
   put: vi.fn(async () => ({ url: 'https://blob/x' })),
 }));
 vi.mock('@neondatabase/serverless', () => ({ neon: () => h.sql }));

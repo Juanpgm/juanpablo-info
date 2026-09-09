@@ -3,6 +3,8 @@ import { neon } from '@neondatabase/serverless';
 import { Resend } from 'resend';
 import { put } from '@vercel/blob';
 import { validateContactSubmission, validateAttachments } from '../../lib/contact-form';
+import { buildOwnerNotification, buildSenderAcknowledgement, isVerifiedSender } from '../../lib/contact-email';
+import { site } from '../../data/site';
 
 // This is the site's ONE server-rendered route (design ADR A1 keeps the rest
 // static). `prerender = false` opts only this file out, so the Vercel
@@ -11,11 +13,8 @@ import { validateContactSubmission, validateAttachments } from '../../lib/contac
 // apply-progress.
 export const prerender = false;
 
-const NOTIFY_EMAIL = 'juanp.gzmz@gmail.com';
-// Verified domain per orchestrator (juanpablo.info). Sanity-checked at
-// send-time below — if Resend rejects this exact address, the error is
-// logged verbatim server-side so it's debuggable/fixable.
-const FROM_EMAIL = 'Portafolio <contacto@juanpablo.info>';
+const NOTIFY_EMAIL = site.email;
+const ADMIN_LEADS_URL = 'https://juanpablo.info/admin#leads';
 
 function json(body: unknown, status: number): Response {
   return new Response(JSON.stringify(body), {
@@ -86,6 +85,14 @@ export const POST: APIRoute = async ({ request }) => {
 
   const { name, email, message, locale, honeypot } = result.data;
 
+  // Read per-request (not at module top-level): the domain must be verified
+  // in Resend before a custom `contacto@juanpablo.info`-style address can
+  // send to third parties (see isVerifiedSender below). Until then this
+  // falls back to Resend's sandbox sender, which only delivers to the Resend
+  // account owner — fine for the owner notification, but the sender
+  // acknowledgement to the submitter is skipped in that case.
+  const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || 'Portafolio <onboarding@resend.dev>';
+
   // Honeypot tripped: return the exact same success shape as a real
   // submission, but skip the DB write and the email entirely. Never tell a
   // bot it was caught — standard honeypot practice.
@@ -132,10 +139,23 @@ export const POST: APIRoute = async ({ request }) => {
     console.error('[contact] DB insert failed:', error);
   }
 
+  // Deliberately NOT gated on `dbOk`: even if the insert above failed, the
+  // owner notification below still fires. Without this, a DB outage would
+  // mean the lead is lost from BOTH the database and the owner's inbox —
+  // total silence. Sending the notification regardless gives the owner a
+  // chance to follow up manually while the DB issue gets fixed.
   let emailOk = false;
   if (process.env.RESEND_API_KEY) {
     try {
       const resend = new Resend(process.env.RESEND_API_KEY);
+      const notification = buildOwnerNotification({
+        name,
+        email,
+        message,
+        locale,
+        attachments: uploaded.map((u) => ({ filename: u.filename })),
+        adminUrl: ADMIN_LEADS_URL,
+      });
       // The Blob store is private (deliberate — these are unsolicited
       // uploads from strangers), so a bare URL wouldn't be openable from the
       // email without the read token anyway. Attach the actual file content
@@ -144,8 +164,9 @@ export const POST: APIRoute = async ({ request }) => {
         from: FROM_EMAIL,
         to: NOTIFY_EMAIL,
         replyTo: email,
-        subject: `New portfolio contact from ${name}`,
-        text: `Name: ${name}\nEmail: ${email}\nLocale: ${locale}\n\n${message}`,
+        subject: notification.subject,
+        text: notification.text,
+        html: notification.html,
         attachments: uploaded.map((u) => ({
           content: u.buffer,
           filename: u.filename,
@@ -162,6 +183,33 @@ export const POST: APIRoute = async ({ request }) => {
     }
   } else {
     console.error('[contact] RESEND_API_KEY is not set — skipping email notification');
+  }
+
+  // Sender acknowledgement to the submitter: best-effort, never affects the
+  // response the client sees. Only attempted when (1) the owner notification
+  // actually went out — a failed notification means nobody has seen this
+  // lead yet, and the DB-first semantics below already cover that case — and
+  // (2) FROM_EMAIL is a real verified sender: Resend's sandbox sender can
+  // only deliver to the account owner, so sending to an arbitrary submitter
+  // from it would just fail.
+  if (emailOk && isVerifiedSender(FROM_EMAIL) && process.env.RESEND_API_KEY) {
+    try {
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      const ack = buildSenderAcknowledgement({ name, locale });
+      const { error } = await resend.emails.send({
+        from: FROM_EMAIL,
+        to: email,
+        replyTo: NOTIFY_EMAIL,
+        subject: ack.subject,
+        text: ack.text,
+        html: ack.html,
+      });
+      if (error) {
+        console.error('[contact] Acknowledgement send failed:', error);
+      }
+    } catch (error) {
+      console.error('[contact] Acknowledgement send failed:', error);
+    }
   }
 
   // Success semantics: the submitter's data being safely recorded is what
