@@ -209,8 +209,8 @@ export function buildSenderAcknowledgement(params: SenderAcknowledgementParams):
   const memoHeaderHtml = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 20px;">
   <tr>
     <td style="font-family:${MONO_FONT_STACK}; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:${COLORS.inkMuted};">${escapeHtml(copy.memoToLabel)}<br><span style="font-size:13px; color:${COLORS.ink}; font-weight:600; text-transform:none; letter-spacing:normal;">${escapedName}</span></td>
-    <td style="font-family:${MONO_FONT_STACK}; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:${COLORS.inkMuted};">${escapeHtml(copy.memoRefLabel)}<br><span style="font-size:13px; color:${COLORS.ink}; font-weight:600; text-transform:none; letter-spacing:normal;">${buildRefCode(leadId)}</span></td>
-    <td style="font-family:${MONO_FONT_STACK}; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:${COLORS.inkMuted};">${escapeHtml(copy.memoDateLabel)}<br><span style="font-size:13px; color:${COLORS.ink}; font-weight:600; text-transform:none; letter-spacing:normal;">${formatReceivedDate(receivedAt, locale)}</span></td>
+    <td style="font-family:${MONO_FONT_STACK}; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:${COLORS.inkMuted};">${escapeHtml(copy.memoRefLabel)}<br><span style="font-size:13px; color:${COLORS.ink}; font-weight:600; text-transform:none; letter-spacing:normal;">${escapeHtml(buildRefCode(leadId))}</span></td>
+    <td style="font-family:${MONO_FONT_STACK}; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:${COLORS.inkMuted};">${escapeHtml(copy.memoDateLabel)}<br><span style="font-size:13px; color:${COLORS.ink}; font-weight:600; text-transform:none; letter-spacing:normal;">${escapeHtml(formatReceivedDate(receivedAt, locale))}</span></td>
   </tr>
   <tr>
     <td colspan="3" style="padding-top:12px; border-top:1px dashed ${COLORS.border};"></td>
@@ -245,7 +245,13 @@ export function buildSenderAcknowledgement(params: SenderAcknowledgementParams):
     letterhead: copy.letterhead,
   });
 
+  // Plaintext readers never see the HTML memo header, but the REF code is
+  // the whole point of a *real* reference number (something the submitter
+  // or owner could cite in a reply) — it must survive in a plaintext-only
+  // client too, not just the styled email.
   const text = [
+    `${copy.memoRefLabel}: ${buildRefCode(leadId)}`,
+    '',
     copy.greeting(safeName),
     '',
     copy.body,

@@ -279,6 +279,23 @@ describe('POST /api/contact', () => {
     expect(queryStrings.join('')).toContain('RETURNING id');
   });
 
+  it('returns 500 and does not send an acknowledgement when the INSERT returns no row', async () => {
+    errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    stubHappyPathEnv();
+    vi.stubEnv('CONTACT_FROM_EMAIL', 'Juan Pablo <contacto@juanpablo.info>');
+    h.sql.mockResolvedValueOnce([]);
+    const res = await post(makeFormData());
+    expect(res.status).toBe(500);
+    // Owner notification still fires (same as any other DB-insert failure),
+    // but no REF-000000-style code was ever mistakenly issued for a lead
+    // that isn't really usable — only 1 send (owner), never the ack.
+    expect(h.send).toHaveBeenCalledTimes(1);
+    expect(errorSpy).toHaveBeenCalledWith(
+      expect.stringContaining('DB insert failed'),
+      expect.objectContaining({ message: expect.stringContaining('no usable id') })
+    );
+  });
+
   it('threads the inserted row id into the acknowledgement as a REF- code', async () => {
     errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     stubHappyPathEnv();

@@ -96,6 +96,9 @@ export function renderEmailLayout(params: EmailLayoutParams): string {
 
   return `<!doctype html>
 <html lang="${escapeHtml(locale)}">
+  <head>
+    <meta charset="utf-8" />
+  </head>
   <body style="margin:0; padding:0; background-color:${COLORS.background};">
     <div style="display:none; max-height:0; max-width:0; overflow:hidden; opacity:0; mso-hide:all; font-size:1px; line-height:1px; color:${COLORS.background};">${safePreheader}</div>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${COLORS.background};">

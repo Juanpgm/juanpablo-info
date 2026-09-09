@@ -13,6 +13,13 @@ function baseParams(overrides: Partial<Parameters<typeof renderEmailLayout>[0]> 
 }
 
 describe('renderEmailLayout', () => {
+  it('declares a utf-8 charset in the document head', () => {
+    // ✓, →, · and Cyrillic content depend on this rather than only on
+    // Resend's default MIME charset header — cheap insurance.
+    const html = renderEmailLayout(baseParams());
+    expect(html).toMatch(/<meta charset="utf-8"\s*\/?>/i);
+  });
+
   it('escapes a script tag injected via preheader', () => {
     const html = renderEmailLayout(baseParams({ preheader: '<script>alert(1)</script>' }));
     expect(html).not.toContain('<script>alert(1)</script>');

@@ -267,6 +267,14 @@ describe('buildSenderAcknowledgement', () => {
     expect(result.html).toContain('REF-000000');
   });
 
+  it('includes the REF code in the plaintext body too, not just html', () => {
+    // A plaintext-only mail client never sees the HTML memo header — the
+    // whole point of a *real* reference number is that it's citable, so it
+    // must survive there as well.
+    const result = buildSenderAcknowledgement(baseAckParams({ leadId: 42 }));
+    expect(result.text).toContain('REF-000042');
+  });
+
   it('shows the escaped submitter name next to the TO label in the memo header', () => {
     const result = buildSenderAcknowledgement(baseAckParams({ name: '<script>Ada</script>' }));
     expect(result.html).toContain('&lt;script&gt;Ada&lt;/script&gt;');

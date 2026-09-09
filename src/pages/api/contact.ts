@@ -145,6 +145,17 @@ export const POST: APIRoute = async ({ request }) => {
       VALUES (${name}, ${email}, ${message}, ${locale}, ${attachmentUrls})
       RETURNING id
     `;
+    // Guard the shape, not just presence: `inserted` being truthy doesn't
+    // guarantee `id` is a real number — without this, a malformed RETURNING
+    // row would still flip `dbOk` true (the row genuinely was inserted) while
+    // downstream `buildRefCode` silently produces "REF-undefined". Throwing
+    // here instead keeps insert-succeeded-but-malformed distinct from a
+    // failed insert in the log below, and — deliberately — still fails the
+    // request as if the insert itself failed, since a lead nobody can
+    // reference by REF code is not usably "stored" from the owner's side.
+    if (typeof inserted?.id !== 'number') {
+      throw new Error(`INSERT returned no usable id (got ${JSON.stringify(inserted)})`);
+    }
     leadId = inserted.id;
     dbOk = true;
   } catch (error) {
