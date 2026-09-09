@@ -35,6 +35,27 @@ const MIN_MESSAGE_LENGTH = 10;
 const MAX_MESSAGE_LENGTH = 5000;
 
 /**
+ * Whitelist of locales this app actually supports (mirrors `src/i18n/index.ts`'s
+ * `Locale` union). Deliberately re-declared here instead of imported: that
+ * module re-exports `astro:i18n`, a virtual module only resolvable inside an
+ * Astro build/dev context — importing it from this pure lib would break its
+ * plain-vitest unit tests. `locale` arrives from an untrusted request body, so
+ * it is validated against this exact whitelist rather than merely checked for
+ * "truthy string" (a CRLF- or attacker-controlled value would otherwise flow
+ * unsanitized into the owner notification's email subject).
+ */
+export const SUPPORTED_LOCALES = ['es', 'en', 'de', 'fr', 'ru'] as const;
+export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
+
+function normalizeLocale(value: unknown): SupportedLocale {
+  if (typeof value !== 'string') return 'es';
+  const normalized = value.trim().toLowerCase();
+  return (SUPPORTED_LOCALES as readonly string[]).includes(normalized)
+    ? (normalized as SupportedLocale)
+    : 'es';
+}
+
+/**
  * Attachment constraints, shared by the client (ContactModal.astro's script,
  * pre-flight check before upload) and the server (pages/api/contact.ts, the
  * real trust boundary — the client check is UX only, never trusted alone).
@@ -113,7 +134,7 @@ export function validateContactSubmission(data: unknown): ValidateContactResult 
   const name = typeof record.name === 'string' ? record.name.trim() : '';
   const email = typeof record.email === 'string' ? record.email.trim() : '';
   const message = typeof record.message === 'string' ? record.message.trim() : '';
-  const locale = typeof record.locale === 'string' && record.locale ? record.locale : 'es';
+  const locale = normalizeLocale(record.locale);
   const honeypot = typeof record.website === 'string' && record.website.trim().length > 0;
 
   const errors: ContactFieldError[] = [];

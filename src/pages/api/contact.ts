@@ -186,13 +186,15 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // Sender acknowledgement to the submitter: best-effort, never affects the
-  // response the client sees. Only attempted when (1) the owner notification
-  // actually went out — a failed notification means nobody has seen this
-  // lead yet, and the DB-first semantics below already cover that case — and
-  // (2) FROM_EMAIL is a real verified sender: Resend's sandbox sender can
-  // only deliver to the account owner, so sending to an arbitrary submitter
-  // from it would just fail.
-  if (emailOk && isVerifiedSender(FROM_EMAIL) && process.env.RESEND_API_KEY) {
+  // response the client sees. Only attempted when the lead is actually
+  // stored AND a delivered owner notification confirms someone has seen it —
+  // (1) `dbOk`: without a stored lead, acknowledging receipt to the
+  // submitter while the DB write silently failed would be a lie; (2)
+  // `emailOk`: a failed owner notification means nobody has seen this lead
+  // yet; and (3) FROM_EMAIL is a real verified sender: Resend's sandbox
+  // sender can only deliver to the account owner, so sending to an arbitrary
+  // submitter from it would just fail.
+  if (dbOk && emailOk && isVerifiedSender(FROM_EMAIL) && process.env.RESEND_API_KEY) {
     try {
       const resend = new Resend(process.env.RESEND_API_KEY);
       const ack = buildSenderAcknowledgement({ name, locale });

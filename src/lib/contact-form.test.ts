@@ -5,6 +5,7 @@ import {
   MAX_ATTACHMENTS,
   MAX_ATTACHMENT_SIZE_BYTES,
   MAX_TOTAL_ATTACHMENTS_SIZE_BYTES,
+  SUPPORTED_LOCALES,
 } from './contact-form';
 
 describe('validateContactSubmission', () => {
@@ -98,6 +99,54 @@ describe('validateContactSubmission', () => {
     expect(result.valid || result.errors).toEqual([
       { field: 'name', message: 'Name must be 200 characters or fewer' },
     ]);
+  });
+
+  it('rejects a locale attempting header injection and falls back to es', () => {
+    const result = validateContactSubmission({
+      name: 'Ada',
+      email: 'ada@example.com',
+      message: 'Hello, I saw your portfolio and would like to talk.',
+      locale: 'en\r\nBcc: x@y.z',
+    });
+    expect(result.valid).toBe(true);
+    expect(result.valid && result.data.locale).toBe('es');
+  });
+
+  it('normalizes a locale with surrounding whitespace and different case', () => {
+    const result = validateContactSubmission({
+      name: 'Ada',
+      email: 'ada@example.com',
+      message: 'Hello, I saw your portfolio and would like to talk.',
+      locale: 'EN ',
+    });
+    expect(result.valid).toBe(true);
+    expect(result.valid && result.data.locale).toBe('en');
+  });
+
+  it('falls back to es for a locale not in the supported whitelist', () => {
+    const result = validateContactSubmission({
+      name: 'Ada',
+      email: 'ada@example.com',
+      message: 'Hello, I saw your portfolio and would like to talk.',
+      locale: 'xx',
+    });
+    expect(result.valid).toBe(true);
+    expect(result.valid && result.data.locale).toBe('es');
+  });
+
+  it('falls back to es for a pathologically long locale string', () => {
+    const result = validateContactSubmission({
+      name: 'Ada',
+      email: 'ada@example.com',
+      message: 'Hello, I saw your portfolio and would like to talk.',
+      locale: 'e'.repeat(1024 * 1024),
+    });
+    expect(result.valid).toBe(true);
+    expect(result.valid && result.data.locale).toBe('es');
+  });
+
+  it('exports the supported locale whitelist', () => {
+    expect(SUPPORTED_LOCALES).toEqual(['es', 'en', 'de', 'fr', 'ru']);
   });
 
   it('flags the honeypot field as triggered without failing validation', () => {

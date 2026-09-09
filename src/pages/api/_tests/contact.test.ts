@@ -158,6 +158,18 @@ describe('POST /api/contact', () => {
     expect(h.send).toHaveBeenCalledTimes(1);
   });
 
+  it('never sends the acknowledgement when the DB insert failed, even with a verified sender', async () => {
+    errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    stubHappyPathEnv();
+    vi.stubEnv('CONTACT_FROM_EMAIL', 'Juan Pablo <contacto@juanpablo.info>');
+    h.sql.mockRejectedValueOnce(new Error('db down'));
+    const res = await post(makeFormData());
+    expect(res.status).toBe(500);
+    // Only the owner notification fires — the acknowledgement must be gated
+    // on a stored lead, not just a delivered owner notification.
+    expect(h.send).toHaveBeenCalledTimes(1);
+  });
+
   it('returns 200 and logs "Resend send failed" when Resend resolves an error', async () => {
     errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     stubHappyPathEnv();

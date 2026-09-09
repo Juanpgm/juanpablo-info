@@ -127,14 +127,19 @@ describe('buildOwnerNotification', () => {
     const result = buildOwnerNotification(baseOwnerParams({ locale: 'es' }));
     expect(result.subject.startsWith('[Lead · ES]')).toBe(true);
   });
+
+  it('produces a single-line subject even when locale contains CRLF', () => {
+    const result = buildOwnerNotification(baseOwnerParams({ locale: 'en\r\nBcc: x@y.z' }));
+    expect(result.subject).not.toContain('\r');
+    expect(result.subject).not.toContain('\n');
+  });
 });
 
 describe('buildSenderAcknowledgement', () => {
-  it('never contains a leaked sentinel unrelated to the ack copy itself', () => {
-    const sentinel = 'SENTINEL_SHOULD_NOT_APPEAR';
-    const result = buildSenderAcknowledgement({ name: `Ada ${sentinel}`, locale: 'en' });
-    // The name is legitimately included (escaped), but nothing beyond name +
-    // fixed copy should appear — there is no message/attachments parameter to leak.
+  it('does not mention attachments', () => {
+    const result = buildSenderAcknowledgement({ name: 'Ada', locale: 'en' });
+    // There is no message/attachments parameter on this function at all —
+    // nothing beyond name + fixed copy should ever appear.
     expect(result.text).not.toMatch(/attachment/i);
     expect(result.html).not.toMatch(/attachment/i);
   });

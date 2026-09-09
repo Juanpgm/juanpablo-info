@@ -53,7 +53,12 @@ export function buildOwnerNotification(params: OwnerNotificationParams): Compose
 
   const safeName = toSingleLine(name);
   const preview = buildSubjectPreview(message);
-  const subject = `[Lead · ${locale.toUpperCase()}] ${safeName} — "${preview}"`;
+  // Belt-and-braces: `locale` should already be whitelisted by
+  // `validateContactSubmission`, but this composer is a pure function called
+  // from elsewhere too — never trust an upstream guarantee for something that
+  // lands directly in an email subject (header/subject injection guard).
+  const safeLocale = toSingleLine(locale).slice(0, 5);
+  const subject = `[Lead · ${safeLocale.toUpperCase()}] ${safeName} — "${preview}"`;
 
   const attachmentNames = attachments.map((a) => a.filename);
   const text = [
