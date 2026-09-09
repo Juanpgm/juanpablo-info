@@ -5,7 +5,7 @@
  */
 import { resolveAckCopy } from './contact-email-copy';
 import { resolveEmailCtaCopy } from './email-cta-copy';
-import { renderEmailLayout, type EmailCta } from './email-layout';
+import { renderEmailLayout, COLORS, MONO_FONT_STACK, type EmailCta } from './email-layout';
 import { localePath } from './locale-path';
 import { normalizeLocale } from './contact-form';
 import type { Locale } from '../i18n';
@@ -148,6 +148,38 @@ export interface SenderAcknowledgementParams {
   name: string;
   locale: string;
   siteUrl: string;
+  /** The lead's actual `contact_submissions.id` row, used to derive a real
+   * reference number (`REF-000042`) rather than a synthetic one. */
+  leadId: number;
+  /** When the submission was received, used for the memo header's date
+   * field — anchored to `America/Bogota` (see `formatReceivedDate`). */
+  receivedAt: Date;
+}
+
+// Zero-padded to 6 digits; deliberately not localized — it's a neutral
+// technical code, same format in every locale.
+function buildRefCode(leadId: number): string {
+  return `REF-${String(leadId).padStart(6, '0')}`;
+}
+
+// Cali, Colombia is the site's real base (see `src/data/site.ts`'s
+// `address`), so the memo-header timestamp is anchored to a real, meaningful
+// timezone rather than naive UTC or the recipient's unknown one.
+function formatReceivedDate(receivedAt: Date, locale: string): string {
+  const options: Intl.DateTimeFormatOptions = {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'America/Bogota',
+  };
+  try {
+    return new Intl.DateTimeFormat(locale, options).format(receivedAt);
+  } catch {
+    // Defense in depth: `locale` is normalized upstream in this same
+    // function via `normalizeLocale`, so this shouldn't happen in practice —
+    // but this is a pure function callable directly with an arbitrary string.
+    return new Intl.DateTimeFormat('en', options).format(receivedAt);
+  }
 }
 
 // Anti-backscatter: the submitter's `email` is unverified (a spammer could
@@ -155,14 +187,8 @@ export interface SenderAcknowledgementParams {
 // submitted message or attachments — only a fixed, localized courtesy note
 // plus three fixed marketing CTAs (projects/blog/RSS), never anything
 // derived from the submission itself.
-// Interim value until `AckCopy` gains a locale-aware `letterhead` field
-// (memo-header redesign, tracked separately) — matches the eventual English
-// copy so it reads correctly for the site's default English audience in the
-// meantime.
-const INTERIM_ACK_LETTERHEAD = 'JUAN PABLO GUZMÁN MARTÍNEZ · PORTFOLIO';
-
 export function buildSenderAcknowledgement(params: SenderAcknowledgementParams): ComposedEmail {
-  const { name, siteUrl } = params;
+  const { name, siteUrl, leadId, receivedAt } = params;
   // Normalize once, up front: this is a public pure function that another
   // caller could invoke directly with an arbitrary string (not just the
   // route, which already whitelists `locale` via `validateContactSubmission`
@@ -176,26 +202,47 @@ export function buildSenderAcknowledgement(params: SenderAcknowledgementParams):
   const safeName = toSingleLine(name);
   const escapedName = escapeHtml(safeName);
 
+  // Memo header: a "PARA/REF/FECHA"-style identity block with a REAL
+  // reference number derived from the lead's actual database row id —
+  // evokes engineering documentation without a literal blueprint/grid
+  // texture, just typographic discipline (mono labels over serif-free values).
+  const memoHeaderHtml = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 20px;">
+  <tr>
+    <td style="font-family:${MONO_FONT_STACK}; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:${COLORS.inkMuted};">${escapeHtml(copy.memoToLabel)}<br><span style="font-size:13px; color:${COLORS.ink}; font-weight:600; text-transform:none; letter-spacing:normal;">${escapedName}</span></td>
+    <td style="font-family:${MONO_FONT_STACK}; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:${COLORS.inkMuted};">${escapeHtml(copy.memoRefLabel)}<br><span style="font-size:13px; color:${COLORS.ink}; font-weight:600; text-transform:none; letter-spacing:normal;">${buildRefCode(leadId)}</span></td>
+    <td style="font-family:${MONO_FONT_STACK}; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:${COLORS.inkMuted};">${escapeHtml(copy.memoDateLabel)}<br><span style="font-size:13px; color:${COLORS.ink}; font-weight:600; text-transform:none; letter-spacing:normal;">${formatReceivedDate(receivedAt, locale)}</span></td>
+  </tr>
+  <tr>
+    <td colspan="3" style="padding-top:12px; border-top:1px dashed ${COLORS.border};"></td>
+  </tr>
+</table>`;
+
+  // Stamp tag: a small bordered "received" badge.
+  const stampHtml = `<table role="presentation" cellpadding="0" cellspacing="0" style="display:inline-block; margin:0 0 20px;"><tr><td style="border:1.5px solid ${COLORS.accentDeep}; border-radius:4px; padding:6px 12px; font-family:${MONO_FONT_STACK}; font-size:11px; letter-spacing:.06em; font-weight:700; color:${COLORS.ink};">✓ ${escapeHtml(copy.receivedBadge)}</td></tr></table>`;
+
+  const eyebrowHtml = `<p style="margin:24px 0 4px; font-family:${MONO_FONT_STACK}; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:${COLORS.inkMuted};">${escapeHtml(copy.ctaEyebrow)}</p>`;
+
   const bodyHtml = [
+    memoHeaderHtml,
+    stampHtml,
     `<p>${copy.greeting(escapedName)}</p>`,
     `<p>${toHtmlParagraph(copy.body)}</p>`,
     `<p>${toHtmlParagraph(copy.signoff)}</p>`,
+    eyebrowHtml,
   ].join('\n');
 
   const ctaCopy = resolveEmailCtaCopy(locale);
   const ctas: EmailCta[] = [ctaCopy.projects, ctaCopy.blog, ctaCopy.rss].map((entry) => ({
-    label: entry.label,
+    label: `→ ${entry.label}`,
     href: resolveCtaHref(siteUrl, locale, entry.hrefPath),
   }));
 
-  // Interim value: replaced with the locale-aware `copy.letterhead` once
-  // `AckCopy` gains that field (memo-header redesign, tracked separately).
   const html = renderEmailLayout({
     locale,
     preheader: copy.body,
     bodyHtml,
     ctas,
-    letterhead: INTERIM_ACK_LETTERHEAD,
+    letterhead: copy.letterhead,
   });
 
   const text = [

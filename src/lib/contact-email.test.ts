@@ -8,6 +8,7 @@ import {
 
 const ADMIN_URL = 'https://juanpablo.info/admin#leads';
 const SITE_URL = 'https://juanpablo.info';
+const FIXED_DATE = new Date('2026-09-09T12:00:00Z');
 
 function baseOwnerParams(overrides: Partial<Parameters<typeof buildOwnerNotification>[0]> = {}) {
   return {
@@ -17,6 +18,17 @@ function baseOwnerParams(overrides: Partial<Parameters<typeof buildOwnerNotifica
     locale: 'en',
     attachments: [] as { filename: string }[],
     adminUrl: ADMIN_URL,
+    ...overrides,
+  };
+}
+
+function baseAckParams(overrides: Partial<Parameters<typeof buildSenderAcknowledgement>[0]> = {}) {
+  return {
+    name: 'Ada',
+    locale: 'en',
+    siteUrl: SITE_URL,
+    leadId: 42,
+    receivedAt: FIXED_DATE,
     ...overrides,
   };
 }
@@ -150,11 +162,18 @@ describe('buildOwnerNotification', () => {
     const result = buildOwnerNotification(baseOwnerParams());
     expect(result.html).not.toMatch(/receiving this because you contacted/i);
   });
+
+  it('carries the fixed lead-notification letterhead and no memo/stamp system (ack-only)', () => {
+    const result = buildOwnerNotification(baseOwnerParams());
+    expect(result.html).toContain('LEAD NOTIFICATION');
+    expect(result.html).not.toContain('✓');
+    expect(result.html).not.toContain('REF-');
+  });
 });
 
 describe('buildSenderAcknowledgement', () => {
   it('does not mention attachments', () => {
-    const result = buildSenderAcknowledgement({ name: 'Ada', locale: 'en', siteUrl: SITE_URL });
+    const result = buildSenderAcknowledgement(baseAckParams());
     // There is no message/attachments parameter on this function at all —
     // nothing beyond name + fixed copy should ever appear.
     expect(result.text).not.toMatch(/attachment/i);
@@ -162,8 +181,8 @@ describe('buildSenderAcknowledgement', () => {
   });
 
   it('produces content in the requested locale', () => {
-    const es = buildSenderAcknowledgement({ name: 'Ada', locale: 'es', siteUrl: SITE_URL });
-    const en = buildSenderAcknowledgement({ name: 'Ada', locale: 'en', siteUrl: SITE_URL });
+    const es = buildSenderAcknowledgement(baseAckParams({ locale: 'es' }));
+    const en = buildSenderAcknowledgement(baseAckParams({ locale: 'en' }));
     expect(es.subject).not.toBe(en.subject);
   });
 
@@ -172,36 +191,32 @@ describe('buildSenderAcknowledgement', () => {
     // `validateContactSubmission` already applies to the route's incoming
     // `locale` field) — 'es' is `astro.config.mjs`'s `defaultLocale`, not an
     // arbitrary choice.
-    const es = buildSenderAcknowledgement({ name: 'Ada', locale: 'es', siteUrl: SITE_URL });
-    const unknown = buildSenderAcknowledgement({ name: 'Ada', locale: 'xx', siteUrl: SITE_URL });
+    const es = buildSenderAcknowledgement(baseAckParams({ locale: 'es' }));
+    const unknown = buildSenderAcknowledgement(baseAckParams({ locale: 'xx' }));
     expect(unknown.subject).toBe(es.subject);
   });
 
   it('produces content when called directly with es', () => {
-    const result = buildSenderAcknowledgement({ name: 'Ada', locale: 'es', siteUrl: SITE_URL });
+    const result = buildSenderAcknowledgement(baseAckParams({ locale: 'es' }));
     expect(result.subject.length).toBeGreaterThan(0);
     expect(result.text.length).toBeGreaterThan(0);
   });
 
   it('escapes the name in html and strips CR/LF from the greeting', () => {
-    const result = buildSenderAcknowledgement({
-      name: '<script>x\r\n</script>',
-      locale: 'en',
-      siteUrl: SITE_URL,
-    });
+    const result = buildSenderAcknowledgement(baseAckParams({ name: '<script>x\r\n</script>' }));
     expect(result.html).not.toContain('<script>x');
     expect(result.html).toContain('&lt;script&gt;x');
     expect(result.html).not.toContain('\r');
   });
 
   it('wraps the body in the branded email layout', () => {
-    const result = buildSenderAcknowledgement({ name: 'Ada', locale: 'en', siteUrl: SITE_URL });
+    const result = buildSenderAcknowledgement(baseAckParams());
     expect(result.html).toContain('<!doctype html>');
     expect(result.html.toLowerCase()).not.toContain('<style');
   });
 
   it('includes all three localized CTA links, resolved against siteUrl and locale', () => {
-    const result = buildSenderAcknowledgement({ name: 'Ada', locale: 'en', siteUrl: SITE_URL });
+    const result = buildSenderAcknowledgement(baseAckParams());
     expect(result.html).toContain('https://juanpablo.info/en/projects/');
     expect(result.html).toContain('https://juanpablo.info/en/blog/');
     expect(result.html).toContain('https://juanpablo.info/en/rss.xml');
@@ -219,14 +234,14 @@ describe('buildSenderAcknowledgement', () => {
     // wrapped around a 404ing `/xx/projects/` link and a mismatched
     // `<html lang="xx">`. Normalizing once up front keeps all three in sync,
     // and to the same fallback ('es') the rest of the app already uses.
-    const result = buildSenderAcknowledgement({ name: 'Ada', locale: 'xx', siteUrl: SITE_URL });
+    const result = buildSenderAcknowledgement(baseAckParams({ locale: 'xx' }));
     expect(result.html).not.toContain('/xx/');
     expect(result.html).toContain('lang="es"');
     expect(result.html).toContain('https://juanpablo.info/es/projects/');
   });
 
   it('resolves CTA links for the requested locale, not a hardcoded one', () => {
-    const result = buildSenderAcknowledgement({ name: 'Ada', locale: 'es', siteUrl: SITE_URL });
+    const result = buildSenderAcknowledgement(baseAckParams({ locale: 'es' }));
     expect(result.html).toContain('https://juanpablo.info/es/projects/');
     expect(result.html).toContain('https://juanpablo.info/es/blog/');
     expect(result.html).toContain('https://juanpablo.info/es/rss.xml');
@@ -237,9 +252,56 @@ describe('buildSenderAcknowledgement', () => {
     // CTA layout must not change that. Guards against a future signature
     // change accidentally leaking submitted content into a reply-to-nobody
     // acknowledgement email.
-    const result = buildSenderAcknowledgement({ name: 'Ada', locale: 'en', siteUrl: SITE_URL });
+    const result = buildSenderAcknowledgement(baseAckParams());
     expect(result.html).not.toMatch(/attachment/i);
     expect(result.text).not.toMatch(/attachment/i);
+  });
+
+  it('shows the zero-padded reference code derived from the lead id in the memo header', () => {
+    const result = buildSenderAcknowledgement(baseAckParams({ leadId: 42 }));
+    expect(result.html).toContain('REF-000042');
+  });
+
+  it('zero-pads a leadId of 0 correctly', () => {
+    const result = buildSenderAcknowledgement(baseAckParams({ leadId: 0 }));
+    expect(result.html).toContain('REF-000000');
+  });
+
+  it('shows the escaped submitter name next to the TO label in the memo header', () => {
+    const result = buildSenderAcknowledgement(baseAckParams({ name: '<script>Ada</script>' }));
+    expect(result.html).toContain('&lt;script&gt;Ada&lt;/script&gt;');
+  });
+
+  it('shows a formatted received date derived from receivedAt in the memo header', () => {
+    const result = buildSenderAcknowledgement(baseAckParams({ locale: 'en', receivedAt: FIXED_DATE }));
+    const expectedDate = new Intl.DateTimeFormat('en', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      timeZone: 'America/Bogota',
+    }).format(FIXED_DATE);
+    expect(result.html).toContain(expectedDate);
+  });
+
+  it('shows the received-badge stamp with a leading checkmark', () => {
+    const result = buildSenderAcknowledgement(baseAckParams({ locale: 'en' }));
+    expect(result.html).toContain('✓ MESSAGE RECEIVED');
+  });
+
+  it('prefixes CTA labels with a leading arrow', () => {
+    const result = buildSenderAcknowledgement(baseAckParams({ locale: 'en' }));
+    expect(result.html).toContain('→ See my projects');
+    expect(result.text).toContain('→ See my projects');
+  });
+
+  it('renders the CTA eyebrow text', () => {
+    const result = buildSenderAcknowledgement(baseAckParams({ locale: 'en' }));
+    expect(result.html).toContain('IN THE MEANTIME');
+  });
+
+  it('passes the locale letterhead through to the layout', () => {
+    const result = buildSenderAcknowledgement(baseAckParams({ locale: 'en' }));
+    expect(result.html).toContain('JUAN PABLO GUZMÁN MARTÍNEZ · PORTFOLIO');
   });
 });
 
