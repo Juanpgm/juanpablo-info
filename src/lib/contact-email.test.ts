@@ -145,6 +145,11 @@ describe('buildOwnerNotification', () => {
     expect(result.html).not.toContain('Read the blog');
     expect(result.html).not.toContain('Subscribe via RSS');
   });
+
+  it('does not tell the owner they contacted themselves (footer note is submitter-only)', () => {
+    const result = buildOwnerNotification(baseOwnerParams());
+    expect(result.html).not.toMatch(/receiving this because you contacted/i);
+  });
 });
 
 describe('buildSenderAcknowledgement', () => {
@@ -162,10 +167,14 @@ describe('buildSenderAcknowledgement', () => {
     expect(es.subject).not.toBe(en.subject);
   });
 
-  it('falls back to en for an unknown locale', () => {
-    const en = buildSenderAcknowledgement({ name: 'Ada', locale: 'en', siteUrl: SITE_URL });
+  it('falls back to es (the site default locale) for an unknown locale', () => {
+    // Matches `normalizeLocale`'s own contract (same fallback
+    // `validateContactSubmission` already applies to the route's incoming
+    // `locale` field) — 'es' is `astro.config.mjs`'s `defaultLocale`, not an
+    // arbitrary choice.
+    const es = buildSenderAcknowledgement({ name: 'Ada', locale: 'es', siteUrl: SITE_URL });
     const unknown = buildSenderAcknowledgement({ name: 'Ada', locale: 'xx', siteUrl: SITE_URL });
-    expect(unknown.subject).toBe(en.subject);
+    expect(unknown.subject).toBe(es.subject);
   });
 
   it('produces content when called directly with es', () => {
@@ -200,6 +209,20 @@ describe('buildSenderAcknowledgement', () => {
     expect(result.text).toContain('https://juanpablo.info/en/projects/');
     expect(result.text).toContain('https://juanpablo.info/en/blog/');
     expect(result.text).toContain('https://juanpablo.info/en/rss.xml');
+  });
+
+  it('normalizes an unknown locale so copy, CTA links, and lang all agree (falls back to es)', () => {
+    // Regression guard: locale used to flow into `resolveAckCopy`/
+    // `resolveEmailCtaCopy` (each with its own internal en/es fallback) and
+    // into the CTA hrefs/layout `lang` completely unvalidated, so an unknown
+    // locale like 'xx' could in principle produce copy in one language
+    // wrapped around a 404ing `/xx/projects/` link and a mismatched
+    // `<html lang="xx">`. Normalizing once up front keeps all three in sync,
+    // and to the same fallback ('es') the rest of the app already uses.
+    const result = buildSenderAcknowledgement({ name: 'Ada', locale: 'xx', siteUrl: SITE_URL });
+    expect(result.html).not.toContain('/xx/');
+    expect(result.html).toContain('lang="es"');
+    expect(result.html).toContain('https://juanpablo.info/es/projects/');
   });
 
   it('resolves CTA links for the requested locale, not a hardcoded one', () => {

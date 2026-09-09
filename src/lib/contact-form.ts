@@ -47,7 +47,10 @@ const MAX_MESSAGE_LENGTH = 5000;
 export const SUPPORTED_LOCALES = ['es', 'en', 'de', 'fr', 'ru'] as const;
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
-function normalizeLocale(value: unknown): SupportedLocale {
+// Exported so other pure composers (e.g. `contact-email.ts`) can normalize a
+// caller-supplied locale the same way, instead of re-implementing the
+// whitelist check or silently trusting an unvalidated value.
+export function normalizeLocale(value: unknown): SupportedLocale {
   if (typeof value !== 'string') return 'es';
   const normalized = value.trim().toLowerCase();
   return (SUPPORTED_LOCALES as readonly string[]).includes(normalized)

@@ -63,6 +63,16 @@ describe('renderEmailLayout', () => {
     expect(html).not.toMatch(/display:\s*grid/i);
   });
 
+  it('includes the footer note by default', () => {
+    const html = renderEmailLayout(baseParams());
+    expect(html).toMatch(/receiving this because you contacted/i);
+  });
+
+  it('omits the footer note row entirely when includeFooterNote is false', () => {
+    const html = renderEmailLayout(baseParams({ includeFooterNote: false }));
+    expect(html).not.toMatch(/receiving this because you contacted/i);
+  });
+
   it('renders the preheader using the visually-hidden preview-text technique', () => {
     const html = renderEmailLayout(baseParams({ preheader: 'A short preview' }));
     // Real preheader convention: display:none + a near-zero font-size, so the

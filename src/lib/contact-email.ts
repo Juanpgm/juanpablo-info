@@ -7,6 +7,7 @@ import { resolveAckCopy } from './contact-email-copy';
 import { resolveEmailCtaCopy } from './email-cta-copy';
 import { renderEmailLayout, type EmailCta } from './email-layout';
 import { localePath } from './locale-path';
+import { normalizeLocale } from './contact-form';
 import type { Locale } from '../i18n';
 
 const SUBJECT_PREVIEW_LENGTH = 60;
@@ -122,12 +123,16 @@ export function buildOwnerNotification(params: OwnerNotificationParams): Compose
   // labels above), so the layout itself (footer note, `lang` attribute) is
   // rendered in English too, not `locale` — `ctas: []`: Reply/Open-admin
   // stay as plain links inside bodyHtml, no marketing buttons on the
-  // owner's own lead notification (that would be noise).
+  // owner's own lead notification (that would be noise). `includeFooterNote:
+  // false` because that note reads "You are receiving this because you
+  // contacted juanpablo.info..." — true for the submitter's ack, false here:
+  // the owner didn't contact themselves.
   const html = renderEmailLayout({
     locale: 'en',
     preheader: `New contact form message from ${safeName || 'a visitor'}`,
     bodyHtml,
     ctas: [],
+    includeFooterNote: false,
   });
 
   return { subject, text, html };
@@ -145,7 +150,16 @@ export interface SenderAcknowledgementParams {
 // plus three fixed marketing CTAs (projects/blog/RSS), never anything
 // derived from the submission itself.
 export function buildSenderAcknowledgement(params: SenderAcknowledgementParams): ComposedEmail {
-  const { name, locale, siteUrl } = params;
+  const { name, siteUrl } = params;
+  // Normalize once, up front: this is a public pure function that another
+  // caller could invoke directly with an arbitrary string (not just the
+  // route, which already whitelists `locale` via `validateContactSubmission`
+  // before it ever reaches here). Without this, an unknown locale would fall
+  // back to English *copy* via `resolveAckCopy`/`resolveEmailCtaCopy`
+  // individually while still building 404ing `/{locale}/...` CTA links and a
+  // mismatched `<html lang>` — normalizing once keeps copy, links, and the
+  // layout's `lang` attribute consistent with each other.
+  const locale = normalizeLocale(params.locale);
   const copy = resolveAckCopy(locale);
   const safeName = toSingleLine(name);
   const escapedName = escapeHtml(safeName);

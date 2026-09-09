@@ -30,10 +30,14 @@ describe('buildFeedItems', () => {
   });
 
   it('excludes entries with draft: true', () => {
-    const entries = [makeEntry({ id: 'en/published' }), makeEntry({ id: 'en/unpublished', draft: true })];
+    // Ids are deliberately non-overlapping substrings (not 'published' /
+    // 'unpublished', where the draft id would satisfy a `toContain` check on
+    // the kept item too and let the assertion pass vacuously either way).
+    const entries = [makeEntry({ id: 'en/kept-post' }), makeEntry({ id: 'en/dropped-post', draft: true })];
     const items = buildFeedItems(entries, 'en', SITE, fakeUrlBuilder);
     expect(items).toHaveLength(1);
-    expect(items[0].link).toContain('published');
+    expect(items[0].link).toContain('kept-post');
+    expect(items[0].link).not.toContain('dropped-post');
   });
 
   it('sorts items by pubDate descending (newest first)', () => {

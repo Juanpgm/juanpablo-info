@@ -25,6 +25,11 @@ export interface EmailLayoutParams {
    * (callers already run their own dynamic values through `escapeHtml`). */
   bodyHtml: string;
   ctas: EmailCta[];
+  /** The footer note ("You are receiving this because you contacted...")
+   * only makes sense for mail sent TO the person who submitted the form —
+   * the owner's own lead notification is not that, so this defaults to
+   * `true` but can be turned off entirely (row omitted, not just blanked). */
+  includeFooterNote?: boolean;
 }
 
 const COLORS = {
@@ -63,8 +68,17 @@ function renderCtaRow(ctas: EmailCta[]): string {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:24px 0 0;">${ctas.map(renderCta).join('')}</td></tr></table>`;
 }
 
+function renderFooterNoteRow(locale: string, includeFooterNote: boolean): string {
+  if (!includeFooterNote) return '';
+  return `<tr>
+              <td style="padding:16px 32px; border-top:1px solid ${COLORS.border}; font-family:${FONT_STACK}; font-size:12px; line-height:1.5; color:${COLORS.inkMuted};">
+                ${escapeHtml(footerNote(locale))}
+              </td>
+            </tr>`;
+}
+
 export function renderEmailLayout(params: EmailLayoutParams): string {
-  const { locale, preheader, bodyHtml, ctas } = params;
+  const { locale, preheader, bodyHtml, ctas, includeFooterNote = true } = params;
   const safePreheader = escapeHtml(preheader);
 
   return `<!doctype html>
@@ -81,11 +95,7 @@ export function renderEmailLayout(params: EmailLayoutParams): string {
                 ${renderCtaRow(ctas)}
               </td>
             </tr>
-            <tr>
-              <td style="padding:16px 32px; border-top:1px solid ${COLORS.border}; font-family:${FONT_STACK}; font-size:12px; line-height:1.5; color:${COLORS.inkMuted};">
-                ${escapeHtml(footerNote(locale))}
-              </td>
-            </tr>
+            ${renderFooterNoteRow(locale, includeFooterNote)}
           </table>
         </td>
       </tr>
